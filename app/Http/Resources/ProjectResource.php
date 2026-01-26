@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\MediaAssetResource;
 
 class ProjectResource extends JsonResource
 {
@@ -28,7 +29,14 @@ class ProjectResource extends JsonResource
             'case_study_video_url' => $this->case_study_video_path ? Storage::url($this->case_study_video_path) : null,
             'meta' => $this->meta ?? [],
             'likes_count' => $this->likes_count ?? 0,
+            'gallery_count' => $this->whenLoaded('media', fn() => $this->media->count()),
+            'gallery' => MediaAssetResource::collection($this->whenLoaded('media')),
+            'created_at' => optional($this->created_at)->format('M d, Y'),
             'updated_at' => optional($this->updated_at)->toDateString(),
+            'technologies' => $this->meta['technologies'] ?? [],
+            'client' => $this->meta['client'] ?? null,
+            'project_type' => $this->meta['project_type'] ?? 'Web Application',
+            'completion_date' => $this->meta['completion_date'] ?? null,
         ];
     }
 }

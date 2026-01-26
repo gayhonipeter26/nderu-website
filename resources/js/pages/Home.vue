@@ -1,10 +1,60 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Award, CheckCircle, Users, Star, Code, Camera, Briefcase, PenTool } from 'lucide-vue-next';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Button } from '@/components/ui/button/index';
+import { Badge } from '@/components/ui/badge/index';
+import { ArrowRight, Award, CheckCircle, Users, Star } from 'lucide-vue-next';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
+import SparklesHeroWrapper from '@/components/SparklesHeroWrapper.vue';
+import { onBeforeUnmount, onMounted, ref, computed } from 'vue';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import type { Root } from 'react-dom/client';
+import { DemoOne } from '@/components/ui/silk-background-animation-demo';
+import CaseStudiesDemo from '@/components/ui/case-studies-demo';
+import MorphingCardStackDemo from '@/components/ui/morphing-card-stack-demo';
+import { TestimonialsSectionCustom } from '@/components/blocks/testimonials-with-marquee-custom';
+import { TypewriterEffectCustom } from '@/components/ui/typewriter-effect-custom';
+
+const props = defineProps<{
+  services?: Array<{
+    id: number;
+    title: string;
+    summary: string;
+    status: string;
+    updated_at: string;
+    icon?: any;
+    description?: string;
+    points?: string[];
+  }>;
+  projects?: Array<{
+    id: number;
+    slug: string;
+    title: string;
+    summary: string | null;
+    category: string | null;
+    year: number | null;
+    featured: boolean;
+    hero_image_url: string | null;
+    likes_count: number;
+  }>;
+  posts?: Array<{
+    id: number;
+    slug: string;
+    title: string;
+    summary: string | null;
+    reading_time: string | null;
+    published_at: string | null;
+    cover_image_url: string | null;
+    likes_count: number;
+  }>;
+  channels?: Array<{
+    id: number;
+    name: string;
+    url: string;
+    type: string;
+  }>;
+}>();
 
 const stats = [
   { label: 'Projects delivered', value: '50+', icon: CheckCircle },
@@ -13,159 +63,146 @@ const stats = [
   { label: 'Photos captured', value: '10K+', icon: Star },
 ];
 
-const services = [
-  {
-    icon: Code,
-    title: 'Web Application Development',
-    description: 'Modern web applications built with Vue.js, Laravel, and TypeScript.',
-    points: ['Scalable architectures', 'Responsive design', 'API development'],
-  },
-  {
-    icon: Briefcase,
-    title: 'System Architecture',
-    description: 'Designing resilient systems including HMS, POS, and SaaS platforms.',
-    points: ['Cloud adoption', 'Process automation', 'System integrations'],
-  },
-  {
-    icon: Camera,
-    title: 'Professional Photography',
-    description: 'Commercial and documentary photography for brands and events.',
-    points: ['Commercial shoots', 'Events and portraits', 'Editing and delivery'],
-  },
-  {
-    icon: PenTool,
-    title: 'Technology Consulting',
-    description: 'Guidance on digital transformation and product strategy.',
-    points: ['Discovery workshops', 'Roadmap planning', 'Team enablement'],
-  },
-];
+const silkContainer = ref<HTMLDivElement | null>(null);
+const caseStudiesContainer = ref<HTMLDivElement | null>(null);
+const morphingCardContainer = ref<HTMLDivElement | null>(null);
+const testimonialsContainer = ref<HTMLDivElement | null>(null);
+const typewriterContainer = ref<HTMLDivElement | null>(null);
+let silkRoot: Root | null = null;
+let caseStudiesRoot: Root | null = null;
+let morphingCardRoot: Root | null = null;
+let testimonialsRoot: Root | null = null;
+let typewriterRoot: Root | null = null;
 
-const testimonials = [
-  {
-    name: 'Sarah Johnson',
-    role: 'CEO, TechStart',
-    quote: 'The platform launch was seamless and our team adopted it immediately. Excellent partnership.',
-  },
-  {
-    name: 'Michael Chen',
-    role: 'CTO, InnovateCo',
-    quote: 'Reliable delivery across multiple projects with clear communication and measurable results.',
-  },
-];
+onMounted(() => {
+  if (silkContainer.value) {
+    silkRoot = createRoot(silkContainer.value);
+    silkRoot.render(
+      <React.StrictMode>
+        <DemoOne />
+      </React.StrictMode>,
+    );
+  }
+  if (caseStudiesContainer.value) {
+    console.log('Mounting case studies component');
+    caseStudiesRoot = createRoot(caseStudiesContainer.value);
+    caseStudiesRoot.render(
+      <React.StrictMode>
+        <CaseStudiesDemo />
+      </React.StrictMode>,
+    );
+    console.log('Case studies component mounted');
+  }
+  if (morphingCardContainer.value) {
+    morphingCardRoot = createRoot(morphingCardContainer.value);
+    morphingCardRoot.render(
+      <React.StrictMode>
+        <MorphingCardStackDemo />
+      </React.StrictMode>,
+    );
+  }
+  if (testimonialsContainer.value) {
+    testimonialsRoot = createRoot(testimonialsContainer.value);
+    testimonialsRoot.render(
+      <React.StrictMode>
+        <TestimonialsSectionCustom />
+      </React.StrictMode>,
+    );
+  }
+  if (typewriterContainer.value) {
+    typewriterRoot = createRoot(typewriterContainer.value);
+    typewriterRoot.render(
+      <React.StrictMode>
+        <TypewriterEffectCustom />
+      </React.StrictMode>,
+    );
+  }
+});
+
+onBeforeUnmount(() => {
+  if (silkRoot) {
+    silkRoot.unmount();
+    silkRoot = null;
+  }
+  if (caseStudiesRoot) {
+    caseStudiesRoot.unmount();
+    caseStudiesRoot = null;
+  }
+  if (morphingCardRoot) {
+    morphingCardRoot.unmount();
+    morphingCardRoot = null;
+  }
+  if (testimonialsRoot) {
+    testimonialsRoot.unmount();
+    testimonialsRoot = null;
+  }
+  if (typewriterRoot) {
+    typewriterRoot.unmount();
+    typewriterRoot = null;
+  }
+});
 </script>
 
 <template>
   <WebsiteLayout>
     <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid gap-12 lg:grid-cols-2">
-          <div class="space-y-6">
-            <Badge variant="secondary" class="w-fit">Software Engineer & Photographer</Badge>
-            <div class="space-y-4">
-              <h1 class="text-3xl font-semibold tracking-tight md:text-4xl">
-                Building usable products and delivering dependable creative services.
-              </h1>
-              <p class="text-muted-foreground text-base md:text-lg">
-                I partner with teams to design, build, and launch software experiences and to capture brand moments with clarity.
-              </p>
-            </div>
-            <div class="flex flex-col gap-3 sm:flex-row">
-              <Button as-child>
-                <Link href="/projects">
-                  View projects
-                  <ArrowRight class="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant="outline" as-child>
-                <Link href="/contact">Book a consultation</Link>
-              </Button>
-            </div>
+      <div class="relative isolate overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+             style="background-image: url('/assets/photos/your-image-name.jpg');">
+          <div class="absolute inset-0 bg-black/20"></div>
+        </div>
+        <!-- Silk Animation Container -->
+        <div ref="silkContainer" class="absolute inset-0 opacity-90" />
+        <div class="container relative mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-24 text-center sm:px-6 lg:px-8">
+          <div class="flex-1" aria-hidden="true"></div>
+          <div class="relative z-20 flex w-full flex-col items-center pb-16">
+            <Button asChild size="lg" class="bg-white text-black hover:bg-neutral-100">
+              <Link href="/services">
+                Work with me
+                <ArrowRight class="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
-          <Card>
-            <CardHeader class="space-y-1">
-              <CardTitle>Capabilities at a glance</CardTitle>
-              <CardDescription>Delivering end-to-end execution for digital initiatives.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <dl class="grid gap-4 text-sm text-muted-foreground">
-                <div v-for="stat in stats" :key="stat.label" class="flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <component :is="stat.icon" class="h-4 w-4 text-foreground" />
-                    <span class="font-medium text-foreground">{{ stat.label }}</span>
-                  </div>
-                  <span>{{ stat.value }}</span>
-                </div>
-              </dl>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </section>
 
+    <section>
+      <div ref="caseStudiesContainer" class="w-full"></div>
+    </section>
+
+    <section class="py-16 bg-background">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="space-y-4 text-center max-w-2xl mx-auto">
+          <h2 class="text-3xl font-semibold tracking-tight md:text-4xl">Recent Work</h2>
+          <p class="text-muted-foreground">Explore our latest projects with interactive cards. Switch between stack, grid, and list layouts to view project details.</p>
+        </div>
+        <div class="mt-4 text-center">
+          <Button as-child class="inline-flex items-center gap-2">
+            <Link href="/projects">
+              View Portfolio
+              <ArrowRight class="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+        <div ref="morphingCardContainer" class="w-full mt-12"></div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section with Marquee -->
     <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="space-y-2 text-center">
-          <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">Services</h2>
-          <p class="text-muted-foreground">Structured offerings that align with product, engineering, and media needs.</p>
-        </div>
-        <div class="mt-12 grid gap-6 md:grid-cols-2">
-          <Card v-for="service in services" :key="service.title">
-            <CardHeader>
-              <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                <component :is="service.icon" class="h-4 w-4" />
-                <span>Service area</span>
-              </div>
-              <CardTitle class="text-xl">{{ service.title }}</CardTitle>
-              <CardDescription>{{ service.description }}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul class="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                <li v-for="point in service.points" :key="point">{{ point }}</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+      <div ref="testimonialsContainer" class="w-full">
+        <!-- Testimonials with marquee component will be mounted here -->
       </div>
     </section>
 
-    <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="space-y-2 text-center">
-          <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">Selected feedback</h2>
-          <p class="text-muted-foreground">Teams rely on structured delivery and steady communication.</p>
-        </div>
-        <div class="mt-12 grid gap-6 md:grid-cols-2">
-          <Card v-for="testimonial in testimonials" :key="testimonial.name">
-            <CardHeader>
-              <CardTitle class="text-base font-medium text-foreground">{{ testimonial.name }}</CardTitle>
-              <CardDescription>{{ testimonial.role }}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">“{{ testimonial.quote }}”</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </section>
-
+    <!-- Typewriter Effect Section -->
     <section class="bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <Card class="max-w-3xl mx-auto">
-          <CardHeader class="space-y-2 text-center">
-            <CardTitle class="text-2xl md:text-3xl">Ready to begin?</CardTitle>
-            <CardDescription>
-              Share your project requirements or schedule a discovery session. A structured proposal follows every briefing.
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button as-child>
-              <Link href="/contact">Start a project</Link>
-            </Button>
-            <Button variant="outline" as-child>
-              <Link href="/services">Review services</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <div ref="typewriterContainer" class="w-full">
+          <!-- Typewriter Effect component will be mounted here -->
+        </div>
       </div>
     </section>
   </WebsiteLayout>

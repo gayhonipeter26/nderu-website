@@ -1,9 +1,19 @@
-<script setup lang="ts">
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Download, Award, Users, Camera, Code, Target, Calendar } from 'lucide-vue-next';
+<script setup lang="tsx">
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Download, Award, Users, Camera, Target, Calendar } from 'lucide-vue-next';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import type { Root } from 'react-dom/client';
+import ImageComparisonDemo from '@/components/ui/image-comparison-demo';
+import FeatureCarouselDemo from '@/components/ui/feature-carousel-demo';
+import { Demo as AgentPlanDemo } from '@/components/ui/agent-plan-demo';
+import { UseTimeoutDemo } from '@/components/ui/use-timeout-demo';
+import { LogoCloud } from '@/components/ui/logo-cloud-2';
+import DocumentationAndCertifications from '@/components/ui/scroll-area-demo';
 
 const overview = {
   title: 'Nderu.Ke',
@@ -94,125 +104,240 @@ const timeline = [
     description: 'Joined product teams building web applications and platform tooling.',
   },
 ];
+
+const heroContainer = ref<HTMLDivElement | null>(null);
+const timelineContainer = ref<HTMLDivElement | null>(null);
+const useTimeoutContainer = ref<HTMLElement | null>(null);
+const logoCloudContainer = ref<HTMLElement | null>(null);
+const docsContainer = ref<HTMLElement | null>(null);
+let heroRoot: Root | null = null;
+let timelineRoot: Root | null = null;
+let useTimeoutRoot: Root | null = null;
+let logoCloudRoot: Root | null = null;
+let docsRoot: Root | null = null;
+
+onMounted(() => {
+  if (heroContainer.value) {
+    heroRoot = createRoot(heroContainer.value);
+    heroRoot.render(
+      <React.StrictMode>
+        <FeatureCarouselDemo />
+      </React.StrictMode>,
+    );
+  }
+  if (timelineContainer.value) {
+    timelineRoot = createRoot(timelineContainer.value);
+    timelineRoot.render(
+      <React.StrictMode>
+        <AgentPlanDemo />
+      </React.StrictMode>,
+    );
+  }
+  if (useTimeoutContainer.value) {
+    useTimeoutRoot = createRoot(useTimeoutContainer.value);
+    useTimeoutRoot.render(
+      <React.StrictMode>
+        <UseTimeoutDemo />
+      </React.StrictMode>,
+    );
+  }
+  if (logoCloudContainer.value) {
+    logoCloudRoot = createRoot(logoCloudContainer.value);
+    logoCloudRoot.render(
+      <React.StrictMode>
+        <LogoCloud />
+      </React.StrictMode>,
+    );
+  }
+  if (docsContainer.value) {
+    docsRoot = createRoot(docsContainer.value);
+    docsRoot.render(
+      <React.StrictMode>
+        <DocumentationAndCertifications />
+      </React.StrictMode>,
+    );
+  }
+});
+
+onBeforeUnmount(() => {
+  if (heroRoot) {
+    heroRoot.unmount();
+    heroRoot = null;
+  }
+  if (timelineRoot) {
+    timelineRoot.unmount();
+    timelineRoot = null;
+  }
+  if (useTimeoutRoot) {
+    useTimeoutRoot.unmount();
+    useTimeoutRoot = null;
+  }
+  if (logoCloudRoot) {
+    logoCloudRoot.unmount();
+    logoCloudRoot = null;
+  }
+  if (docsRoot) {
+    docsRoot.unmount();
+    docsRoot = null;
+  }
+});
 </script>
 
 <template>
   <WebsiteLayout>
     <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid gap-10 lg:grid-cols-2">
-          <div class="space-y-4">
-            <Badge variant="secondary" class="w-fit">About</Badge>
-            <h1 class="text-3xl font-semibold tracking-tight md:text-4xl">{{ overview.title }}</h1>
-            <p class="text-muted-foreground text-base md:text-lg">{{ overview.summary }}</p>
-            <p class="text-sm text-muted-foreground">{{ overview.availability }}</p>
-          </div>
-          <Card>
-            <CardHeader>
-              <CardTitle class="text-lg">Snapshot</CardTitle>
-              <CardDescription>Key indicators from recent engagements.</CardDescription>
-            </CardHeader>
-            <CardContent class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div v-for="metric in metrics" :key="metric.label" class="rounded-md border p-3 text-sm">
-                <div class="flex items-center gap-2 text-muted-foreground">
-                  <component :is="metric.icon" class="h-4 w-4" />
-                  <span>{{ metric.label }}</span>
-                </div>
-                <p class="mt-2 text-xl font-semibold text-foreground">{{ metric.value }}</p>
+      <div class="relative isolate min-h-screen">
+        <div class="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div class="w-full">
+            <!-- Mobile-First Layout -->
+            <div class="space-y-8 lg:hidden">
+              <!-- Mobile: About Content First -->
+              <div class="text-center space-y-6">
+                <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+                  Nderu.ke
+                </h1>
+                <p class="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-md mx-auto">
+                  {{ overview.summary }}
+                </p>
+                <p class="text-xs sm:text-sm text-muted-foreground">
+                  Crafting digital excellence with passion and precision.
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </section>
 
-    <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="space-y-2 text-center">
-          <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">Capabilities</h2>
-          <p class="text-muted-foreground">Grounded disciplines applied across software, consulting, and photography.</p>
-        </div>
-        <div class="mt-10 grid gap-6 md:grid-cols-3">
-          <Card v-for="group in skillGroups" :key="group.title">
-            <CardHeader>
-              <CardTitle class="text-base font-medium">{{ group.title }}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul class="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                <li v-for="skill in group.skills" :key="skill">{{ skill }}</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </section>
+              <!-- Mobile: Animation -->
+              <div class="relative">
+                <div class="bg-background border rounded-2xl shadow-xl overflow-hidden">
+                  <div ref="heroContainer" class="w-full h-[400px] sm:h-[500px]"></div>
+                </div>
+              </div>
 
-    <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid gap-8 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle class="text-lg">Documents</CardTitle>
-              <CardDescription>Download the latest working materials.</CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-4">
-              <div v-for="doc in documents" :key="doc.title" class="flex items-start justify-between gap-4 text-sm">
+              <!-- Mobile: Additional Content -->
+              <div class="space-y-6 text-center">
                 <div>
-                  <p class="font-medium text-foreground">{{ doc.title }}</p>
-                  <p class="text-muted-foreground">{{ doc.description }}</p>
-                  <p class="text-xs text-muted-foreground mt-1">Updated {{ doc.updated }}</p>
+                  <h3 class="text-lg font-semibold mb-2 text-foreground">Digital Craftsmanship</h3>
+                  <p class="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+                    Bridging technical excellence and creative vision through full-stack applications and compelling visual narratives.
+                  </p>
                 </div>
-                <Button as-child variant="outline" size="sm">
-                  <a :href="doc.href" download>
-                    <Download class="mr-2 h-4 w-4" />
-                    Download
-                  </a>
-                </Button>
+
+                <div>
+                  <h3 class="text-lg font-semibold mb-2 text-foreground">Dual Expertise</h3>
+                  <p class="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+                    Combining software engineering and professional photography for comprehensive digital solutions.
+                  </p>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle class="text-lg">Certifications</CardTitle>
-              <CardDescription>Active credentials supporting delivery.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul class="space-y-3 text-sm text-muted-foreground">
-                <li v-for="cert in certifications" :key="cert.name" class="flex items-center justify-between gap-4">
-                  <div>
-                    <p class="font-medium text-foreground">{{ cert.name }}</p>
-                    <p class="text-xs text-muted-foreground">{{ cert.issuer }}</p>
+            </div>
+
+            <!-- Desktop: Side-by-Side Layout -->
+            <div class="hidden lg:block">
+              <div class="text-center mb-8">
+                <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+                  Nderu.ke
+                </h1>
+              </div>
+              
+              <div class="w-full relative">
+                <div class="bg-background border rounded-2xl shadow-2xl overflow-hidden">
+                  <div class="grid grid-cols-1 lg:grid-cols-4 gap-0">
+                    <!-- Left Side: Animation (3/4 width) -->
+                    <div class="lg:col-span-3 relative">
+                      <div ref="heroContainer" class="w-full h-[700px] lg:h-[800px]"></div>
+                    </div>
+                    
+                    <!-- Right Side: About Content (1/4 width) -->
+                    <div class="lg:col-span-1 p-4 lg:p-6">
+                      <div class="space-y-4 h-full flex flex-col justify-center">
+                        <!-- Summary -->
+                        <div class="text-center">
+                          <h3 class="text-base font-semibold mb-2 text-foreground">Nderu.ke</h3>
+                          <p class="text-sm text-muted-foreground leading-relaxed">
+                            {{ overview.summary }}<br>
+                            <span class="text-xs">Crafting digital excellence with passion and precision.</span>
+                          </p>
+                        </div>
+
+                        <!-- Content Sections -->
+                        <div class="space-y-4">
+                          <div class="text-center">
+                            <h3 class="text-base font-semibold mb-2 text-foreground">Digital Craftsmanship</h3>
+                            <p class="text-muted-foreground leading-relaxed text-xs">
+                              Bridging technical excellence and creative vision through full-stack applications and compelling visual narratives.
+                            </p>
+                          </div>
+
+                          <div class="text-center">
+                            <h3 class="text-base font-semibold mb-2 text-foreground">Dual Expertise</h3>
+                            <p class="text-muted-foreground leading-relaxed text-xs">
+                              Combining software engineering and professional photography for comprehensive digital solutions.
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <!-- Bottom Accent -->
+                        <div class="text-center pt-2">
+                          <div class="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                            <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                            <span>Crafting Digital Excellence</span>
+                            <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Calendar class="h-3.5 w-3.5" />
-                    <span>{{ cert.year }}</span>
-                  </div>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Current Focus Section -->
+    <section class="py-8 sm:py-12 lg:py-16 bg-muted/30">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="space-y-4 text-center max-w-4xl mx-auto">
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight md:text-4xl">Current Focus</h2>
+          <p class="text-sm sm:text-base text-muted-foreground">Currently developing scalable healthcare management systems and innovative digital solutions while advancing expertise in full-stack architecture and modern web technologies</p>
+        </div>
+        <div ref="useTimeoutContainer" class="w-full mt-8 sm:mt-12">
+          <!-- UseTimeout component will be mounted here -->
+        </div>
+      </div>
+    </section>
+
+    <section class="border-b bg-background">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        <div class="space-y-2 text-center max-w-4xl mx-auto">
+          <h2 class="text-xl sm:text-2xl font-semibold tracking-tight md:text-3xl">Capabilities</h2>
+          <p class="text-sm sm:text-base text-muted-foreground">Technologies and platforms I work with to deliver exceptional results.</p>
+        </div>
+        <div ref="logoCloudContainer" class="mt-6 sm:mt-8 md:mt-10">
+          <!-- Logo Cloud component will be mounted here -->
+        </div>
+      </div>
+    </section>
+
+    <section class="border-b bg-background">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        <div class="space-y-2 text-center max-w-4xl mx-auto">
+          <h2 class="text-xl sm:text-2xl font-semibold tracking-tight md:text-3xl">Resources</h2>
+          <p class="text-sm sm:text-base text-muted-foreground">Documentation, certificates, and supporting materials you can view or download.</p>
+        </div>
+        <div ref="docsContainer" class="w-full mt-6 sm:mt-8 md:mt-10">
+          <!-- Documentation and Certifications component will be mounted here -->
         </div>
       </div>
     </section>
 
     <section class="bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="space-y-2 text-center">
-          <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">Timeline</h2>
-          <p class="text-muted-foreground">A progression of roles and responsibilities.</p>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        <div class="space-y-4 text-center max-w-2xl mx-auto">
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight md:text-4xl">Career Timeline</h2>
+          <p class="text-sm sm:text-base text-muted-foreground">Interactive career progression with project milestones and achievements. Click tasks to expand and see details.</p>
         </div>
-        <div class="mt-10 space-y-4">
-          <Card v-for="item in timeline" :key="item.year">
-            <CardContent class="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <div class="flex items-center gap-3">
-                <Badge variant="outline">{{ item.year }}</Badge>
-                <div>
-                  <p class="font-medium text-foreground">{{ item.title }}</p>
-                  <p class="text-sm text-muted-foreground">{{ item.description }}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div ref="timelineContainer" class="w-full mt-8 sm:mt-12 h-[500px] sm:h-[600px] lg:h-[700px]">
+          <!-- Agent Plan component will be mounted here -->
         </div>
       </div>
     </section>

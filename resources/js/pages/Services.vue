@@ -1,102 +1,105 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Code, Database, Camera, Users, Target, Shield, Zap } from 'lucide-vue-next';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Code, Database, Camera, Users } from 'lucide-vue-next';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import type { Root } from 'react-dom/client';
+import SpatialProductShowcaseDemo from '@/components/ui/spatial-product-showcase-demo';
+import { Demo as RulerCarouselDemo } from '@/components/ui/ruler-carousel-demo';
+import { PricingToggle } from '@/components/ui/single-pricing-card-1-toggle';
+import GridFeatureCardsCustom from '@/components/ui/grid-feature-cards-custom';
+import { BGPattern } from '@/components/ui/bg-pattern';
 
-const offerings = [
-  {
-    title: 'Web application delivery',
-    icon: Code,
-    description: 'Full-stack builds covering frontend, backend, and infrastructure.',
-    details: ['Vue.js and Laravel implementations', 'API design and integrations', 'Deployment and monitoring setup'],
-    cta: 'Discuss project scope',
-  },
-  {
-    title: 'Systems architecture',
-    icon: Database,
-    description: 'Designing resilient platforms for healthcare, finance, and commerce.',
-    details: ['Discovery and requirements analysis', 'Architecture documentation', 'Scaling and performance planning'],
-    cta: 'Book architecture review',
-  },
-  {
-    title: 'Professional photography',
-    icon: Camera,
-    description: 'Commercial, event, and portrait photography with editing workflows.',
-    details: ['On-location shoots', 'Post-production editing', 'Delivery tailored to marketing teams'],
-    cta: 'Enquire about availability',
-  },
-  {
-    title: 'Technology consulting',
-    icon: Users,
-    description: 'Advisory services for delivery roadmaps and team enablement.',
-    details: ['Workshops and assessment', 'Implementation oversight', 'Process and tooling setup'],
-    cta: 'Arrange a consultation',
-  },
-];
+const heroContainer = ref<HTMLDivElement | null>(null);
+const engagementContainer = ref<HTMLElement | null>(null);
+const pricingContainer = ref<HTMLElement | null>(null);
+const gridFeatureContainer = ref<HTMLElement | null>(null);
+let heroRoot: Root | null = null;
+let engagementRoot: Root | null = null;
+let pricingRoot: Root | null = null;
+let gridFeatureRoot: Root | null = null;
 
-const process = [
-  {
-    title: 'Discovery',
-    description: 'Clarify goals, stakeholders, and success criteria.',
-    icon: Target,
-  },
-  {
-    title: 'Solution design',
-    description: 'Outline architecture, delivery plan, and resourcing.',
-    icon: Shield,
-  },
-  {
-    title: 'Execution',
-    description: 'Iterative delivery with checkpoints and reviews.',
-    icon: Code,
-  },
-  {
-    title: 'Support',
-    description: 'Handover, documentation, and ongoing assistance.',
-    icon: Zap,
-  },
-];
+onMounted(() => {
+  if (heroContainer.value) {
+    heroRoot = createRoot(heroContainer.value);
+    heroRoot.render(
+      React.createElement(React.StrictMode, null,
+        React.createElement(SpatialProductShowcaseDemo)
+      )
+    );
+  }
+  if (engagementContainer.value) {
+    engagementRoot = createRoot(engagementContainer.value);
+    engagementRoot.render(
+      React.createElement(React.StrictMode, null,
+        React.createElement(RulerCarouselDemo)
+      )
+    );
+  }
+  if (pricingContainer.value) {
+    pricingRoot = createRoot(pricingContainer.value);
+    pricingRoot.render(
+      React.createElement(React.StrictMode, null,
+        React.createElement(PricingToggle)
+      )
+    );
+  }
+  if (gridFeatureContainer.value) {
+    gridFeatureRoot = createRoot(gridFeatureContainer.value);
+    gridFeatureRoot.render(
+      React.createElement(React.StrictMode, null,
+        React.createElement(GridFeatureCardsCustom)
+      )
+    );
+  }
+});
+
+onBeforeUnmount(() => {
+  if (heroRoot) {
+    heroRoot.unmount();
+    heroRoot = null;
+  }
+  if (engagementRoot) {
+    engagementRoot.unmount();
+    engagementRoot = null;
+  }
+  if (pricingRoot) {
+    pricingRoot.unmount();
+    pricingRoot = null;
+  }
+  if (gridFeatureRoot) {
+    gridFeatureRoot.unmount();
+    gridFeatureRoot = null;
+  }
+});
 </script>
 
 <template>
   <WebsiteLayout>
-    <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="space-y-4 text-center">
-          <Badge variant="secondary" class="w-fit mx-auto">Services</Badge>
-          <h1 class="text-3xl font-semibold tracking-tight md:text-4xl">Practical delivery across software and media</h1>
-          <p class="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Support for teams requiring dependable execution, architectural direction, and professional brand visuals.
-          </p>
-        </div>
+    <!-- Hero Section with Spatial Product Showcase and Grid Background -->
+    <section class="relative min-h-[60vh] sm:min-h-[80vh] md:min-h-screen">
+      <div class="absolute inset-0 z-[-10]">
+        <BGPattern variant="grid" mask="fade-edges" :size="24" sm:size="32" fill="hsl(var(--muted-foreground) / 0.1)" />
+      </div>
+      <div ref="heroContainer" class="w-full relative z-10 min-h-[60vh] sm:min-h-[80vh] md:min-h-screen"></div>
+    </section>
+
+    <!-- Grid Feature Cards Section -->
+    <section class="bg-background">
+      <div ref="gridFeatureContainer" class="w-full">
+        <!-- Grid Feature Cards component will be mounted here -->
       </div>
     </section>
 
-    <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid gap-6 md:grid-cols-2">
-          <Card v-for="offering in offerings" :key="offering.title">
-            <CardHeader>
-              <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                <component :is="offering.icon" class="h-4 w-4" />
-                <span>Service</span>
-              </div>
-              <CardTitle class="text-xl">{{ offering.title }}</CardTitle>
-              <CardDescription>{{ offering.description }}</CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-4 text-sm text-muted-foreground">
-              <ul class="list-disc space-y-1 pl-5">
-                <li v-for="item in offering.details" :key="item">{{ item }}</li>
-              </ul>
-              <Button variant="outline" as-child>
-                <Link href="/contact">{{ offering.cta }}</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+    <!-- Pricing Section -->
+    <section class="bg-background">
+      <div ref="pricingContainer" class="w-full">
+        <!-- Pricing component will be mounted here -->
       </div>
     </section>
 
@@ -108,25 +111,19 @@ const process = [
             A repeatable sequence ensures projects remain predictable and transparent from onboarding to handover.
           </p>
         </div>
-        <div class="mt-12 grid gap-6 md:grid-cols-4">
-          <Card v-for="stage in process" :key="stage.title">
-            <CardHeader>
-              <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                <component :is="stage.icon" class="h-4 w-4" />
-                <span>Stage</span>
-              </div>
-              <CardTitle class="text-base font-medium">{{ stage.title }}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p class="text-sm text-muted-foreground">{{ stage.description }}</p>
-            </CardContent>
-          </Card>
+        <div ref="engagementContainer" class="w-full mt-8 sm:mt-12">
+          <!-- Ruler Carousel component will be mounted here -->
         </div>
+      </div>
+    </section>
+
+    <section class="bg-background">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="mt-12 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button as-child>
+          <Button asChild>
             <Link href="/contact">Start a conversation</Link>
           </Button>
-          <Button variant="outline" as-child>
+          <Button variant="outline" asChild>
             <Link href="/projects">View delivery examples</Link>
           </Button>
         </div>

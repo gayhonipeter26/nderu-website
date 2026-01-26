@@ -8,6 +8,7 @@ use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -17,7 +18,8 @@ class PostController extends Controller
 {
     public function index(Request $request): Response
     {
-        $posts = Post::orderByDesc('published_at')
+        $posts = Post::with('media')
+            ->orderByDesc('published_at')
             ->orderByDesc('updated_at')
             ->get();
 
@@ -34,8 +36,10 @@ class PostController extends Controller
             'reading_time' => ['nullable', 'string', 'max:50'],
             'status' => ['required', Rule::in(['Published', 'Draft'])],
             'published_at' => ['nullable', 'date'],
-            'cover_image' => ['nullable', 'image', 'max:5120'],
-            'feature_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:51200'],
+            'cover_image' => ['nullable', 'image', 'max:204800'],
+            'feature_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:204800'],
+            'gallery' => ['nullable', 'array', 'max:20'],
+            'gallery.*' => ['image', 'max:204800'],
         ]);
 
         $payload = [
@@ -56,7 +60,11 @@ class PostController extends Controller
                 ->store('blog/videos', 'public');
         }
 
-        Post::create($payload);
+        $post = Post::create($payload);
+
+        $this->storeGallery($post, $request->file('gallery', []));
+
+        $this->ensureCoverImage($post);
 
         return redirect()->back()->with('success', 'Post created.');
     }
@@ -69,8 +77,8 @@ class PostController extends Controller
             'reading_time' => ['nullable', 'string', 'max:50'],
             'status' => ['required', Rule::in(['Published', 'Draft'])],
             'published_at' => ['nullable', 'date'],
-            'cover_image' => ['nullable', 'image', 'max:5120'],
-            'feature_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:51200'],
+            'cover_image' => ['nullable', 'image', 'max:204800'],
+            'feature_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:204800'],
         ]);
 
         $payload = [
@@ -101,6 +109,12 @@ class PostController extends Controller
 
         $post->update($payload);
 
+        $this->removeGallery($post, $request->input('gallery_remove', []));
+
+        $this->storeGallery($post, $request->file('gallery', []));
+
+        $this->ensureCoverImage($post);
+
         return redirect()->back()->with('success', 'Post updated.');
     }
 
@@ -114,6 +128,8 @@ class PostController extends Controller
             Storage::disk('public')->delete($post->feature_video_path);
         }
 
+        $post->media()->each->delete();
+
         $post->delete();
 
         return redirect()->back()->with('success', 'Post removed.');
@@ -126,5 +142,86 @@ class PostController extends Controller
         }
 
         return Carbon::parse($date)->startOfDay();
+    }
+
+    /**
+     * @param  array<int, UploadedFile|null>  $files
+     */
+    protected function storeGallery(Post $post, array $files): void
+    {
+        $files = array_filter($files);
+
+        if (empty($files)) {
+            return;
+        }
+
+        $position = (int) $post->media()->max('position');
+
+        foreach ($files as $index => $file) {
+            $path = $file->store('blog/gallery', 'public');
+
+            $post->media()->create([
+                'path' => $path,
+                'disk' => 'public',
+                'kind' => str_starts_with($file->getMimeType(), 'video') ? 'video' : 'image',
+                'mime_type' => $file->getMimeType(),
+                'collection' => 'gallery',
+                'position' => $position + $index + 1,
+            ]);
+        }
+
+        $this->reorderMedia($post);
+    }
+
+    protected function removeGallery(Post $post, array $assetIds): void
+    {
+        if (empty($assetIds)) {
+            return;
+        }
+
+        $ids = collect($assetIds)
+            ->filter(fn ($id) => is_numeric($id))
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        if (empty($ids)) {
+            return;
+        }
+
+        $post->media()->whereIn('id', $ids)->get()->each->delete();
+
+        $this->reorderMedia($post);
+    }
+
+    protected function reorderMedia(Post $post): void
+    {
+        $post->load('media');
+
+        $post->media
+            ->sortBy('position')
+            ->values()
+            ->each(function ($asset, $index) {
+                if ($asset->position !== $index + 1) {
+                    $asset->updateQuietly(['position' => $index + 1]);
+                }
+            });
+    }
+
+    protected function ensureCoverImage(Post $post): void
+    {
+        $post->refresh();
+
+        if ($post->cover_image_path) {
+            return;
+        }
+
+        $firstImage = $post->media()
+            ->where('kind', 'image')
+            ->orderBy('position')
+            ->first();
+
+        if ($firstImage) {
+            $post->updateQuietly(['cover_image_path' => $firstImage->path]);
+        }
     }
 }

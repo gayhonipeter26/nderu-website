@@ -1,15 +1,21 @@
-<script setup lang="ts">
-import { computed, ref } from 'vue';
+<script setup lang="tsx">
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Calendar, Clock, Search, Play } from 'lucide-vue-next';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Input } from '@/components/ui/input/index';
+import { Calendar, Clock, Heart, Search, Play } from 'lucide-vue-next';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
+import MediaCarousel from '@/components/MediaCarousel.vue';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import type { Root } from 'react-dom/client';
+import { GalleryPage } from '@/components/ui/gallery-demo';
 
 type Post = {
   id: number;
+  slug: string;
   title: string;
   summary: string | null;
   reading_time: string | null;
@@ -17,27 +23,47 @@ type Post = {
   cover_image_url: string | null;
   feature_video_url: string | null;
   status: string;
-  category?: string | null;
+  likes_count: number;
+  gallery_count?: number;
+  created_at?: string;
+  updated_at: string;
+  category?: string;
+  tags?: string[];
+  author?: string;
+  featured?: boolean;
+  gallery?: { id: number | string; url: string; kind: 'image' | 'video' }[];
 };
 
-type ResourceCollection<T> = { data: T[] };
+const props = defineProps<{ posts: Post[] }>();
 
-const props = defineProps<{ posts: Post[] | ResourceCollection<Post> }>();
+const galleryContainer = ref<HTMLDivElement | null>(null);
+let galleryRoot: Root | null = null;
 
-const posts = computed<Post[]>(() => {
-  const source = props.posts;
-  if (Array.isArray(source)) {
-    return source;
+onMounted(() => {
+  if (galleryContainer.value) {
+    galleryRoot = createRoot(galleryContainer.value);
+    galleryRoot.render(
+      <React.StrictMode>
+        <GalleryPage />
+      </React.StrictMode>,
+    );
   }
-
-  if (source && Array.isArray(source.data)) {
-    return source.data;
-  }
-
-  return [];
 });
 
+onBeforeUnmount(() => {
+  if (galleryRoot) {
+    galleryRoot.unmount();
+    galleryRoot = null;
+  }
+});
+
+const posts = computed(() => props.posts || []);
+
 const categories = computed(() => {
+  if (!Array.isArray(posts.value)) {
+    return [{ value: 'all', label: 'All posts' }];
+  }
+
   const unique = Array.from(
     new Set(
       posts.value
@@ -55,11 +81,15 @@ const selectedCategory = ref('all');
 const query = ref('');
 
 const filteredPosts = computed(() => {
+  if (!Array.isArray(posts.value)) {
+    return [];
+  }
+
   return posts.value.filter((post) => {
     const matchesCategory =
       selectedCategory.value === 'all' || post.category === selectedCategory.value;
     const matchesQuery = query.value
-      ? [post.title, post.summary ?? '', post.reading_time ?? '']
+      ? [post.title, post.summary ?? '']
           .join(' ')
           .toLowerCase()
           .includes(query.value.toLowerCase())
@@ -84,25 +114,36 @@ const formatDate = (value: string | null) => {
     day: 'numeric',
   }).format(date);
 };
+
+const getPostMedia = (post: Post) => {
+  const slides: { id: string | number; url: string; kind: 'image' | 'video' }[] = [];
+
+  if (post.gallery?.length) {
+    slides.push(
+      ...post.gallery.map((asset) => ({
+        id: `gallery-${asset.id}`,
+        url: asset.url,
+        kind: asset.kind,
+      })),
+    );
+  }
+
+  if (post.cover_image_url && !slides.some((asset) => asset.kind === 'image' && asset.url === post.cover_image_url)) {
+    slides.push({ id: `cover-${post.id}`, url: post.cover_image_url, kind: 'image' });
+  }
+
+  if (post.feature_video_url && !slides.some((asset) => asset.kind === 'video' && asset.url === post.feature_video_url)) {
+    slides.push({ id: `video-${post.id}`, url: post.feature_video_url, kind: 'video' });
+  }
+
+  return slides;
+};
 </script>
 
 <template>
   <WebsiteLayout>
     <section class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="space-y-4 text-center">
-          <Badge variant="secondary" class="mx-auto w-fit">Blog</Badge>
-          <h1 class="text-3xl font-semibold tracking-tight md:text-4xl">
-            Field notes on engineering, consulting, and creative practice
-          </h1>
-          <p class="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Writing that documents lessons from client engagements, product builds, and photography work.
-          </p>
-          <Button as-child>
-            <Link href="/contact">Request a topic</Link>
-          </Button>
-        </div>
-      </div>
+      <div ref="galleryContainer" class="w-full"></div>
     </section>
 
     <section class="border-b bg-background">
@@ -133,44 +174,76 @@ const formatDate = (value: string | null) => {
 
     <section class="bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card v-for="post in filteredPosts" :key="post.id">
+        <div class="grid auto-rows-fr gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <Card v-for="post in filteredPosts" :key="post.id" class="flex h-full min-h-[420px] flex-col overflow-hidden text-sm">
             <div v-if="post.cover_image_url" class="relative aspect-video w-full bg-muted">
               <img
                 :src="post.cover_image_url"
-                :alt="`Cover image for ${post.title}`"
+                :alt="post.title"
                 class="h-full w-full object-cover"
                 loading="lazy"
               />
             </div>
-            <CardHeader class="space-y-3">
+            <div v-else class="relative aspect-video w-full bg-muted flex items-center justify-center">
+              <span class="text-muted-foreground">No image</span>
+            </div>
+            <CardHeader class="flex flex-col gap-2 p-4 pb-3">
               <div class="flex items-center justify-between text-xs text-muted-foreground">
-                <span class="flex items-center gap-1">
-                  <Calendar class="h-3.5 w-3.5" />
-                  {{ formatDate(post.published_at) }}
-                </span>
-                <span class="flex items-center gap-1">
-                  <Clock class="h-3.5 w-3.5" />
-                  {{ post.reading_time ?? '—' }}
-                </span>
+                <div class="flex items-center gap-2">
+                  <Badge v-if="post.category" variant="outline" class="capitalize">
+                    {{ post.category }}
+                  </Badge>
+                  <Badge v-if="post.featured" variant="default" class="text-xs">
+                    Featured
+                  </Badge>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span v-if="post.gallery_count" class="flex items-center gap-1">
+                    <Package class="h-3 w-3" />
+                    {{ post.gallery_count }}
+                  </span>
+                </div>
               </div>
-              <CardTitle class="text-lg">{{ post.title }}</CardTitle>
-              <CardDescription>{{ post.summary ?? 'Summary coming soon.' }}</CardDescription>
+              <CardTitle class="text-base">{{ post.title }}</CardTitle>
+              <CardDescription class="line-clamp-2 text-xs">{{ post.summary || 'Summary coming soon.' }}</CardDescription>
+              <div v-if="post.author" class="text-xs text-muted-foreground">
+                By {{ post.author }}
+              </div>
+              <div v-if="post.tags && post.tags.length > 0" class="flex flex-wrap gap-1 mt-2">
+                <Badge v-for="tag in post.tags.slice(0, 3)" :key="tag" variant="secondary" class="text-[10px] px-1.5 py-0.5">
+                  {{ tag }}
+                </Badge>
+                <Badge v-if="post.tags.length > 3" variant="secondary" class="text-[10px] px-1.5 py-0.5">
+                  +{{ post.tags.length - 3 }}
+                </Badge>
+              </div>
             </CardHeader>
-            <CardContent class="space-y-4 text-sm text-muted-foreground">
-              <div v-if="post.feature_video_url" class="space-y-2">
-                <p class="flex items-center gap-2 font-medium text-foreground">
-                  <Play class="h-4 w-4" /> Feature video
-                </p>
-                <video controls preload="metadata" class="h-40 w-full overflow-hidden rounded-md border bg-black">
-                  <source :src="post.feature_video_url" type="video/mp4" />
-                  <source :src="post.feature_video_url" type="video/quicktime" />
-                  Your browser does not support the video tag.
-                </video>
+            <CardContent class="flex flex-1 flex-col justify-between gap-3 p-4 pt-0 text-xs text-muted-foreground">
+              <div class="space-y-3">
+                <div v-if="post.feature_video_url" class="space-y-2">
+                  <p class="flex items-center gap-2 font-medium text-foreground">
+                    <Play class="h-4 w-4" /> Feature video
+                  </p>
+                  <div class="overflow-hidden rounded-md border bg-black">
+                    <video controls preload="metadata" class="aspect-video h-full w-full">
+                      <source :src="post.feature_video_url" type="video/mp4" />
+                      <source :src="post.feature_video_url" type="video/quicktime" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
               </div>
-              <Button variant="outline" size="sm" as-child>
-                <Link href="/contact">Request full article</Link>
-              </Button>
+              <div class="flex items-center justify-between pt-2 text-[11px] text-muted-foreground">
+                <Link :href="`/blog/${post.slug}`" class="inline-flex">
+                  <Badge variant="secondary" class="gap-1 px-2.5 py-1 text-[11px]">
+                    Read article
+                  </Badge>
+                </Link>
+                <span class="flex items-center gap-1">
+                  <Heart class="h-3.5 w-3.5 text-rose-500" />
+                  {{ post.likes_count || 0 }}
+                </span>
+              </div>
             </CardContent>
           </Card>
         </div>

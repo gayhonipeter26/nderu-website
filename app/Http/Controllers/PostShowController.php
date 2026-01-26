@@ -15,7 +15,7 @@ class PostShowController extends Controller
 {
     public function show(Post $post): Response
     {
-        $post->load(['comments']);
+        $post->load(['comments', 'media']);
 
         return Inertia::render('Blog/Show', [
             'post' => PostResource::make($post)->resolve(),

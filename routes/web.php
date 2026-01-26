@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\PhotographySessionController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\ContactChannelController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\PostShowController;
+use App\Http\Controllers\ProjectShowController;
+use App\Http\Controllers\PhotographyShowController;
 use App\Http\Resources\ServiceResource;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\PostResource;
@@ -30,10 +33,10 @@ Route::get('/', function () {
             Service::published()->orderBy('title')->take(4)->get()
         )->resolve(),
         'projects' => ProjectResource::collection(
-            Project::published()->latest('updated_at')->take(3)->get()
+            Project::published()->with('media')->latest('updated_at')->take(3)->get()
         )->resolve(),
         'posts' => PostResource::collection(
-            Post::published()->latest('published_at')->take(3)->get()
+            Post::published()->with('media')->latest('published_at')->take(3)->get()
         )->resolve(),
         'channels' => ContactChannelResource::collection(
             ContactChannel::published()->orderBy('display_order')->get()
@@ -56,26 +59,38 @@ Route::get('/services', function () {
 Route::get('/projects', function () {
     return Inertia::render('Projects', [
         'projects' => ProjectResource::collection(
-            Project::published()->orderByDesc('year')->get()
+            Project::published()->with('media')->orderByDesc('year')->get()
         )->resolve(),
     ]);
 })->name('projects');
 
+Route::get('/projects/{project:slug}', [ProjectShowController::class, 'show'])->name('projects.show');
+Route::post('/projects/{project:slug}/comments', [ProjectShowController::class, 'storeComment'])->name('projects.comments.store');
+Route::post('/projects/{project:slug}/like', [ProjectShowController::class, 'like'])->name('projects.like');
+
 Route::get('/photography', function () {
     return Inertia::render('Photography', [
         'sessions' => PhotographySessionResource::collection(
-            PhotographySession::published()->orderByDesc('scheduled_at')->get()
+            PhotographySession::published()->with('media')->orderByDesc('scheduled_at')->get()
         )->resolve(),
     ]);
 })->name('photography');
 
+Route::get('/photography/{session:slug}', [PhotographyShowController::class, 'show'])->name('photography.show');
+Route::post('/photography/{session:slug}/comments', [PhotographyShowController::class, 'storeComment'])->name('photography.comments.store');
+Route::post('/photography/{session:slug}/like', [PhotographyShowController::class, 'like'])->name('photography.like');
+
 Route::get('/blog', function () {
     return Inertia::render('Blog', [
         'posts' => PostResource::collection(
-            Post::published()->orderByDesc('published_at')->get()
+            Post::published()->with('media')->orderByDesc('published_at')->get()
         )->resolve(),
     ]);
 })->name('blog');
+
+Route::get('/blog/{post:slug}', [PostShowController::class, 'show'])->name('blog.show');
+Route::post('/blog/{post:slug}/comments', [PostShowController::class, 'storeComment'])->name('blog.comments.store');
+Route::post('/blog/{post:slug}/like', [PostShowController::class, 'like'])->name('blog.like');
 
 Route::get('/contact', function () {
     return Inertia::render('Contact', [

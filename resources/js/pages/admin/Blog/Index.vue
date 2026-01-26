@@ -12,6 +12,13 @@ import { useForm, router } from '@inertiajs/vue3';
 
 type PostStatus = 'Published' | 'Draft';
 
+interface MediaAsset {
+  id: number;
+  url: string;
+  kind: 'image' | 'video';
+  position: number;
+};
+
 interface Post {
   id: number;
   title: string;
@@ -22,6 +29,7 @@ interface Post {
   published_at: string | null;
   cover_image_url: string | null;
   feature_video_url: string | null;
+  gallery?: MediaAsset[];
 }
 
 type ResourceCollection<T> = { data: T[] };
@@ -57,9 +65,14 @@ const form = useForm({
   published_at: new Date().toISOString().slice(0, 10),
   cover_image: null as File | null,
   feature_video: null as File | null,
+  gallery: [] as File[],
+  gallery_remove: [] as number[],
 });
 
 const statusOptions: PostStatus[] = ['Published', 'Draft'];
+
+const existingGallery = ref<MediaAsset[]>([]);
+const newGalleryPreviews = ref<{ name: string; url: string }[]>([]);
 
 function startCreate() {
   editingPost.value = null;
@@ -69,6 +82,11 @@ function startCreate() {
   form.published_at = new Date().toISOString().slice(0, 10);
   form.cover_image = null;
   form.feature_video = null;
+  form.gallery = [];
+  form.gallery_remove = [];
+  existingGallery.value = [];
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = [];
   dialogOpen.value = true;
 }
 
@@ -83,6 +101,11 @@ function startEdit(post: Post) {
   form.published_at = post.published_at ?? new Date().toISOString().slice(0, 10);
   form.cover_image = null;
   form.feature_video = null;
+  form.gallery = [];
+  form.gallery_remove = [];
+  existingGallery.value = [...(post.gallery ?? [])];
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = [];
   dialogOpen.value = true;
 }
 
@@ -104,6 +127,14 @@ function submitForm() {
 
     if (!form.feature_video) {
       delete output.feature_video;
+    }
+
+    if (!form.gallery.length) {
+      delete output.gallery;
+    }
+
+    if (!form.gallery_remove.length) {
+      delete output.gallery_remove;
     }
 
     return output;
@@ -131,6 +162,9 @@ function closeDialog() {
   form.reset();
   form.clearErrors();
   editingPost.value = null;
+  existingGallery.value = [];
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = [];
 }
 
 function handleCoverImageChange(event: Event) {
@@ -141,6 +175,24 @@ function handleCoverImageChange(event: Event) {
 function handleFeatureVideoChange(event: Event) {
   const target = event.target as HTMLInputElement;
   form.feature_video = target.files?.[0] ?? null;
+}
+
+function handleGalleryChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const files = Array.from(target.files ?? []);
+  form.gallery = files;
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = files.map((file) => ({
+    name: file.name,
+    url: URL.createObjectURL(file),
+  }));
+}
+
+function queueGalleryRemoval(id: number) {
+  if (!form.gallery_remove.includes(id)) {
+    form.gallery_remove.push(id);
+    existingGallery.value = existingGallery.value.filter((asset) => asset.id !== id);
+  }
 }
 </script>
 
@@ -176,12 +228,13 @@ function handleFeatureVideoChange(event: Event) {
                   <th class="px-4 py-3 font-medium">Publish date</th>
                   <th class="px-4 py-3 font-medium">Reading time</th>
                   <th class="px-4 py-3 font-medium">Media</th>
+                  <th class="px-4 py-3 font-medium">Gallery</th>
                   <th class="px-4 py-3 font-medium text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-if="posts.length === 0">
-                  <td colspan="6" class="px-4 py-6 text-center text-sm text-muted-foreground">
+                  <td colspan="7" class="px-4 py-6 text-center text-sm text-muted-foreground">
                     No posts yet. Add your first article to populate the public blog.
                   </td>
                 </tr>
@@ -216,6 +269,19 @@ function handleFeatureVideoChange(event: Event) {
                         View video
                       </a>
                       <span v-if="!post.cover_image_url && !post.feature_video_url" class="text-muted-foreground">—</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div class="flex items-center gap-1" v-if="post.gallery?.length">
+                        <ImageIcon class="h-3.5 w-3.5" />
+                        {{ post.gallery.filter((item) => item.kind === 'image').length }}
+                      </div>
+                      <div class="flex items-center gap-1" v-if="post.gallery?.some((item) => item.kind === 'video')">
+                        <Video class="h-3.5 w-3.5" />
+                        {{ post.gallery.filter((item) => item.kind === 'video').length }}
+                      </div>
+                      <span v-if="!post.gallery?.length">—</span>
                     </div>
                   </td>
                   <td class="px-4 py-3">
@@ -289,6 +355,7 @@ function handleFeatureVideoChange(event: Event) {
         <div class="space-y-2">
           <Label for="post-cover">Cover image</Label>
           <Input id="post-cover" type="file" accept="image/*" @change="handleCoverImageChange" />
+          <p class="text-xs text-muted-foreground">Upload up to 200 MB.</p>
           <p v-if="form.errors.cover_image" class="text-sm text-destructive">{{ form.errors.cover_image }}</p>
           <div v-if="editingPost?.cover_image_url" class="text-xs text-muted-foreground">
             Current cover:
@@ -300,12 +367,45 @@ function handleFeatureVideoChange(event: Event) {
         <div class="space-y-2">
           <Label for="post-video">Feature video</Label>
           <Input id="post-video" type="file" accept="video/mp4,video/quicktime" @change="handleFeatureVideoChange" />
+          <p class="text-xs text-muted-foreground">Upload mp4 or mov files up to 200 MB.</p>
           <p v-if="form.errors.feature_video" class="text-sm text-destructive">{{ form.errors.feature_video }}</p>
           <div v-if="editingPost?.feature_video_url" class="text-xs text-muted-foreground">
             Current video:
             <a :href="editingPost.feature_video_url" target="_blank" rel="noreferrer" class="text-primary hover:underline">
               Preview
             </a>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <Label for="post-gallery">Gallery images</Label>
+          <Input id="post-gallery" type="file" accept="image/*" multiple @change="handleGalleryChange" />
+          <p class="text-xs text-muted-foreground">Select up to 20 images. New uploads replace previous selection before saving.</p>
+          <p v-if="form.errors.gallery" class="text-sm text-destructive">{{ form.errors.gallery }}</p>
+          <div v-if="existingGallery.length" class="space-y-2 rounded-md border p-3">
+            <p class="text-xs font-medium text-muted-foreground">Current gallery</p>
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="asset in existingGallery" :key="asset.id" class="group relative overflow-hidden rounded border">
+                <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.id.toString()" class="h-20 w-full object-cover" />
+                <div v-else class="flex h-20 w-full items-center justify-center bg-muted text-xs text-muted-foreground">
+                  <Video class="mr-1 h-4 w-4" /> Video
+                </div>
+                <button
+                  type="button"
+                  class="absolute right-1 top-1 rounded bg-background/80 px-1 text-[10px] font-medium text-destructive shadow"
+                  @click="queueGalleryRemoval(asset.id)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+          <div v-if="newGalleryPreviews.length" class="space-y-2 rounded-md border border-dashed p-3">
+            <p class="text-xs font-medium text-muted-foreground">New uploads (pending save)</p>
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="preview in newGalleryPreviews" :key="preview.url" class="overflow-hidden rounded border">
+                <img :src="preview.url" :alt="preview.name" class="h-20 w-full object-cover" />
+              </div>
+            </div>
           </div>
         </div>
         <div class="space-y-2">

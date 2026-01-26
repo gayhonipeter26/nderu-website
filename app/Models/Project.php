@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Comment;
+use App\Models\MediaAsset;
 
 class Project extends Model
 {
@@ -40,6 +41,11 @@ class Project extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')->latest();
+    }
+
+    public function media(): MorphMany
+    {
+        return $this->morphMany(MediaAsset::class, 'mediable')->orderBy('position');
     }
 
     protected static function booted(): void

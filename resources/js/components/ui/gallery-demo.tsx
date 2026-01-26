@@ -1,0 +1,10 @@
+import { PhotoGallery } from "@/components/ui/gallery";
+
+export function GalleryPage() {
+  
+  return (
+    <main className="overflow-hidden">  
+     <PhotoGallery  /> 
+    </main>
+  );
+}

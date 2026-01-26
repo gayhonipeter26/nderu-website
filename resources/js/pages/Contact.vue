@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Input } from '@/components/ui/input/index';
 import { Mail, Phone, MapPin, Clock, Calendar, MessageCircle, Camera, Users } from 'lucide-vue-next';
 import Accordion from '@/components/ui/accordion/Accordion.vue';
 import AccordionItem from '@/components/ui/accordion/AccordionItem.vue';

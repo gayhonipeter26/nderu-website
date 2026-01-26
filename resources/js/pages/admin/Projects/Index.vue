@@ -7,10 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { Image as ImageIcon, Pencil, Plus, Trash2, Video } from 'lucide-vue-next';
 import { useForm, router } from '@inertiajs/vue3';
 
 type ProjectStatus = 'Published' | 'Draft';
+
+interface MediaAsset {
+  id: number;
+  url: string;
+  kind: 'image' | 'video';
+  position: number;
+}
 
 interface Project {
   id: number;
@@ -22,6 +29,7 @@ interface Project {
   featured: boolean;
   hero_image_url: string | null;
   case_study_video_url: string | null;
+  gallery?: MediaAsset[];
   updated_at: string | null;
 }
 
@@ -59,9 +67,14 @@ const form = useForm({
   featured: false,
   hero_image: null as File | null,
   case_study_video: null as File | null,
+  gallery: [] as File[],
+  gallery_remove: [] as number[],
 });
 
 const statusOptions: ProjectStatus[] = ['Published', 'Draft'];
+
+const existingGallery = ref<MediaAsset[]>([]);
+const newGalleryPreviews = ref<{ name: string; url: string }[]>([]);
 
 function startCreate() {
   editingProject.value = null;
@@ -72,6 +85,11 @@ function startCreate() {
   form.featured = false;
   form.hero_image = null;
   form.case_study_video = null;
+  form.gallery = [];
+  form.gallery_remove = [];
+  existingGallery.value = [];
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = [];
   dialogOpen.value = true;
 }
 
@@ -87,6 +105,11 @@ function startEdit(project: Project) {
   form.featured = project.featured;
   form.hero_image = null;
   form.case_study_video = null;
+  form.gallery = [];
+  form.gallery_remove = [];
+  existingGallery.value = [...(project.gallery ?? [])];
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = [];
   dialogOpen.value = true;
 }
 
@@ -114,6 +137,14 @@ function submitForm() {
       delete output.case_study_video;
     }
 
+    if (!form.gallery.length) {
+      delete output.gallery;
+    }
+
+    if (!form.gallery_remove.length) {
+      delete output.gallery_remove;
+    }
+
     return output;
   };
 
@@ -139,6 +170,9 @@ function closeDialog() {
   form.reset();
   form.clearErrors();
   editingProject.value = null;
+  existingGallery.value = [];
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = [];
 }
 
 function handleHeroImageChange(event: Event) {
@@ -149,6 +183,24 @@ function handleHeroImageChange(event: Event) {
 function handleCaseStudyVideoChange(event: Event) {
   const target = event.target as HTMLInputElement;
   form.case_study_video = target.files?.[0] ?? null;
+}
+
+function handleGalleryChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const files = Array.from(target.files ?? []);
+  form.gallery = files;
+  newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
+  newGalleryPreviews.value = files.map((file) => ({
+    name: file.name,
+    url: URL.createObjectURL(file),
+  }));
+}
+
+function queueGalleryRemoval(id: number) {
+  if (!form.gallery_remove.includes(id)) {
+    form.gallery_remove.push(id);
+    existingGallery.value = existingGallery.value.filter((asset) => asset.id !== id);
+  }
 }
 </script>
 
@@ -185,6 +237,7 @@ function handleCaseStudyVideoChange(event: Event) {
                   <th class="px-4 py-3 font-medium">Status</th>
                   <th class="px-4 py-3 font-medium">Featured</th>
                   <th class="px-4 py-3 font-medium">Media</th>
+                  <th class="px-4 py-3 font-medium">Gallery</th>
                   <th class="px-4 py-3 font-medium">Updated</th>
                   <th class="px-4 py-3 font-medium text-right">Actions</th>
                 </tr>
@@ -233,6 +286,19 @@ function handleCaseStudyVideoChange(event: Event) {
                     </div>
                   </td>
                   <td class="px-4 py-3 text-muted-foreground">{{ project.updated_at ?? '—' }}</td>
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div class="flex items-center gap-1" v-if="project.gallery?.length">
+                        <ImageIcon class="h-3.5 w-3.5" />
+                        {{ project.gallery.filter((item) => item.kind === 'image').length }}
+                      </div>
+                      <div class="flex items-center gap-1" v-if="project.gallery?.some((item) => item.kind === 'video')">
+                        <Video class="h-3.5 w-3.5" />
+                        {{ project.gallery.filter((item) => item.kind === 'video').length }}
+                      </div>
+                      <span v-if="!project.gallery?.length">—</span>
+                    </div>
+                  </td>
                   <td class="px-4 py-3">
                     <div class="flex justify-end gap-2">
                       <Button variant="ghost" size="sm" @click="startEdit(project)">
@@ -313,6 +379,7 @@ function handleCaseStudyVideoChange(event: Event) {
         <div class="space-y-2">
           <Label for="project-hero-image">Hero image</Label>
           <Input id="project-hero-image" type="file" accept="image/*" @change="handleHeroImageChange" />
+          <p class="text-xs text-muted-foreground">Upload up to 200 MB.</p>
           <p v-if="form.errors.hero_image" class="text-sm text-destructive">{{ form.errors.hero_image }}</p>
           <div v-if="editingProject?.hero_image_url" class="text-xs text-muted-foreground">
             Current image:
@@ -329,6 +396,7 @@ function handleCaseStudyVideoChange(event: Event) {
             accept="video/mp4,video/quicktime"
             @change="handleCaseStudyVideoChange"
           />
+          <p class="text-xs text-muted-foreground">Upload mp4 or mov files up to 200 MB.</p>
           <p v-if="form.errors.case_study_video" class="text-sm text-destructive">{{ form.errors.case_study_video }}</p>
           <div v-if="editingProject?.case_study_video_url" class="text-xs text-muted-foreground">
             Current video:
@@ -336,6 +404,49 @@ function handleCaseStudyVideoChange(event: Event) {
               Preview
             </a>
           </div>
+        </div>
+        <div class="space-y-2">
+          <Label for="project-gallery">Gallery images</Label>
+          <Input id="project-gallery" type="file" accept="image/*" multiple @change="handleGalleryChange" />
+          <p class="text-xs text-muted-foreground">Select up to 20 images. New uploads replace previous selection before saving.</p>
+          <p v-if="form.errors.gallery" class="text-sm text-destructive">{{ form.errors.gallery }}</p>
+          <div v-if="existingGallery.length" class="space-y-2 rounded-md border p-3">
+            <p class="text-xs font-medium text-muted-foreground">Current gallery</p>
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="asset in existingGallery" :key="asset.id" class="group relative overflow-hidden rounded border">
+                <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.id.toString()" class="h-20 w-full object-cover" />
+                <div v-else class="flex h-20 w-full items-center justify-center bg-muted text-xs text-muted-foreground">
+                  <Video class="mr-1 h-4 w-4" /> Video
+                </div>
+                <button
+                  type="button"
+                  class="absolute right-1 top-1 rounded bg-background/80 px-1 text-[10px] font-medium text-destructive shadow"
+                  @click="queueGalleryRemoval(asset.id)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+          <div v-if="newGalleryPreviews.length" class="space-y-2 rounded-md border border-dashed p-3">
+            <p class="text-xs font-medium text-muted-foreground">New uploads (pending save)</p>
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="preview in newGalleryPreviews" :key="preview.url" class="overflow-hidden rounded border">
+                <img :src="preview.url" :alt="preview.name" class="h-20 w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <Label for="project-summary">Summary (optional)</Label>
+          <textarea
+            id="project-summary"
+            v-model="form.summary"
+            placeholder="Short description for internal reference"
+            rows="3"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          />
+          <p v-if="form.errors.summary" class="text-sm text-destructive">{{ form.errors.summary }}</p>
         </div>
         <div class="flex items-center justify-between">
           <div class="space-y-1">

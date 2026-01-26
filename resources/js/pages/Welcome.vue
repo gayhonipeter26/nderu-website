@@ -76,7 +76,7 @@ const floatingElementStyle = (index: number) => ({
     opacity: 0.3,
     animation: `float ${10 + index * 2}s ease-in-out infinite`,
     animationDelay: `${index * 0.5}s`
-}));
+});
 </script>
 
 <template>

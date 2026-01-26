@@ -7,6 +7,7 @@ use App\Http\Resources\PhotographySessionResource;
 use App\Models\PhotographySession;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -16,7 +17,7 @@ class PhotographySessionController extends Controller
 {
     public function index(Request $request): Response
     {
-        $sessions = PhotographySession::orderByDesc('updated_at')->get();
+        $sessions = PhotographySession::with('media')->orderByDesc('updated_at')->get();
 
         return Inertia::render('admin/Photography/Index', [
             'sessions' => PhotographySessionResource::collection($sessions),
@@ -29,11 +30,13 @@ class PhotographySessionController extends Controller
             'title' => ['required', 'string', 'max:150'],
             'location' => ['nullable', 'string', 'max:150'],
             'summary' => ['nullable', 'string'],
-            'hero_image' => ['nullable', 'image', 'max:5120'],
-            'highlight_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:51200'],
+            'hero_image' => ['nullable', 'image', 'max:204800'],
+            'highlight_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:204800'],
             'deliverables' => ['nullable', 'integer', 'min:0'],
             'status' => ['required', Rule::in(['Published', 'Draft'])],
             'scheduled_at' => ['nullable', 'date'],
+            'gallery' => ['nullable', 'array', 'max:20'],
+            'gallery.*' => ['image', 'max:204800'],
         ]);
 
         $payload = [
@@ -55,7 +58,11 @@ class PhotographySessionController extends Controller
                 ->store('photography/highlight-videos', 'public');
         }
 
-        PhotographySession::create($payload);
+        $session = PhotographySession::create($payload);
+
+        $this->storeGallery($session, $request->file('gallery', []));
+
+        $this->ensureHeroImage($session);
 
         return redirect()->back()->with('success', 'Session created.');
     }
@@ -66,8 +73,8 @@ class PhotographySessionController extends Controller
             'title' => ['required', 'string', 'max:150'],
             'location' => ['nullable', 'string', 'max:150'],
             'summary' => ['nullable', 'string'],
-            'hero_image' => ['nullable', 'image', 'max:5120'],
-            'highlight_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:51200'],
+            'hero_image' => ['nullable', 'image', 'max:204800'],
+            'highlight_video' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime', 'max:204800'],
             'deliverables' => ['nullable', 'integer', 'min:0'],
             'status' => ['required', Rule::in(['Published', 'Draft'])],
             'scheduled_at' => ['nullable', 'date'],
@@ -102,6 +109,12 @@ class PhotographySessionController extends Controller
 
         $photographySession->update($payload);
 
+        $this->removeGallery($photographySession, $request->input('gallery_remove', []));
+
+        $this->storeGallery($photographySession, $request->file('gallery', []));
+
+        $this->ensureHeroImage($photographySession);
+
         return redirect()->back()->with('success', 'Session updated.');
     }
 
@@ -115,8 +128,91 @@ class PhotographySessionController extends Controller
             Storage::disk('public')->delete($photographySession->highlight_video_path);
         }
 
+        $photographySession->media()->each->delete();
+
         $photographySession->delete();
 
         return redirect()->back()->with('success', 'Session removed.');
+    }
+
+    /**
+     * @param  array<int, UploadedFile|null>  $files
+     */
+    protected function storeGallery(PhotographySession $session, array $files): void
+    {
+        $files = array_filter($files);
+
+        if (empty($files)) {
+            return;
+        }
+
+        $position = (int) $session->media()->max('position');
+
+        foreach ($files as $index => $file) {
+            $path = $file->store('photography/gallery', 'public');
+
+            $session->media()->create([
+                'path' => $path,
+                'disk' => 'public',
+                'kind' => str_starts_with($file->getMimeType(), 'video') ? 'video' : 'image',
+                'mime_type' => $file->getMimeType(),
+                'collection' => 'gallery',
+                'position' => $position + $index + 1,
+            ]);
+        }
+
+        $this->reorderMedia($session);
+    }
+
+    protected function removeGallery(PhotographySession $session, array $assetIds): void
+    {
+        if (empty($assetIds)) {
+            return;
+        }
+
+        $ids = collect($assetIds)
+            ->filter(fn ($id) => is_numeric($id))
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        if (empty($ids)) {
+            return;
+        }
+
+        $session->media()->whereIn('id', $ids)->get()->each->delete();
+
+        $this->reorderMedia($session);
+    }
+
+    protected function reorderMedia(PhotographySession $session): void
+    {
+        $session->load('media');
+
+        $session->media
+            ->sortBy('position')
+            ->values()
+            ->each(function ($asset, $index) {
+                if ($asset->position !== $index + 1) {
+                    $asset->updateQuietly(['position' => $index + 1]);
+                }
+            });
+    }
+
+    protected function ensureHeroImage(PhotographySession $session): void
+    {
+        $session->refresh();
+
+        if ($session->hero_image_path) {
+            return;
+        }
+
+        $firstImage = $session->media()
+            ->where('kind', 'image')
+            ->orderBy('position')
+            ->first();
+
+        if ($firstImage) {
+            $session->updateQuietly(['hero_image_path' => $firstImage->path]);
+        }
     }
 }
