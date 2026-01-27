@@ -3,7 +3,7 @@ import { onMounted, onBeforeUnmount, ref } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import { TestimonialsSectionDemo } from '@/components/blocks/testimonials-with-marquee-demo';
+import Testimonials from '@/components/ui/testimonials-columns-1-demo';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 const testimonialsContainer = ref<HTMLElement | null>(null);
@@ -14,7 +14,7 @@ onMounted(() => {
     testimonialsRoot = createRoot(testimonialsContainer.value);
     testimonialsRoot.render(
       <React.StrictMode>
-        <TestimonialsSectionDemo />
+        <Testimonials />
       </React.StrictMode>,
     );
   }

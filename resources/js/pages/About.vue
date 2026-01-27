@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
 
 <template>
   <WebsiteLayout>
-    <section class="border-b bg-background">
+    <section id="our-story" class="border-b bg-background">
       <div class="relative isolate min-h-screen">
         <div class="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div class="w-full">
@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- Current Focus Section -->
-    <section class="py-8 sm:py-12 lg:py-16 bg-muted/30">
+    <section id="current-focus" class="py-8 sm:py-12 lg:py-16 bg-muted/30">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-4 text-center max-w-4xl mx-auto">
           <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight md:text-4xl">Current Focus</h2>
@@ -306,7 +306,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="border-b bg-background">
+    <section id="technical-skills" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         <div class="space-y-2 text-center max-w-4xl mx-auto">
           <h2 class="text-xl sm:text-2xl font-semibold tracking-tight md:text-3xl">Capabilities</h2>
@@ -318,7 +318,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="border-b bg-background">
+    <section id="certifications" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         <div class="space-y-2 text-center max-w-4xl mx-auto">
           <h2 class="text-xl sm:text-2xl font-semibold tracking-tight md:text-3xl">Resources</h2>
@@ -330,7 +330,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="bg-background">
+    <section id="team" class="bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         <div class="space-y-4 text-center max-w-2xl mx-auto">
           <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight md:text-4xl">Career Timeline</h2>

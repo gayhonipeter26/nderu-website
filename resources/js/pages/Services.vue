@@ -9,27 +9,36 @@ import { onMounted, onBeforeUnmount, ref } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import SpatialProductShowcaseDemo from '@/components/ui/spatial-product-showcase-demo';
+import FullScreenScrollFXServicesDemoFixed from '@/components/ui/full-screen-scroll-fx-services-demo-fixed';
 import { Demo as RulerCarouselDemo } from '@/components/ui/ruler-carousel-demo';
 import { PricingToggle } from '@/components/ui/single-pricing-card-1-toggle';
 import GridFeatureCardsCustom from '@/components/ui/grid-feature-cards-custom';
 import { BGPattern } from '@/components/ui/bg-pattern';
+import ServicesTestimonials from '@/components/ui/testimonials-services-demo';
+import Hero195 from '@/components/ui/hero-195-1';
+import { DynamicFrameLayoutPhotography } from '@/components/ui/dynamic-frame-layout-photography';
 
 const heroContainer = ref<HTMLDivElement | null>(null);
 const engagementContainer = ref<HTMLElement | null>(null);
 const pricingContainer = ref<HTMLElement | null>(null);
 const gridFeatureContainer = ref<HTMLElement | null>(null);
+const testimonialsContainer = ref<HTMLElement | null>(null);
+const hero195Container = ref<HTMLElement | null>(null);
+const photographyContainer = ref<HTMLElement | null>(null);
 let heroRoot: Root | null = null;
 let engagementRoot: Root | null = null;
 let pricingRoot: Root | null = null;
 let gridFeatureRoot: Root | null = null;
+let testimonialsRoot: Root | null = null;
+let hero195Root: Root | null = null;
+let photographyRoot: Root | null = null;
 
 onMounted(() => {
   if (heroContainer.value) {
     heroRoot = createRoot(heroContainer.value);
     heroRoot.render(
       React.createElement(React.StrictMode, null,
-        React.createElement(SpatialProductShowcaseDemo)
+        React.createElement(FullScreenScrollFXServicesDemoFixed)
       )
     );
   }
@@ -57,6 +66,30 @@ onMounted(() => {
       )
     );
   }
+  if (testimonialsContainer.value) {
+    testimonialsRoot = createRoot(testimonialsContainer.value);
+    testimonialsRoot.render(
+      React.createElement(React.StrictMode, null,
+        React.createElement(ServicesTestimonials)
+      )
+    );
+  }
+  if (hero195Container.value) {
+    hero195Root = createRoot(hero195Container.value);
+    hero195Root.render(
+      React.createElement(React.StrictMode, null,
+        React.createElement(Hero195)
+      )
+    );
+  }
+  if (photographyContainer.value) {
+    photographyRoot = createRoot(photographyContainer.value);
+    photographyRoot.render(
+      React.createElement(React.StrictMode, null,
+        React.createElement(DynamicFrameLayoutPhotography)
+      )
+    );
+  }
 });
 
 onBeforeUnmount(() => {
@@ -76,17 +109,47 @@ onBeforeUnmount(() => {
     gridFeatureRoot.unmount();
     gridFeatureRoot = null;
   }
+  if (testimonialsRoot) {
+    testimonialsRoot.unmount();
+    testimonialsRoot = null;
+  }
+  if (hero195Root) {
+    hero195Root.unmount();
+    hero195Root = null;
+  }
+  if (photographyRoot) {
+    photographyRoot.unmount();
+    photographyRoot = null;
+  }
 });
 </script>
 
 <template>
   <WebsiteLayout>
-    <!-- Hero Section with Spatial Product Showcase and Grid Background -->
-    <section class="relative min-h-[60vh] sm:min-h-[80vh] md:min-h-screen">
-      <div class="absolute inset-0 z-[-10]">
-        <BGPattern variant="grid" mask="fade-edges" :size="24" sm:size="32" fill="hsl(var(--muted-foreground) / 0.1)" />
+    <!-- Hero Section with FullScreenScrollFX -->
+    <section class="relative">
+      <div ref="heroContainer" class="w-full"></div>
+    </section>
+
+    <!-- Happy Clients Testimonials Section -->
+    <section class="bg-background">
+      <div ref="testimonialsContainer" class="w-full">
+        <!-- Testimonials component will be mounted here -->
       </div>
-      <div ref="heroContainer" class="w-full relative z-10 min-h-[60vh] sm:min-h-[80vh] md:min-h-screen"></div>
+    </section>
+
+    <!-- Software Services Section -->
+    <section class="bg-background">
+      <div ref="hero195Container" class="w-full">
+        <!-- Hero195 component will be mounted here -->
+      </div>
+    </section>
+
+    <!-- Photography Services Section -->
+    <section class="bg-background">
+      <div ref="photographyContainer" class="w-full">
+        <!-- DynamicFrameLayoutPhotography component will be mounted here -->
+      </div>
     </section>
 
     <!-- Grid Feature Cards Section -->
@@ -100,20 +163,6 @@ onBeforeUnmount(() => {
     <section class="bg-background">
       <div ref="pricingContainer" class="w-full">
         <!-- Pricing component will be mounted here -->
-      </div>
-    </section>
-
-    <section class="bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="space-y-4 text-center">
-          <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">Engagement approach</h2>
-          <p class="text-muted-foreground max-w-2xl mx-auto">
-            A repeatable sequence ensures projects remain predictable and transparent from onboarding to handover.
-          </p>
-        </div>
-        <div ref="engagementContainer" class="w-full mt-8 sm:mt-12">
-          <!-- Ruler Carousel component will be mounted here -->
-        </div>
       </div>
     </section>
 

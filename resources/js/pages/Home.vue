@@ -12,9 +12,9 @@ import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import { DemoOne } from '@/components/ui/silk-background-animation-demo';
 import CaseStudiesDemo from '@/components/ui/case-studies-demo';
-import MorphingCardStackDemo from '@/components/ui/morphing-card-stack-demo';
 import { TestimonialsSectionCustom } from '@/components/blocks/testimonials-with-marquee-custom';
 import { TypewriterEffectCustom } from '@/components/ui/typewriter-effect-custom';
+import ExpandingCardsRecentWorkDemo from '@/components/ui/expanding-cards-recent-work-demo';
 
 const props = defineProps<{
   services?: Array<{
@@ -65,14 +65,14 @@ const stats = [
 
 const silkContainer = ref<HTMLDivElement | null>(null);
 const caseStudiesContainer = ref<HTMLDivElement | null>(null);
-const morphingCardContainer = ref<HTMLDivElement | null>(null);
 const testimonialsContainer = ref<HTMLDivElement | null>(null);
 const typewriterContainer = ref<HTMLDivElement | null>(null);
+const expandingCardsContainer = ref<HTMLDivElement | null>(null);
 let silkRoot: Root | null = null;
 let caseStudiesRoot: Root | null = null;
-let morphingCardRoot: Root | null = null;
 let testimonialsRoot: Root | null = null;
 let typewriterRoot: Root | null = null;
+let expandingCardsRoot: Root | null = null;
 
 onMounted(() => {
   if (silkContainer.value) {
@@ -93,14 +93,6 @@ onMounted(() => {
     );
     console.log('Case studies component mounted');
   }
-  if (morphingCardContainer.value) {
-    morphingCardRoot = createRoot(morphingCardContainer.value);
-    morphingCardRoot.render(
-      <React.StrictMode>
-        <MorphingCardStackDemo />
-      </React.StrictMode>,
-    );
-  }
   if (testimonialsContainer.value) {
     testimonialsRoot = createRoot(testimonialsContainer.value);
     testimonialsRoot.render(
@@ -117,6 +109,14 @@ onMounted(() => {
       </React.StrictMode>,
     );
   }
+  if (expandingCardsContainer.value) {
+    expandingCardsRoot = createRoot(expandingCardsContainer.value);
+    expandingCardsRoot.render(
+      <React.StrictMode>
+        <ExpandingCardsRecentWorkDemo />
+      </React.StrictMode>,
+    );
+  }
 });
 
 onBeforeUnmount(() => {
@@ -128,10 +128,6 @@ onBeforeUnmount(() => {
     caseStudiesRoot.unmount();
     caseStudiesRoot = null;
   }
-  if (morphingCardRoot) {
-    morphingCardRoot.unmount();
-    morphingCardRoot = null;
-  }
   if (testimonialsRoot) {
     testimonialsRoot.unmount();
     testimonialsRoot = null;
@@ -140,12 +136,16 @@ onBeforeUnmount(() => {
     typewriterRoot.unmount();
     typewriterRoot = null;
   }
+  if (expandingCardsRoot) {
+    expandingCardsRoot.unmount();
+    expandingCardsRoot = null;
+  }
 });
 </script>
 
 <template>
   <WebsiteLayout>
-    <section class="border-b bg-background">
+    <section id="hero" class="border-b bg-background">
       <div class="relative isolate overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" 
@@ -168,37 +168,25 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section>
+    <section id="case-studies">
       <div ref="caseStudiesContainer" class="w-full"></div>
     </section>
 
-    <section class="py-16 bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="space-y-4 text-center max-w-2xl mx-auto">
-          <h2 class="text-3xl font-semibold tracking-tight md:text-4xl">Recent Work</h2>
-          <p class="text-muted-foreground">Explore our latest projects with interactive cards. Switch between stack, grid, and list layouts to view project details.</p>
-        </div>
-        <div class="mt-4 text-center">
-          <Button as-child class="inline-flex items-center gap-2">
-            <Link href="/projects">
-              View Portfolio
-              <ArrowRight class="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div ref="morphingCardContainer" class="w-full mt-12"></div>
+    <section id="recent-work" class="py-16 bg-background">
+      <div ref="expandingCardsContainer" class="w-full">
+        <!-- Expanding Cards Recent Work component will be mounted here -->
       </div>
     </section>
 
     <!-- Testimonials Section with Marquee -->
-    <section class="border-b bg-background">
+    <section id="testimonials" class="border-b bg-background">
       <div ref="testimonialsContainer" class="w-full">
         <!-- Testimonials with marquee component will be mounted here -->
       </div>
     </section>
 
     <!-- Typewriter Effect Section -->
-    <section class="bg-background">
+    <section id="typewriter" class="bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div ref="typewriterContainer" class="w-full">
           <!-- Typewriter Effect component will be mounted here -->

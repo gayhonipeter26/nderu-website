@@ -42,12 +42,12 @@ const faqs = [
 
 <template>
   <WebsiteLayout>
-    <section class="border-b bg-background">
+    <section id="send-message" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="space-y-4 text-center">
           <Badge variant="secondary" class="mx-auto w-fit">Contact</Badge>
           <h1 class="text-3xl font-semibold tracking-tight md:text-4xl">
-            Let’s plan your next phase of delivery
+            Let's plan your next phase of delivery
           </h1>
           <p class="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
             Share the problem you are solving, the team you are working with, and the timelines you are considering.
@@ -56,7 +56,7 @@ const faqs = [
       </div>
     </section>
 
-    <section class="border-b bg-background">
+    <section id="schedule-call" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card v-for="item in contactMethods" :key="item.label">
@@ -87,7 +87,7 @@ const faqs = [
       </div>
     </section>
 
-    <section class="border-b bg-background">
+    <section id="visit-office" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid gap-6 lg:grid-cols-2">
           <Card>

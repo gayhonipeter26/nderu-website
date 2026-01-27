@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,8 @@ import MediaCarousel from '@/components/MediaCarousel.vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
+import { MarqueeDemo } from '@/components/ui/marquee-demo';
+import ArticleCardProjectsDemo from '@/components/ui/card-23-projects-demo';
 import StackFeatureSectionDemo from '@/components/ui/stack-feature-section-demo';
 
 type Project = {
@@ -124,7 +126,9 @@ const getProjectMedia = (project: Project) => {
 };
 
 const marqueeContainer = ref<HTMLDivElement | null>(null);
+const articleCardContainer = ref<HTMLDivElement | null>(null);
 let marqueeRoot: Root | null = null;
+let articleCardRoot: Root | null = null;
 
 onMounted(() => {
   if (marqueeContainer.value) {
@@ -135,6 +139,25 @@ onMounted(() => {
       </React.StrictMode>,
     );
   }
+  if (articleCardContainer.value) {
+    articleCardRoot = createRoot(articleCardContainer.value);
+    articleCardRoot.render(
+      <React.StrictMode>
+        <ArticleCardProjectsDemo projects={filteredProjects.value} />
+      </React.StrictMode>,
+    );
+  }
+});
+
+// Watch for changes in filteredProjects and re-render React component
+watch(filteredProjects, (newProjects) => {
+  if (articleCardContainer.value && articleCardRoot) {
+    articleCardRoot.render(
+      <React.StrictMode>
+        <ArticleCardProjectsDemo projects={newProjects} />
+      </React.StrictMode>,
+    );
+  }
 });
 
 onBeforeUnmount(() => {
@@ -142,16 +165,20 @@ onBeforeUnmount(() => {
     marqueeRoot.unmount();
     marqueeRoot = null;
   }
+  if (articleCardRoot) {
+    articleCardRoot.unmount();
+    articleCardRoot = null;
+  }
 });
 </script>
 
 <template>
   <WebsiteLayout>
-    <section class="border-b bg-background">
+    <section id="web-applications" class="border-b bg-background">
       <div ref="marqueeContainer" class="w-full"></div>
     </section>
 
-    <section class="border-b bg-background">
+    <section id="featured-projects" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div class="flex flex-1 items-center gap-3">
@@ -178,83 +205,13 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div v-if="filteredProjects.length" class="grid auto-rows-fr gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <Card
-            v-for="project in filteredProjects"
-            :key="project.id"
-            class="flex h-full min-h-[420px] flex-col overflow-hidden text-sm"
-          >
-            <div v-if="project.hero_image_url" class="relative aspect-video w-full bg-muted">
-              <img
-                :src="project.hero_image_url"
-                :alt="project.title"
-                class="h-full w-full object-cover"
-                loading="lazy"
-              />
-            </div>
-            <div v-else class="relative aspect-video w-full bg-muted flex items-center justify-center">
-              <span class="text-muted-foreground">No image</span>
-            </div>
-            <CardHeader class="flex flex-col gap-2 p-4 pb-3">
-              <div class="flex items-center justify-between text-xs text-muted-foreground">
-                <Badge variant="outline" class="capitalize">
-                  {{ project.category || 'Uncategorized' }}
-                </Badge>
-                <div class="flex items-center gap-2">
-                  <span>{{ project.year || '—' }}</span>
-                  <span v-if="project.gallery_count" class="flex items-center gap-1">
-                    <Package class="h-3 w-3" />
-                    {{ project.gallery_count }}
-                  </span>
-                </div>
-              </div>
-              <CardTitle class="text-base">{{ project.title }}</CardTitle>
-              <CardDescription class="line-clamp-2 text-xs">
-                {{ project.summary || 'Project summary coming soon.' }}
-              </CardDescription>
-              <div v-if="project.client" class="text-xs text-muted-foreground">
-                Client: {{ project.client }}
-              </div>
-              <div v-if="project.technologies && project.technologies.length > 0" class="flex flex-wrap gap-1 mt-2">
-                <Badge v-for="tech in project.technologies.slice(0, 3)" :key="tech" variant="secondary" class="text-[10px] px-1.5 py-0.5">
-                  {{ tech }}
-                </Badge>
-                <Badge v-if="project.technologies.length > 3" variant="secondary" class="text-[10px] px-1.5 py-0.5">
-                  +{{ project.technologies.length - 3 }}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent class="flex flex-1 flex-col justify-between gap-3 p-4 pt-0 text-xs text-muted-foreground">
-              <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <span>{{ project.featured ? 'Featured' : 'Published' }}</span>
-                  <Button size="sm" variant="outline" as-child>
-                    <Link :href="`/projects/${project.slug}`">View Details</Link>
-                  </Button>
-                </div>
-              </div>
-              <div class="flex items-center justify-between pt-2 text-[11px] text-muted-foreground">
-                <span class="flex items-center gap-1">
-                  <Heart class="h-3.5 w-3.5 text-rose-500" />
-                  {{ project.likes_count || 0 }}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div v-if="filteredProjects.length === 0" class="text-center py-16">
-          <p class="text-sm text-muted-foreground">No projects match the selected filters.</p>
-          <Button variant="outline" class="mt-4" @click="selectedCategory = 'all'; query = ''">
-            Reset filters
-          </Button>
-        </div>
+    <section id="mobile-solutions" class="bg-background">
+      <div ref="articleCardContainer" class="w-full">
+        <!-- Article Cards component will be mounted here -->
       </div>
     </section>
 
-    <section class="bg-background">
+    <section id="system-architecture" class="bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <Card class="max-w-3xl mx-auto">
           <CardHeader class="space-y-2 text-center">
@@ -264,10 +221,10 @@ onBeforeUnmount(() => {
             </CardDescription>
           </CardHeader>
           <CardContent class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button as-child>
+            <Button asChild>
               <Link href="/contact">Start a project</Link>
             </Button>
-            <Button variant="outline" as-child>
+            <Button variant="outline" asChild>
               <Link href="/services">Review services</Link>
             </Button>
           </CardContent>

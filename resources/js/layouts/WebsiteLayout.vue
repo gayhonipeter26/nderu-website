@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-vue-next';
+import WebsiteMegaMenu from '@/components/WebsiteMegaMenu.vue';
 
 const page = usePage();
 const currentUrl = computed(() => page.props.ziggy?.location || '');
@@ -28,36 +29,37 @@ const isActive = (href: string) => {
 
 <template>
   <div class="min-h-screen bg-background text-foreground flex flex-col">
-    <header class="border-b">
+    <header class="border-b bg-black">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-4">
-          <Link href="/" class="text-lg font-semibold tracking-tight">
+          <Link href="/" class="text-lg font-semibold tracking-tight text-white">
             NDERU.KE
           </Link>
 
-          <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
-            <Link
-              v-for="item in navigation"
-              :key="item.name"
-              :href="item.href"
-              :class="[
-                'px-3 py-2 rounded-md transition-colors',
-                isActive(item.href) ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
-              ]"
-            >
-              {{ item.name }}
-            </Link>
-          </nav>
+          <!-- Desktop Mega Menu -->
+          <div class="hidden md:flex flex-1 items-center justify-center">
+            <WebsiteMegaMenu />
+          </div>
 
+          <!-- Mobile Menu -->
           <div class="md:hidden">
             <Sheet>
               <SheetTrigger as-child>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" class="text-white hover:text-white">
                   <Menu class="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" class="w-72">
                 <div class="mt-6 flex flex-col gap-2 text-sm font-medium">
+                  <Link
+                    href="/"
+                    :class="[
+                      'px-3 py-2 rounded-md transition-colors',
+                      isActive('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                    ]"
+                  >
+                    Home
+                  </Link>
                   <Link
                     v-for="item in navigation"
                     :key="item.name"
@@ -69,6 +71,46 @@ const isActive = (href: string) => {
                   >
                     {{ item.name }}
                   </Link>
+                  
+                  <!-- Mobile Mega Menu Sections -->
+                  <div class="mt-4 space-y-4">
+                    <div class="px-3 py-2">
+                      <h4 class="font-semibold text-foreground">Services</h4>
+                      <div class="mt-2 space-y-1">
+                        <Link href="/services#web-development" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Web Development</Link>
+                        <Link href="/services#mobile-apps" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Mobile Apps</Link>
+                        <Link href="/services#database-design" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Database Design</Link>
+                        <Link href="/services#cloud-solutions" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Cloud Solutions</Link>
+                        <Link href="/services#commercial-photography" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Photography</Link>
+                      </div>
+                    </div>
+                    
+                    <div class="px-3 py-2">
+                      <h4 class="font-semibold text-foreground">Portfolio</h4>
+                      <div class="mt-2 space-y-1">
+                        <Link href="/projects#web-applications" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Web Applications</Link>
+                        <Link href="/projects#mobile-solutions" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Mobile Solutions</Link>
+                        <Link href="/photography#corporate-events" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Photography</Link>
+                      </div>
+                    </div>
+                    
+                    <div class="px-3 py-2">
+                      <h4 class="font-semibold text-foreground">About</h4>
+                      <div class="mt-2 space-y-1">
+                        <Link href="/about#our-story" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Our Story</Link>
+                        <Link href="/about#technical-skills" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Technical Skills</Link>
+                        <Link href="/about#certifications" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Certifications</Link>
+                      </div>
+                    </div>
+                    
+                    <div class="px-3 py-2">
+                      <h4 class="font-semibold text-foreground">Contact</h4>
+                      <div class="mt-2 space-y-1">
+                        <Link href="/contact#send-message" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Send Message</Link>
+                        <Link href="/contact#schedule-call" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Schedule Call</Link>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

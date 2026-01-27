@@ -121,11 +121,11 @@ onBeforeUnmount(() => {
 
 <template>
   <WebsiteLayout>
-    <section class="border-b bg-background">
+    <section id="corporate-events" class="border-b bg-background">
       <div ref="galleryContainer" class="w-full"></div>
     </section>
 
-    <section class="border-b bg-background">
+    <section id="product-photography" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div class="flex flex-1 items-center gap-3">
@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="bg-background">
+    <section id="portrait-gallery" class="bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div v-if="filteredSessions.length" class="grid auto-rows-fr gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card v-for="session in filteredSessions" :key="session.id" class="flex h-full flex-col overflow-hidden">
@@ -250,10 +250,10 @@ onBeforeUnmount(() => {
             </CardDescription>
           </CardHeader>
           <CardContent class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button as-child>
+            <Button asChild>
               <Link href="/contact">Schedule consultation</Link>
             </Button>
-            <Button variant="outline" as-child>
+            <Button variant="outline" asChild>
               <Link href="/services">View full service list</Link>
             </Button>
           </CardContent>
