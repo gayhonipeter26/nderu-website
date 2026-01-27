@@ -12,7 +12,6 @@ import type { Root } from 'react-dom/client';
 import FullScreenScrollFXServicesDemoFixed from '@/components/ui/full-screen-scroll-fx-services-demo-fixed';
 import { Demo as RulerCarouselDemo } from '@/components/ui/ruler-carousel-demo';
 import { PricingToggle } from '@/components/ui/single-pricing-card-1-toggle';
-import GridFeatureCardsCustom from '@/components/ui/grid-feature-cards-custom';
 import { BGPattern } from '@/components/ui/bg-pattern';
 import ServicesTestimonials from '@/components/ui/testimonials-services-demo';
 import Hero195 from '@/components/ui/hero-195-1';
@@ -21,14 +20,12 @@ import { DynamicFrameLayoutPhotography } from '@/components/ui/dynamic-frame-lay
 const heroContainer = ref<HTMLDivElement | null>(null);
 const engagementContainer = ref<HTMLElement | null>(null);
 const pricingContainer = ref<HTMLElement | null>(null);
-const gridFeatureContainer = ref<HTMLElement | null>(null);
 const testimonialsContainer = ref<HTMLElement | null>(null);
 const hero195Container = ref<HTMLElement | null>(null);
 const photographyContainer = ref<HTMLElement | null>(null);
 let heroRoot: Root | null = null;
 let engagementRoot: Root | null = null;
 let pricingRoot: Root | null = null;
-let gridFeatureRoot: Root | null = null;
 let testimonialsRoot: Root | null = null;
 let hero195Root: Root | null = null;
 let photographyRoot: Root | null = null;
@@ -55,14 +52,6 @@ onMounted(() => {
     pricingRoot.render(
       React.createElement(React.StrictMode, null,
         React.createElement(PricingToggle)
-      )
-    );
-  }
-  if (gridFeatureContainer.value) {
-    gridFeatureRoot = createRoot(gridFeatureContainer.value);
-    gridFeatureRoot.render(
-      React.createElement(React.StrictMode, null,
-        React.createElement(GridFeatureCardsCustom)
       )
     );
   }
@@ -104,10 +93,6 @@ onBeforeUnmount(() => {
   if (pricingRoot) {
     pricingRoot.unmount();
     pricingRoot = null;
-  }
-  if (gridFeatureRoot) {
-    gridFeatureRoot.unmount();
-    gridFeatureRoot = null;
   }
   if (testimonialsRoot) {
     testimonialsRoot.unmount();
@@ -152,17 +137,34 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- Grid Feature Cards Section -->
-    <section class="bg-background">
-      <div ref="gridFeatureContainer" class="w-full">
-        <!-- Grid Feature Cards component will be mounted here -->
-      </div>
-    </section>
-
     <!-- Pricing Section -->
     <section class="bg-background">
       <div ref="pricingContainer" class="w-full">
         <!-- Pricing component will be mounted here -->
+      </div>
+    </section>
+
+    <!-- Happy Clients Testimonials Section -->
+    <section class="bg-background">
+      <div ref="testimonialsContainer" class="w-full">
+        <!-- Testimonials component will be mounted here -->
+      </div>
+    </section>
+
+    <!-- Engagement Section with Ruler Carousel -->
+    <section class="bg-background py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Our Engagement Approach
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            We believe in collaborative partnerships and transparent communication throughout your project journey
+          </p>
+        </div>
+      </div>
+      <div ref="engagementContainer" class="w-full">
+        <!-- RulerCarouselDemo component will be mounted here -->
       </div>
     </section>
 
