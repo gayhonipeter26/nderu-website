@@ -2,9 +2,9 @@
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
 import { ArrowUpRight } from 'lucide-vue-next';
 
 type Stat = {

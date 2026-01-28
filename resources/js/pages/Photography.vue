@@ -4,6 +4,8 @@ import { Link } from '@inertiajs/vue3';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
 import { Button } from '@/components/ui/button/index';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
+import PhotographyProfileHeaderWrapper from '@/components/PhotographyProfileHeaderWrapper.vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
@@ -56,28 +58,23 @@ onBeforeUnmount(() => {
 
 <template>
   <WebsiteLayout>
-    <section id="corporate-events" class="min-h-screen bg-background">
+    <section id="profile-header" class="w-full">
+      <PhotographyProfileHeaderWrapper banner-image="/assets/photos/profile.jpg"
+        profile-image="/assets/photos/profile.jpg" :social-links="{
+          tiktok: 'https://www.tiktok.com/@shutterbebz_254?_r=1&_t=ZS-93SHWHK7SgH',
+          instagram: 'https://www.instagram.com/shutterbebz_254?igsh=MWcyZnRkbmE1dWJoYg==',
+          threads: 'https://www.threads.com/@shutterbebz_254'
+        }" />
+    </section>
+
+
+    <section id="corporate-events" class="min-h-screen bg-background pt-20">
       <div ref="galleryContainer" class="w-full h-full"></div>
     </section>
 
-    <section class="bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <Card class="max-w-3xl mx-auto">
-          <CardHeader class="space-y-2 text-center">
-            <CardTitle class="text-2xl">Next steps</CardTitle>
-            <CardDescription>
-              Share the brief, preferred dates, and distribution channels to receive a detailed shooting plan and quote.
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button asChild>
-              <Link href="/contact">Schedule consultation</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/services">View full service list</Link>
-            </Button>
-          </CardContent>
-        </Card>
+    <section class="bg-background py-16">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <ContactCardWrapper type="photography" />
       </div>
     </section>
   </WebsiteLayout>

@@ -2,11 +2,11 @@
 import { computed, ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Button } from '@/components/ui/button/index';
+import { Input } from '@/components/ui/input/index';
+import { Textarea } from '@/components/ui/textarea/index';
 import { Heart, MessageSquare, Send, Calendar, MapPin, Camera, Play } from 'lucide-vue-next';
 
 interface Comment {

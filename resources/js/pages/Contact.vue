@@ -10,6 +10,7 @@ import AccordionItem from '@/components/ui/accordion/AccordionItem.vue';
 import AccordionTrigger from '@/components/ui/accordion/AccordionTrigger.vue';
 import AccordionContent from '@/components/ui/accordion/AccordionContent.vue';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 
 const contactMethods = [
   { icon: Mail, label: 'Email', value: 'hello@nderu.com', href: 'mailto:hello@nderu.com' },
@@ -87,46 +88,9 @@ const faqs = [
       </div>
     </section>
 
-    <section id="visit-office" class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid gap-6 lg:grid-cols-2">
-          <Card>
-            <CardHeader class="space-y-2">
-              <CardTitle class="text-xl">Project outline</CardTitle>
-              <CardDescription>Provide as much detail as you are comfortable sharing.</CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-4 text-sm text-muted-foreground">
-              <form class="space-y-4" action="mailto:hello@nderu.com" method="post" encType="text/plain">
-                <Input name="name" placeholder="Your name" required />
-                <Input type="email" name="email" placeholder="you@email.com" required />
-                <Input name="company" placeholder="Organisation (optional)" />
-                <textarea
-                  name="message"
-                  rows="5"
-                  placeholder="Describe the project, timelines, and desired outcomes."
-                  class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  required
-                ></textarea>
-                <Button type="submit" class="w-full">Send brief</Button>
-              </form>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader class="space-y-2">
-              <CardTitle class="text-xl">Ways we can work together</CardTitle>
-              <CardDescription>Flexible formats suited to where you are in delivery.</CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-4 text-sm text-muted-foreground">
-              <div v-for="item in offerings" :key="item.label" class="space-y-1">
-                <div class="flex items-center gap-2 text-foreground">
-                  <component :is="item.icon" class="h-4 w-4" />
-                  <span class="font-medium">{{ item.label }}</span>
-                </div>
-                <p>{{ item.description }}</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+    <section id="contact-form" class="bg-background py-16">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <ContactCardWrapper />
       </div>
     </section>
 

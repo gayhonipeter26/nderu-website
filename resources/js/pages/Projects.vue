@@ -1,10 +1,10 @@
 <script setup lang="tsx">
 import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Input } from '@/components/ui/input/index';
 import { Layers, Package, Camera, Users, Play, Search, Heart } from 'lucide-vue-next';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 import MediaCarousel from '@/components/MediaCarousel.vue';
@@ -13,7 +13,7 @@ import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import { MarqueeDemo } from '@/components/ui/marquee-demo';
 import ArticleCardProjectsDemo from '@/components/ui/card-23-projects-demo';
-import StackFeatureSectionDemo from '@/components/ui/stack-feature-section-demo';
+import HeroGalleryScrollAnimationWrapper from '@/components/HeroGalleryScrollAnimationWrapper.vue';
 
 type Project = {
   id: number;
@@ -86,16 +86,16 @@ const filteredProjects = computed(() => {
   if (!Array.isArray(projects.value)) {
     return [];
   }
-  
+
   return projects.value.filter((project) => {
     const categoryValue = project.category ? slugify(project.category) : null;
     const matchesCategory =
       selectedCategory.value === 'all' || categoryValue === selectedCategory.value;
     const matchesQuery = query.value
       ? [project.title, project.summary ?? '']
-          .join(' ')
-          .toLowerCase()
-          .includes(query.value.toLowerCase())
+        .join(' ')
+        .toLowerCase()
+        .includes(query.value.toLowerCase())
       : true;
     return matchesCategory && matchesQuery;
   });
@@ -125,20 +125,10 @@ const getProjectMedia = (project: Project) => {
   return slides;
 };
 
-const marqueeContainer = ref<HTMLDivElement | null>(null);
 const articleCardContainer = ref<HTMLDivElement | null>(null);
-let marqueeRoot: Root | null = null;
 let articleCardRoot: Root | null = null;
 
 onMounted(() => {
-  if (marqueeContainer.value) {
-    marqueeRoot = createRoot(marqueeContainer.value);
-    marqueeRoot.render(
-      <React.StrictMode>
-        <StackFeatureSectionDemo />
-      </React.StrictMode>,
-    );
-  }
   if (articleCardContainer.value) {
     articleCardRoot = createRoot(articleCardContainer.value);
     articleCardRoot.render(
@@ -161,10 +151,6 @@ watch(filteredProjects, (newProjects) => {
 });
 
 onBeforeUnmount(() => {
-  if (marqueeRoot) {
-    marqueeRoot.unmount();
-    marqueeRoot = null;
-  }
   if (articleCardRoot) {
     articleCardRoot.unmount();
     articleCardRoot = null;
@@ -174,9 +160,10 @@ onBeforeUnmount(() => {
 
 <template>
   <WebsiteLayout>
-    <section id="web-applications" class="border-b bg-background">
-      <div ref="marqueeContainer" class="w-full"></div>
+    <section id="hero-animation" class="w-full">
+      <HeroGalleryScrollAnimationWrapper />
     </section>
+
 
     <section id="featured-projects" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -189,14 +176,9 @@ onBeforeUnmount(() => {
             <span class="text-sm text-muted-foreground">{{ filteredProjects.length }} results</span>
           </div>
           <div class="flex flex-wrap gap-2">
-            <Button
-              v-for="category in projectsCategories"
-              :key="category.value"
-              size="sm"
-              :variant="selectedCategory === category.value ? 'default' : 'outline'"
-              class="capitalize"
-              @click="selectedCategory = category.value"
-            >
+            <Button v-for="category in projectsCategories" :key="category.value" size="sm"
+              :variant="selectedCategory === category.value ? 'default' : 'outline'" class="capitalize"
+              @click="selectedCategory = category.value">
               <component :is="category.icon" class="mr-2 h-4 w-4" />
               {{ category.label }}
             </Button>
