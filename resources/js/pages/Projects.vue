@@ -13,7 +13,8 @@ import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import { MarqueeDemo } from '@/components/ui/marquee-demo';
 import ArticleCardProjectsDemo from '@/components/ui/card-23-projects-demo';
-import HeroGalleryScrollAnimationWrapper from '@/components/HeroGalleryScrollAnimationWrapper.vue';
+import HeroAsciiOneWrapper from '@/components/HeroAsciiOneWrapper.vue';
+
 
 type Project = {
   id: number;
@@ -104,7 +105,7 @@ const filteredProjects = computed(() => {
 const getProjectMedia = (project: Project) => {
   const slides: { id: string | number; url: string; kind: 'image' | 'video' }[] = [];
 
-  if (project.gallery?.length) {
+  if (Array.isArray(project.gallery) && project.gallery.length) {
     slides.push(
       ...project.gallery.map((asset) => ({
         id: `gallery-${asset.id}`,
@@ -161,7 +162,7 @@ onBeforeUnmount(() => {
 <template>
   <WebsiteLayout>
     <section id="hero-animation" class="w-full">
-      <HeroGalleryScrollAnimationWrapper />
+      <HeroAsciiOneWrapper />
     </section>
 
 

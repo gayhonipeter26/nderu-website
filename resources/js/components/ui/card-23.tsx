@@ -5,7 +5,7 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { MapPin, Github, Globe, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils"; // Your shadcn/ui utility for merging classes
 
 // Define the types for the component props for type-safety and clarity
@@ -23,6 +23,9 @@ export interface ArticleCardProps extends React.HTMLAttributes<HTMLDivElement> {
     city: string;
     country: string;
   };
+  githubUrl?: string;
+  liveUrl?: string;
+  url?: string;
 }
 
 const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
@@ -36,6 +39,9 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
       imageUrl,
       imageAlt,
       location,
+      githubUrl,
+      liveUrl,
+      url,
       ...props
     },
     ref
@@ -50,7 +56,7 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
     const imageVariants = {
       hover: { scale: 1.1 },
     };
-    
+
     return (
       <motion.div
         ref={ref}
@@ -105,6 +111,44 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
               <p className="text-sm font-semibold">{location.city}</p>
               <p className="text-xs">{location.country}</p>
             </div>
+          </div>
+
+          {/* Action Badges */}
+          <div className="absolute bottom-4 right-4 flex items-center gap-2">
+            {githubUrl && (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/40 text-white"
+                title="View on GitHub"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Github className="h-4 w-4" />
+              </a>
+            )}
+            {liveUrl && (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/40 text-white"
+                title="Live Preview"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Globe className="h-4 w-4" />
+              </a>
+            )}
+            {url && (
+              <a
+                href={url}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/40 text-white"
+                title="Read more"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
           </div>
         </div>
       </motion.div>

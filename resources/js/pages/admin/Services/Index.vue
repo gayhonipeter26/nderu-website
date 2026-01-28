@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card/index';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog/index';
+import { Input } from '@/components/ui/input/index';
+import { Label } from '@/components/ui/label/index';
 import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { useForm, router } from '@inertiajs/vue3';
 
@@ -111,11 +111,7 @@ function closeDialog() {
       </div>
 
       <div class="grid gap-4 lg:grid-cols-2">
-        <Card
-          v-for="service in props.services"
-          :key="service.id"
-          class="flex flex-col"
-        >
+        <Card v-for="service in props.services" :key="service.id" class="flex flex-col">
           <CardHeader>
             <div class="flex items-start justify-between gap-4">
               <div>
@@ -175,22 +171,15 @@ function closeDialog() {
         </div>
         <div class="space-y-2">
           <Label for="service-summary">Summary</Label>
-          <textarea
-            id="service-summary"
-            v-model="form.summary"
-            placeholder="Describe the service in one or two sentences"
-            rows="3"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <textarea id="service-summary" v-model="form.summary"
+            placeholder="Describe the service in one or two sentences" rows="3"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
           <p v-if="form.errors.summary" class="text-sm text-destructive">{{ form.errors.summary }}</p>
         </div>
         <div class="space-y-2">
           <Label for="service-status">Status</Label>
-          <select
-            id="service-status"
-            v-model="form.status"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
+          <select id="service-status" v-model="form.status"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
             <option v-for="option in statuses" :key="option" :value="option">{{ option }}</option>
           </select>
           <p v-if="form.errors.status" class="text-sm text-destructive">{{ form.errors.status }}</p>

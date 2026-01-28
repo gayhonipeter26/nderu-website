@@ -128,7 +128,7 @@ class PostController extends Controller
             Storage::disk('public')->delete($post->feature_video_path);
         }
 
-        $post->media()->each->delete();
+        $post->media()->get()->each->delete();
 
         $post->delete();
 

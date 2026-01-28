@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog/index';
+import { Input } from '@/components/ui/input/index';
+import { Label } from '@/components/ui/label/index';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
@@ -191,11 +191,8 @@ function removeChannel(id: number) {
         </div>
         <div class="space-y-2">
           <Label for="channel-status">Status</Label>
-          <select
-            id="channel-status"
-            v-model="form.status"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
+          <select id="channel-status" v-model="form.status"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
             <option v-for="option in statusOptions" :key="option" :value="option">{{ option }}</option>
           </select>
         </div>

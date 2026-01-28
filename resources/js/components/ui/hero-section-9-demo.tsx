@@ -1,6 +1,6 @@
-import {HeroSection} from "@/components/ui/hero-section-9";
+import { HeroSection } from "./hero-section-9"
 
-export function Demo (){
+export function HeroSection9Demo() {
     return (
         <HeroSection />
     )

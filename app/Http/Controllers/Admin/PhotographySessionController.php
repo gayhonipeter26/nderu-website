@@ -128,7 +128,7 @@ class PhotographySessionController extends Controller
             Storage::disk('public')->delete($photographySession->highlight_video_path);
         }
 
-        $photographySession->media()->each->delete();
+        $photographySession->media()->get()->each->delete();
 
         $photographySession->delete();
 

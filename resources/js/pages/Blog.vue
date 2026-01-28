@@ -8,11 +8,13 @@ import { Input } from '@/components/ui/input/index';
 import { Calendar, Clock, Heart, Search, Play } from 'lucide-vue-next';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 import MediaCarousel from '@/components/MediaCarousel.vue';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import { GalleryPage } from '@/components/ui/gallery-demo';
 import ArticleCardBlogDemo from '@/components/ui/card-23-blog-demo';
+import { VideoArticlesList } from '@/components/ui/video-article-card';
 
 type Post = {
   id: number;
@@ -38,9 +40,16 @@ type Post = {
 const props = defineProps<{ posts: Post[] }>();
 
 const galleryContainer = ref<HTMLDivElement | null>(null);
+const videoListContainer = ref<HTMLDivElement | null>(null);
 const articleCardContainer = ref<HTMLDivElement | null>(null);
+
 let galleryRoot: Root | null = null;
+let videoListRoot: Root | null = null;
 let articleCardRoot: Root | null = null;
+
+const featuredVideos = computed(() =>
+  (props.posts || []).filter(post => post.feature_video_url)
+);
 
 onMounted(() => {
   if (galleryContainer.value) {
@@ -51,6 +60,16 @@ onMounted(() => {
       </React.StrictMode>,
     );
   }
+
+  if (videoListContainer.value) {
+    videoListRoot = createRoot(videoListContainer.value);
+    videoListRoot.render(
+      <React.StrictMode>
+        <VideoArticlesList articles={featuredVideos.value} />
+      </React.StrictMode>,
+    );
+  }
+
   if (articleCardContainer.value) {
     articleCardRoot = createRoot(articleCardContainer.value);
     articleCardRoot.render(
@@ -65,6 +84,10 @@ onBeforeUnmount(() => {
   if (galleryRoot) {
     galleryRoot.unmount();
     galleryRoot = null;
+  }
+  if (videoListRoot) {
+    videoListRoot.unmount();
+    videoListRoot = null;
   }
   if (articleCardRoot) {
     articleCardRoot.unmount();
@@ -94,6 +117,7 @@ const categories = computed(() => {
 
 const selectedCategory = ref('all');
 const query = ref('');
+const activeTab = ref<'articles' | 'videos'>('articles');
 
 const filteredPosts = computed(() => {
   if (!Array.isArray(posts.value)) {
@@ -105,9 +129,9 @@ const filteredPosts = computed(() => {
       selectedCategory.value === 'all' || post.category === selectedCategory.value;
     const matchesQuery = query.value
       ? [post.title, post.summary ?? '']
-          .join(' ')
-          .toLowerCase()
-          .includes(query.value.toLowerCase())
+        .join(' ')
+        .toLowerCase()
+        .includes(query.value.toLowerCase())
       : true;
     return matchesCategory && matchesQuery;
   });
@@ -119,6 +143,16 @@ watch(filteredPosts, (newPosts) => {
     articleCardRoot.render(
       <React.StrictMode>
         <ArticleCardBlogDemo posts={newPosts} />
+      </React.StrictMode>,
+    );
+  }
+});
+
+watch(featuredVideos, (newVideos) => {
+  if (videoListContainer.value && videoListRoot) {
+    videoListRoot.render(
+      <React.StrictMode>
+        <VideoArticlesList articles={newVideos} />
       </React.StrictMode>,
     );
   }
@@ -144,7 +178,7 @@ const formatDate = (value: string | null) => {
 const getPostMedia = (post: Post) => {
   const slides: { id: string | number; url: string; kind: 'image' | 'video' }[] = [];
 
-  if (post.gallery?.length) {
+  if (Array.isArray(post.gallery) && post.gallery.length) {
     slides.push(
       ...post.gallery.map((asset) => ({
         id: `gallery-${asset.id}`,
@@ -174,23 +208,32 @@ const getPostMedia = (post: Post) => {
 
     <section class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div class="flex flex-1 items-center gap-3">
-            <div class="relative w-full md:w-64">
-              <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input v-model="query" placeholder="Search posts" class="pl-9" />
+        <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="flex flex-1 items-center gap-3">
+              <div class="relative w-full md:w-64">
+                <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input v-model="query" placeholder="Search posts" class="pl-9" />
+              </div>
+              <span class="text-sm text-muted-foreground">{{ filteredPosts.length }} results</span>
             </div>
-            <span class="text-sm text-muted-foreground">{{ filteredPosts.length }} results</span>
+
+            <div class="flex items-center gap-1 bg-muted/30 p-1 rounded-lg self-start md:self-auto">
+              <Button size="sm" :variant="activeTab === 'articles' ? 'secondary' : 'ghost'"
+                class="text-xs h-8 px-4 rounded-md transition-all" @click="activeTab = 'articles'">
+                Articles
+              </Button>
+              <Button size="sm" :variant="activeTab === 'videos' ? 'secondary' : 'ghost'"
+                class="text-xs h-8 px-4 rounded-md transition-all" @click="activeTab = 'videos'">
+                Videos
+              </Button>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <Button
-              v-for="category in categories"
-              :key="category.value"
-              size="sm"
-              :variant="selectedCategory === category.value ? 'default' : 'outline'"
-              class="capitalize"
-              @click="selectedCategory = category.value"
-            >
+
+          <div class="flex flex-wrap gap-2 border-t pt-6" v-if="activeTab === 'articles'">
+            <Button v-for="category in categories" :key="category.value" size="sm"
+              :variant="selectedCategory === category.value ? 'default' : 'outline'" class="capitalize"
+              @click="selectedCategory = category.value">
               {{ category.label }}
             </Button>
           </div>
@@ -198,7 +241,9 @@ const getPostMedia = (post: Post) => {
       </div>
     </section>
 
-    <section class="bg-background">
+    <div v-show="activeTab === 'videos'" ref="videoListContainer" class="bg-background min-h-[400px]"></div>
+
+    <section v-show="activeTab === 'articles'" class="bg-background min-h-[400px]">
       <div ref="articleCardContainer" class="w-full">
         <!-- Article Cards component will be mounted here -->
       </div>
@@ -206,18 +251,9 @@ const getPostMedia = (post: Post) => {
 
     <section class="bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <Card class="max-w-3xl mx-auto">
-          <CardHeader class="space-y-2 text-center">
-            <CardTitle class="text-2xl">Stay in touch</CardTitle>
-            <CardDescription>
-              Receive a quarterly summary of published articles and upcoming projects.
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Input placeholder="you@email.com" class="sm:w-60" />
-            <Button>Subscribe</Button>
-          </CardContent>
-        </Card>
+        <div class="max-w-3xl mx-auto">
+          <ContactCardWrapper type="secure-gateway" />
+        </div>
       </div>
     </section>
   </WebsiteLayout>

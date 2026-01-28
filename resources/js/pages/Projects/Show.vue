@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Button } from '@/components/ui/button/index';
 import MediaCarousel from '@/components/MediaCarousel.vue';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 import {
   Heart,
   MessageSquare,
-  Send,
   Layers,
   Play,
   Calendar,
@@ -65,26 +63,6 @@ const props = defineProps<{
   comments: Comment[];
 }>();
 
-const commentForm = useForm({
-  author_name: '',
-  author_email: '',
-  body: '',
-});
-
-const isSubmitting = ref(false);
-
-const submitComment = () => {
-  if (isSubmitting.value) return;
-
-  isSubmitting.value = true;
-  commentForm.post(`/projects/${props.project.slug}/comments`, {
-    preserveScroll: true,
-    onFinish: () => {
-      isSubmitting.value = false;
-      commentForm.reset('author_name', 'author_email', 'body');
-    },
-  });
-};
 
 const likeProject = () => {
   router.post(`/projects/${props.project.slug}/like`, {}, {
@@ -98,10 +76,10 @@ const formattedComments = computed(() =>
     ...comment,
     displayDate: comment.created_at
       ? new Intl.DateTimeFormat('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        }).format(new Date(comment.created_at))
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }).format(new Date(comment.created_at))
       : 'Recently',
   })),
 );
@@ -121,7 +99,7 @@ const categoryIcon = computed(() => {
 const mediaSlides = computed<MediaAsset[]>(() => {
   const slides: MediaAsset[] = [];
 
-  if (props.project.gallery?.length) {
+  if (Array.isArray(props.project.gallery) && props.project.gallery.length) {
     slides.push(
       ...props.project.gallery.map((asset) => ({
         ...asset,
@@ -229,7 +207,9 @@ const shareButtons = computed(() => {
                 </span>
               </Button>
               <Button variant="outline" class="gap-2" as-child>
-                <a href="#comments"><MessageSquare class="h-4 w-4" /> Discuss project</a>
+                <a href="#comments">
+                  <MessageSquare class="h-4 w-4" /> Discuss project
+                </a>
               </Button>
               <Button as-child>
                 <Link href="/contact">Start an engagement</Link>
@@ -247,11 +227,8 @@ const shareButtons = computed(() => {
             <div>
               <MediaCarousel v-if="mediaSlides.length" :media="mediaSlides" class="rounded-lg" />
               <div v-else class="overflow-hidden rounded-lg border bg-muted">
-                <img
-                  :src="props.project.hero_image_url ?? 'https://via.placeholder.com/1280x720?text=Project+visual'"
-                  :alt="`Hero image for ${props.project.title}`"
-                  class="h-full w-full object-cover"
-                />
+                <img :src="props.project.hero_image_url ?? 'https://via.placeholder.com/1280x720?text=Project+visual'"
+                  :alt="`Hero image for ${props.project.title}`" class="h-full w-full object-cover" />
               </div>
             </div>
 
@@ -295,14 +272,8 @@ const shareButtons = computed(() => {
                 <CardDescription>Let others explore this engagement.</CardDescription>
               </CardHeader>
               <CardContent class="flex flex-wrap gap-3">
-                <Button
-                  v-for="button in shareButtons"
-                  :key="button.name"
-                  as-child
-                  variant="outline"
-                  size="sm"
-                  class="inline-flex items-center gap-2"
-                >
+                <Button v-for="button in shareButtons" :key="button.name" as-child variant="outline" size="sm"
+                  class="inline-flex items-center gap-2">
                   <a :href="button.href" target="_blank" rel="noreferrer">
                     <component :is="button.icon" class="h-4 w-4" />
                     {{ button.name }}
@@ -332,32 +303,7 @@ const shareButtons = computed(() => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle class="text-base">Contribute your perspective</CardTitle>
-                <CardDescription>Constructive, respectful dialogue helps each case study stay actionable.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form class="space-y-4" @submit.prevent="submitComment">
-                  <div class="grid gap-2">
-                    <label class="text-sm font-medium text-foreground" for="author_name">Name</label>
-                    <Input id="author_name" v-model="commentForm.author_name" placeholder="Alex Doe" required />
-                  </div>
-                  <div class="grid gap-2">
-                    <label class="text-sm font-medium text-foreground" for="author_email">Email</label>
-                    <Input id="author_email" v-model="commentForm.author_email" placeholder="you@email.com" type="email" />
-                  </div>
-                  <div class="grid gap-2">
-                    <label class="text-sm font-medium text-foreground" for="body">Comment</label>
-                    <Textarea id="body" v-model="commentForm.body" rows="4" placeholder="Share your insights..." required />
-                  </div>
-                  <Button type="submit" class="w-full gap-2" :disabled="isSubmitting">
-                    <Send class="h-4 w-4" />
-                    {{ isSubmitting ? 'Submitting...' : 'Post comment' }}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <ContactCardWrapper type="blog" />
           </aside>
         </div>
       </div>

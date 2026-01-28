@@ -1,23 +1,17 @@
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button/index';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet/index';
 import { Menu } from 'lucide-vue-next';
 import WebsiteMegaMenu from '@/components/WebsiteMegaMenu.vue';
 
-const page = usePage();
-const currentUrl = computed(() => page.props.ziggy?.location || '');
+const props = defineProps<{ loadingDescription?: string; }>();
 
-const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Services', href: '/services' },
-  { name: 'Projects', href: '/projects' },
-  { name: 'Photography', href: '/photography' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Contact', href: '/contact' },
-];
+const page = usePage();
+const currentUrl = computed(() => (page.props as any).ziggy?.location || '');
+
+
 
 const isActive = (href: string) => {
   if (href === '/') {
@@ -51,66 +45,116 @@ const isActive = (href: string) => {
               </SheetTrigger>
               <SheetContent side="right" class="w-72">
                 <div class="mt-6 flex flex-col gap-2 text-sm font-medium">
-                  <Link
-                    href="/"
-                    :class="[
-                      'px-3 py-2 rounded-md transition-colors',
-                      isActive('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
-                    ]"
-                  >
+                  <Link href="/" :class="[
+                    'px-3 py-2 rounded-md transition-colors',
+                    isActive('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  ]">
                     Home
                   </Link>
-                  <Link
-                    v-for="item in navigation"
-                    :key="item.name"
-                    :href="item.href"
-                    :class="[
-                      'px-3 py-2 rounded-md transition-colors',
-                      isActive(item.href) ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
-                    ]"
-                  >
-                    {{ item.name }}
+                  <Link href="/about" :class="[
+                    'px-3 py-2 rounded-md transition-colors',
+                    isActive('/about') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  ]">
+                    About
                   </Link>
-                  
-                  <!-- Mobile Mega Menu Sections -->
-                  <div class="mt-4 space-y-4">
-                    <div class="px-3 py-2">
-                      <h4 class="font-semibold text-foreground">Services</h4>
-                      <div class="mt-2 space-y-1">
-                        <Link href="/services#web-development" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Web Development</Link>
-                        <Link href="/services#mobile-apps" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Mobile Apps</Link>
-                        <Link href="/services#database-design" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Database Design</Link>
-                        <Link href="/services#cloud-solutions" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Cloud Solutions</Link>
-                        <Link href="/services#commercial-photography" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Photography</Link>
-                      </div>
-                    </div>
-                    
-                    <div class="px-3 py-2">
-                      <h4 class="font-semibold text-foreground">Portfolio</h4>
-                      <div class="mt-2 space-y-1">
-                        <Link href="/projects#web-applications" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Web Applications</Link>
-                        <Link href="/projects#mobile-solutions" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Mobile Solutions</Link>
-                        <Link href="/photography#corporate-events" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Photography</Link>
-                      </div>
-                    </div>
-                    
-                    <div class="px-3 py-2">
-                      <h4 class="font-semibold text-foreground">About</h4>
-                      <div class="mt-2 space-y-1">
-                        <Link href="/about#our-story" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Our Story</Link>
-                        <Link href="/about#technical-skills" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Technical Skills</Link>
-                        <Link href="/about#certifications" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Certifications</Link>
-                      </div>
-                    </div>
-                    
-                    <div class="px-3 py-2">
-                      <h4 class="font-semibold text-foreground">Contact</h4>
-                      <div class="mt-2 space-y-1">
-                        <Link href="/contact#send-message" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Send Message</Link>
-                        <Link href="/contact#schedule-call" class="block px-2 py-1 text-sm text-muted-foreground hover:text-foreground">Schedule Call</Link>
-                      </div>
+
+                  <!-- Services Section -->
+                  <!-- Services Section -->
+                  <div class="py-2">
+                    <h4 class="px-3 mb-2 font-semibold text-foreground">Services</h4>
+                    <div class="space-y-1 pl-2">
+                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Development
+                      </p>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Web Development
+                      </Link>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Mobile Apps
+                      </Link>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Database Design
+                      </Link>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Cloud Solutions
+                      </Link>
+
+                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-3">
+                        Photography</p>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Commercial Photography
+                      </Link>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Event Coverage
+                      </Link>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Portrait Sessions
+                      </Link>
+                      <Link href="/services"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Photo Editing
+                      </Link>
                     </div>
                   </div>
+
+                  <!-- Portfolio Section -->
+                  <div class="py-2">
+                    <h4 class="px-3 mb-2 font-semibold text-foreground">Portfolio</h4>
+                    <div class="space-y-1 pl-2">
+                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Featured
+                        Projects</p>
+                      <Link href="/projects"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Web Applications
+                      </Link>
+                      <Link href="/projects"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Mobile Solutions
+                      </Link>
+                      <Link href="/projects"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        System Architecture
+                      </Link>
+                      <Link href="/projects"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        API Development
+                      </Link>
+
+                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-3">
+                        Photography Work</p>
+                      <Link href="/photography"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Corporate Events
+                      </Link>
+                      <Link href="/photography"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Product Photography
+                      </Link>
+                      <Link href="/photography"
+                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
+                        Portrait Gallery
+                      </Link>
+                    </div>
+                  </div>
+
+                  <Link href="/blog" :class="[
+                    'px-3 py-2 rounded-md transition-colors',
+                    isActive('/blog') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  ]">
+                    Blog
+                  </Link>
+                  <Link href="/contact" :class="[
+                    'px-3 py-2 rounded-md transition-colors',
+                    isActive('/contact') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  ]">
+                    Contact
+                  </Link>
                 </div>
               </SheetContent>
             </Sheet>

@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/vue3';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
 import { Button } from '@/components/ui/button/index';
 import { Badge } from '@/components/ui/badge/index';
-import { ArrowRight, Award, CheckCircle, Users, Star } from 'lucide-vue-next';
+import { ArrowRight, Award, CheckCircle, Users, Star, User, Briefcase } from 'lucide-vue-next';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 import SparklesHeroWrapper from '@/components/SparklesHeroWrapper.vue';
 import { onBeforeUnmount, onMounted, ref, computed } from 'vue';
@@ -148,19 +148,27 @@ onBeforeUnmount(() => {
     <section id="hero" class="border-b bg-background">
       <div class="relative isolate overflow-hidden">
         <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" 
-             style="background-image: url('/assets/photos/your-image-name.jpg');">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style="background-image: url('/assets/photos/your-image-name.jpg');">
           <div class="absolute inset-0 bg-black/20"></div>
         </div>
         <!-- Silk Animation Container -->
         <div ref="silkContainer" class="absolute inset-0 opacity-90" />
-        <div class="container relative mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-24 text-center sm:px-6 lg:px-8">
+        <div
+          class="container relative mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-24 text-center sm:px-6 lg:px-8">
           <div class="flex-1" aria-hidden="true"></div>
-          <div class="relative z-20 flex w-full flex-col items-center pb-16">
+          <div class="relative z-20 flex w-full flex-row items-center justify-center gap-4 pb-16">
+            <Button asChild size="lg" variant="outline"
+              class="bg-black/50 text-white border-white/20 hover:bg-black/70 backdrop-blur-sm">
+              <Link href="/about">
+                <User class="mr-2 h-4 w-4" />
+                About Me
+              </Link>
+            </Button>
             <Button asChild size="lg" class="bg-white text-black hover:bg-neutral-100">
               <Link href="/services">
-                Work with me
-                <ArrowRight class="ml-2 h-4 w-4" />
+                <Briefcase class="mr-2 h-4 w-4" />
+                Services
               </Link>
             </Button>
           </div>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog/index';
+import { Input } from '@/components/ui/input/index';
+import { Label } from '@/components/ui/label/index';
 import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { useForm, router } from '@inertiajs/vue3';
 
@@ -103,7 +103,7 @@ function startEdit(post: Post) {
   form.feature_video = null;
   form.gallery = [];
   form.gallery_remove = [];
-  existingGallery.value = [...(post.gallery ?? [])];
+  existingGallery.value = Array.isArray(post.gallery) ? [...post.gallery] : [];
   newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
   newGalleryPreviews.value = [];
   dialogOpen.value = true;
@@ -240,8 +240,12 @@ function queueGalleryRemoval(id: number) {
                 </tr>
                 <tr v-for="post in posts" :key="post.id" class="border-b last:border-0">
                   <td class="px-4 py-3">
-                    <div class="font-medium text-foreground">{{ post.title }}</div>
-                    <p class="mt-1 text-xs text-muted-foreground" v-if="post.summary">{{ post.summary }}</p>
+                    <div class="font-medium text-foreground">
+                      {{ post.title.length > 25 ? post.title.substring(0, 25) + '...' : post.title }}
+                    </div>
+                    <p class="mt-1 text-xs text-muted-foreground" v-if="post.summary">
+                      {{ post.summary.length > 25 ? post.summary.substring(0, 25) + '...' : post.summary }}
+                    </p>
                   </td>
                   <td class="px-4 py-3">
                     <Badge :variant="post.status === 'Published' ? 'default' : 'outline'">{{ post.status }}</Badge>
@@ -250,38 +254,30 @@ function queueGalleryRemoval(id: number) {
                   <td class="px-4 py-3 text-muted-foreground">{{ post.reading_time ?? '—' }}</td>
                   <td class="px-4 py-3">
                     <div class="flex flex-col gap-1 text-xs">
-                      <a
-                        v-if="post.cover_image_url"
-                        :href="post.cover_image_url"
-                        target="_blank"
-                        rel="noreferrer"
-                        class="text-primary hover:underline"
-                      >
+                      <a v-if="post.cover_image_url" :href="post.cover_image_url" target="_blank" rel="noreferrer"
+                        class="text-primary hover:underline">
                         View cover
                       </a>
-                      <a
-                        v-if="post.feature_video_url"
-                        :href="post.feature_video_url"
-                        target="_blank"
-                        rel="noreferrer"
-                        class="text-primary hover:underline"
-                      >
+                      <a v-if="post.feature_video_url" :href="post.feature_video_url" target="_blank" rel="noreferrer"
+                        class="text-primary hover:underline">
                         View video
                       </a>
-                      <span v-if="!post.cover_image_url && !post.feature_video_url" class="text-muted-foreground">—</span>
+                      <span v-if="!post.cover_image_url && !post.feature_video_url"
+                        class="text-muted-foreground">—</span>
                     </div>
                   </td>
                   <td class="px-4 py-3">
                     <div class="flex items-center gap-2 text-xs text-muted-foreground">
-                      <div class="flex items-center gap-1" v-if="post.gallery?.length">
+                      <div class="flex items-center gap-1" v-if="Array.isArray(post.gallery) && post.gallery.length">
                         <ImageIcon class="h-3.5 w-3.5" />
-                        {{ post.gallery.filter((item) => item.kind === 'image').length }}
+                        {{post.gallery.filter((item) => item.kind === 'image').length}}
                       </div>
-                      <div class="flex items-center gap-1" v-if="post.gallery?.some((item) => item.kind === 'video')">
+                      <div class="flex items-center gap-1"
+                        v-if="Array.isArray(post.gallery) && post.gallery.some((item) => item.kind === 'video')">
                         <Video class="h-3.5 w-3.5" />
-                        {{ post.gallery.filter((item) => item.kind === 'video').length }}
+                        {{post.gallery.filter((item) => item.kind === 'video').length}}
                       </div>
-                      <span v-if="!post.gallery?.length">—</span>
+                      <span v-if="!Array.isArray(post.gallery) || !post.gallery.length">—</span>
                     </div>
                   </td>
                   <td class="px-4 py-3">
@@ -333,13 +329,8 @@ function queueGalleryRemoval(id: number) {
         </div>
         <div class="space-y-2">
           <Label for="post-summary">Summary</Label>
-          <textarea
-            id="post-summary"
-            v-model="form.summary"
-            placeholder="Short excerpt displayed in listings"
-            rows="3"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <textarea id="post-summary" v-model="form.summary" placeholder="Short excerpt displayed in listings" rows="3"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
           <p v-if="form.errors.summary" class="text-sm text-destructive">{{ form.errors.summary }}</p>
         </div>
         <div class="space-y-2">
@@ -359,7 +350,8 @@ function queueGalleryRemoval(id: number) {
           <p v-if="form.errors.cover_image" class="text-sm text-destructive">{{ form.errors.cover_image }}</p>
           <div v-if="editingPost?.cover_image_url" class="text-xs text-muted-foreground">
             Current cover:
-            <a :href="editingPost.cover_image_url" target="_blank" rel="noreferrer" class="text-primary hover:underline">
+            <a :href="editingPost.cover_image_url" target="_blank" rel="noreferrer"
+              class="text-primary hover:underline">
               Preview
             </a>
           </div>
@@ -371,7 +363,8 @@ function queueGalleryRemoval(id: number) {
           <p v-if="form.errors.feature_video" class="text-sm text-destructive">{{ form.errors.feature_video }}</p>
           <div v-if="editingPost?.feature_video_url" class="text-xs text-muted-foreground">
             Current video:
-            <a :href="editingPost.feature_video_url" target="_blank" rel="noreferrer" class="text-primary hover:underline">
+            <a :href="editingPost.feature_video_url" target="_blank" rel="noreferrer"
+              class="text-primary hover:underline">
               Preview
             </a>
           </div>
@@ -379,21 +372,22 @@ function queueGalleryRemoval(id: number) {
         <div class="space-y-2">
           <Label for="post-gallery">Gallery images</Label>
           <Input id="post-gallery" type="file" accept="image/*" multiple @change="handleGalleryChange" />
-          <p class="text-xs text-muted-foreground">Select up to 20 images. New uploads replace previous selection before saving.</p>
+          <p class="text-xs text-muted-foreground">Select up to 20 images. New uploads replace previous selection before
+            saving.</p>
           <p v-if="form.errors.gallery" class="text-sm text-destructive">{{ form.errors.gallery }}</p>
           <div v-if="existingGallery.length" class="space-y-2 rounded-md border p-3">
             <p class="text-xs font-medium text-muted-foreground">Current gallery</p>
             <div class="grid grid-cols-3 gap-2">
-              <div v-for="asset in existingGallery" :key="asset.id" class="group relative overflow-hidden rounded border">
-                <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.id.toString()" class="h-20 w-full object-cover" />
+              <div v-for="asset in existingGallery" :key="asset.id"
+                class="group relative overflow-hidden rounded border">
+                <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.id.toString()"
+                  class="h-20 w-full object-cover" />
                 <div v-else class="flex h-20 w-full items-center justify-center bg-muted text-xs text-muted-foreground">
                   <Video class="mr-1 h-4 w-4" /> Video
                 </div>
-                <button
-                  type="button"
+                <button type="button"
                   class="absolute right-1 top-1 rounded bg-background/80 px-1 text-[10px] font-medium text-destructive shadow"
-                  @click="queueGalleryRemoval(asset.id)"
-                >
+                  @click="queueGalleryRemoval(asset.id)">
                   Remove
                 </button>
               </div>
@@ -410,11 +404,8 @@ function queueGalleryRemoval(id: number) {
         </div>
         <div class="space-y-2">
           <Label for="post-status">Status</Label>
-          <select
-            id="post-status"
-            v-model="form.status"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
+          <select id="post-status" v-model="form.status"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
             <option v-for="option in statusOptions" :key="option" :value="option">{{ option }}</option>
           </select>
           <p v-if="form.errors.status" class="text-sm text-destructive">{{ form.errors.status }}</p>

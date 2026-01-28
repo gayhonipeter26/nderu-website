@@ -128,7 +128,7 @@ class ProjectController extends Controller
             Storage::disk('public')->delete($project->case_study_video_path);
         }
 
-        $project->media()->each->delete();
+        $project->media()->get()->each->delete();
 
         $project->delete();
 

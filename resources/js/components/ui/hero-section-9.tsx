@@ -1,78 +1,10 @@
 import * as React from "react"
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Menu, X } from 'lucide-react'
-
-const menuItems = [
-    { name: 'Features', href: '#' },
-    { name: 'Solution', href: '#' },
-    { name: 'Pricing', href: '#' },
-    { name: 'About', href: '#' },
-]
 
 export const HeroSection = () => {
-    const [menuState, setMenuState] = React.useState(false)
     return (
         <div>
-            <header>
-                <nav
-                    data-state={menuState && 'active'}
-                    className="group fixed z-20 w-full border-b border-dashed bg-white backdrop-blur md:relative dark:bg-zinc-950/50 lg:dark:bg-transparent">
-                    <div className="m-auto max-w-5xl px-6">
-                        <div className="flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-                            <div className="flex w-full justify-between lg:w-auto">
-                                <a
-                                    href="/"
-                                    aria-label="home"
-                                    className="flex items-center space-x-2">
-                                    <Logo />
-                                </a>
-
-                                <button
-                                    onClick={() => setMenuState(!menuState)}
-                                    aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
-                                    className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
-                                    <Menu className="group-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                                    <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
-                                </button>
-                            </div>
-
-                            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-                                <div className="lg:pr-4">
-                                    <ul className="space-y-6 text-base lg:flex lg:gap-8 lg:space-y-0 lg:text-sm">
-                                        {menuItems.map((item, index) => (
-                                            <li key={index}>
-                                                <a
-                                                    href={item.href}
-                                                    className="text-muted-foreground hover:text-accent-foreground block duration-150">
-                                                    <span>{item.name}</span>
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit lg:border-l lg:pl-6">
-                                    <Button
-                                        variant="outline"
-                                        size="sm">
-                                        <a href="#">
-                                            <span>Login</span>
-                                        </a>
-                                    </Button>
-                                    <Button
-                                        size="sm">
-                                        <a href="#">
-                                            <span>Login</span>
-                                        </a>
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </header>
-
             <main>
                 <div
                     aria-hidden
@@ -85,13 +17,14 @@ export const HeroSection = () => {
                 <section className="overflow-hidden bg-white dark:bg-transparent">
                     <div className="relative mx-auto max-w-5xl px-6 py-28 lg:py-24">
                         <div className="relative z-10 mx-auto max-w-2xl text-center">
-                            <h1 className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl">Modern Software testing reimagined</h1>
-                            <p className="mx-auto my-8 max-w-2xl text-xl">Officiis laudantium excepturi ducimus rerum dignissimos, and tempora nam vitae, excepturi ducimus iste provident dolores.</p>
+                            <h1 className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl">Crafting Digital Excellence through Software</h1>
+                            <p className="mx-auto my-8 max-w-2xl text-xl">From complex system architectures to seamless mobile solutions, I build robust software that scales with your business needs.</p>
 
                             <Button
+                                asChild
                                 size="lg">
-                                <a href="#">
-                                    <span className="btn-label">Start Building</span>
+                                <a href="/projects">
+                                    <span className="btn-label">Explore My Work</span>
                                 </a>
                             </Button>
                         </div>
@@ -102,15 +35,15 @@ export const HeroSection = () => {
                             <div className="[transform:rotateX(20deg);]">
                                 <div className="lg:h-[44rem] relative skew-x-[.36rad]">
                                     <img
-                                        className="rounded-[--radius] z-[2] relative border dark:hidden"
-                                        src="https://tailark.com/_next/image?url=%2Fcard.png&w=3840&q=75"
+                                        className="rounded-[--radius] z-[2] relative border dark:hidden shadow-2xl"
+                                        src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=2880&q=80"
                                         alt="Tailark hero section"
                                         width={2880}
                                         height={2074}
                                     />
                                     <img
-                                        className="rounded-[--radius] z-[2] relative hidden border dark:block"
-                                        src="https://tailark.com/_next/image?url=%2Fdark-card.webp&w=3840&q=75"
+                                        className="rounded-[--radius] z-[2] relative hidden border dark:block shadow-2xl"
+                                        src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=2880&q=80"
                                         alt="Tailark hero section"
                                         width={2880}
                                         height={2074}

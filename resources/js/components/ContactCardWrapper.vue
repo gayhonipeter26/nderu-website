@@ -5,9 +5,12 @@ import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import ContactCardDemo from './ui/contact-card-demo';
 import PhotographyContactCardDemo from './ui/photography-contact-card-demo';
+import BlogContactCardDemo from './ui/blog-contact-card-demo';
+import NewsletterContactCardDemo from './ui/newsletter-contact-card-demo';
+import SecureMessageGateway from './ui/secure-message-gateway';
 
 const props = defineProps<{
-  type?: 'default' | 'photography'
+  type?: 'default' | 'photography' | 'blog' | 'newsletter' | 'secure-gateway'
 }>();
 
 const container = ref<HTMLDivElement | null>(null);
@@ -19,8 +22,13 @@ const renderComponent = () => {
     root = createRoot(container.value);
     root.render(
       <React.StrictMode>
-        {props.type === 'photography' ? <PhotographyContactCardDemo /> : <ContactCardDemo />}
-      </React.StrictMode>
+        {
+          props.type === 'photography' ? <PhotographyContactCardDemo /> :
+            props.type === 'blog' ? <BlogContactCardDemo /> :
+              props.type === 'newsletter' ? <NewsletterContactCardDemo /> :
+                props.type === 'secure-gateway' ? <SecureMessageGateway /> :
+                  <ContactCardDemo />
+        }      </React.StrictMode>
     );
   }
 };

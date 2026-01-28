@@ -8,14 +8,17 @@ const ArticleCardBlogDemo = ({ posts }: { posts?: any[] }) => {
       month: post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short' }).toUpperCase() : 'JAN',
       day: post.published_at ? new Date(post.published_at).getDate() : 1,
     },
-    title: post.title,
-    description: post.summary || 'Read more about this article.',
+    title: post.title.length > 25 ? post.title.substring(0, 25) + '...' : post.title,
+    description: (post.summary || 'Read more about this article.').length > 25
+      ? (post.summary || 'Read more about this article.').substring(0, 25) + '...'
+      : (post.summary || 'Read more about this article.'),
     imageUrl: post.cover_image_url || 'https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=800&auto=format&fit=crop',
     imageAlt: post.title || 'Blog post cover image',
     location: {
       city: 'Nairobi',
       country: 'Kenya',
     },
+    url: `/blog/${post.slug}`,
   });
 
   const blogPosts = posts ? posts.map(transformPostToCard) : [];
@@ -31,7 +34,7 @@ const ArticleCardBlogDemo = ({ posts }: { posts?: any[] }) => {
             Technical insights, photography tips, and industry trends. Explore our latest articles on web development, mobile apps, and creative photography.
           </p>
         </div>
-        
+
         {blogPosts.length > 0 ? (
           <div className="grid gap-12 md:grid-cols-5">
             {blogPosts.map((post) => (

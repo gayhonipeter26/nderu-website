@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog/index';
+import { Input } from '@/components/ui/input/index';
+import { Label } from '@/components/ui/label/index';
 import { Image as ImageIcon, Pencil, Plus, Trash2, Video } from 'lucide-vue-next';
 import { useForm, router } from '@inertiajs/vue3';
 
@@ -107,7 +107,7 @@ function startEdit(project: Project) {
   form.case_study_video = null;
   form.gallery = [];
   form.gallery_remove = [];
-  existingGallery.value = [...(project.gallery ?? [])];
+  existingGallery.value = Array.isArray(project.gallery) ? [...project.gallery] : [];
   newGalleryPreviews.value.forEach((preview) => URL.revokeObjectURL(preview.url));
   newGalleryPreviews.value = [];
   dialogOpen.value = true;
@@ -256,7 +256,8 @@ function queueGalleryRemoval(id: number) {
                   <td class="px-4 py-3 text-muted-foreground">{{ project.category ?? '—' }}</td>
                   <td class="px-4 py-3 text-muted-foreground">{{ project.year ?? '—' }}</td>
                   <td class="px-4 py-3">
-                    <Badge :variant="project.status === 'Published' ? 'default' : 'outline'">{{ project.status }}</Badge>
+                    <Badge :variant="project.status === 'Published' ? 'default' : 'outline'">{{ project.status }}
+                    </Badge>
                   </td>
                   <td class="px-4 py-3">
                     <Badge v-if="project.featured" variant="secondary">Yes</Badge>
@@ -264,39 +265,32 @@ function queueGalleryRemoval(id: number) {
                   </td>
                   <td class="px-4 py-3">
                     <div class="flex flex-col gap-1 text-xs">
-                      <a
-                        v-if="project.hero_image_url"
-                        :href="project.hero_image_url"
-                        target="_blank"
-                        rel="noreferrer"
-                        class="text-primary hover:underline"
-                      >
+                      <a v-if="project.hero_image_url" :href="project.hero_image_url" target="_blank" rel="noreferrer"
+                        class="text-primary hover:underline">
                         View image
                       </a>
-                      <a
-                        v-if="project.case_study_video_url"
-                        :href="project.case_study_video_url"
-                        target="_blank"
-                        rel="noreferrer"
-                        class="text-primary hover:underline"
-                      >
+                      <a v-if="project.case_study_video_url" :href="project.case_study_video_url" target="_blank"
+                        rel="noreferrer" class="text-primary hover:underline">
                         View video
                       </a>
-                      <span v-if="!project.hero_image_url && !project.case_study_video_url" class="text-muted-foreground">—</span>
+                      <span v-if="!project.hero_image_url && !project.case_study_video_url"
+                        class="text-muted-foreground">—</span>
                     </div>
                   </td>
                   <td class="px-4 py-3 text-muted-foreground">{{ project.updated_at ?? '—' }}</td>
                   <td class="px-4 py-3">
                     <div class="flex items-center gap-2 text-xs text-muted-foreground">
-                      <div class="flex items-center gap-1" v-if="project.gallery?.length">
+                      <div class="flex items-center gap-1"
+                        v-if="Array.isArray(project.gallery) && project.gallery.length">
                         <ImageIcon class="h-3.5 w-3.5" />
-                        {{ project.gallery.filter((item) => item.kind === 'image').length }}
+                        {{project.gallery.filter((item) => item.kind === 'image').length}}
                       </div>
-                      <div class="flex items-center gap-1" v-if="project.gallery?.some((item) => item.kind === 'video')">
+                      <div class="flex items-center gap-1"
+                        v-if="Array.isArray(project.gallery) && project.gallery.some((item) => item.kind === 'video')">
                         <Video class="h-3.5 w-3.5" />
-                        {{ project.gallery.filter((item) => item.kind === 'video').length }}
+                        {{project.gallery.filter((item) => item.kind === 'video').length}}
                       </div>
-                      <span v-if="!project.gallery?.length">—</span>
+                      <span v-if="!Array.isArray(project.gallery) || !project.gallery.length">—</span>
                     </div>
                   </td>
                   <td class="px-4 py-3">
@@ -328,7 +322,8 @@ function queueGalleryRemoval(id: number) {
         </CardHeader>
         <CardContent class="text-sm text-muted-foreground">
           <p>
-            Use the featured flag to spotlight priority work on the public site. Consider adding tags when the catalogue grows.
+            Use the featured flag to spotlight priority work on the public site. Consider adding tags when the catalogue
+            grows.
           </p>
         </CardContent>
       </Card>
@@ -356,24 +351,16 @@ function queueGalleryRemoval(id: number) {
         </div>
         <div class="space-y-2">
           <Label for="project-status">Status</Label>
-          <select
-            id="project-status"
-            v-model="form.status"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
+          <select id="project-status" v-model="form.status"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
             <option v-for="option in statusOptions" :key="option" :value="option">{{ option }}</option>
           </select>
           <p v-if="form.errors.status" class="text-sm text-destructive">{{ form.errors.status }}</p>
         </div>
         <div class="space-y-2">
           <Label for="project-summary">Summary (optional)</Label>
-          <textarea
-            id="project-summary"
-            v-model="form.summary"
-            placeholder="Short description for internal reference"
-            rows="3"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <textarea id="project-summary" v-model="form.summary" placeholder="Short description for internal reference"
+            rows="3" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
           <p v-if="form.errors.summary" class="text-sm text-destructive">{{ form.errors.summary }}</p>
         </div>
         <div class="space-y-2">
@@ -383,24 +370,22 @@ function queueGalleryRemoval(id: number) {
           <p v-if="form.errors.hero_image" class="text-sm text-destructive">{{ form.errors.hero_image }}</p>
           <div v-if="editingProject?.hero_image_url" class="text-xs text-muted-foreground">
             Current image:
-            <a :href="editingProject.hero_image_url" target="_blank" rel="noreferrer" class="text-primary hover:underline">
+            <a :href="editingProject.hero_image_url" target="_blank" rel="noreferrer"
+              class="text-primary hover:underline">
               Preview
             </a>
           </div>
         </div>
         <div class="space-y-2">
           <Label for="project-case-study-video">Case study video</Label>
-          <Input
-            id="project-case-study-video"
-            type="file"
-            accept="video/mp4,video/quicktime"
-            @change="handleCaseStudyVideoChange"
-          />
+          <Input id="project-case-study-video" type="file" accept="video/mp4,video/quicktime"
+            @change="handleCaseStudyVideoChange" />
           <p class="text-xs text-muted-foreground">Upload mp4 or mov files up to 200 MB.</p>
           <p v-if="form.errors.case_study_video" class="text-sm text-destructive">{{ form.errors.case_study_video }}</p>
           <div v-if="editingProject?.case_study_video_url" class="text-xs text-muted-foreground">
             Current video:
-            <a :href="editingProject.case_study_video_url" target="_blank" rel="noreferrer" class="text-primary hover:underline">
+            <a :href="editingProject.case_study_video_url" target="_blank" rel="noreferrer"
+              class="text-primary hover:underline">
               Preview
             </a>
           </div>
@@ -408,21 +393,22 @@ function queueGalleryRemoval(id: number) {
         <div class="space-y-2">
           <Label for="project-gallery">Gallery images</Label>
           <Input id="project-gallery" type="file" accept="image/*" multiple @change="handleGalleryChange" />
-          <p class="text-xs text-muted-foreground">Select up to 20 images. New uploads replace previous selection before saving.</p>
+          <p class="text-xs text-muted-foreground">Select up to 20 images. New uploads replace previous selection before
+            saving.</p>
           <p v-if="form.errors.gallery" class="text-sm text-destructive">{{ form.errors.gallery }}</p>
           <div v-if="existingGallery.length" class="space-y-2 rounded-md border p-3">
             <p class="text-xs font-medium text-muted-foreground">Current gallery</p>
             <div class="grid grid-cols-3 gap-2">
-              <div v-for="asset in existingGallery" :key="asset.id" class="group relative overflow-hidden rounded border">
-                <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.id.toString()" class="h-20 w-full object-cover" />
+              <div v-for="asset in existingGallery" :key="asset.id"
+                class="group relative overflow-hidden rounded border">
+                <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.id.toString()"
+                  class="h-20 w-full object-cover" />
                 <div v-else class="flex h-20 w-full items-center justify-center bg-muted text-xs text-muted-foreground">
                   <Video class="mr-1 h-4 w-4" /> Video
                 </div>
-                <button
-                  type="button"
+                <button type="button"
                   class="absolute right-1 top-1 rounded bg-background/80 px-1 text-[10px] font-medium text-destructive shadow"
-                  @click="queueGalleryRemoval(asset.id)"
-                >
+                  @click="queueGalleryRemoval(asset.id)">
                   Remove
                 </button>
               </div>
@@ -439,13 +425,8 @@ function queueGalleryRemoval(id: number) {
         </div>
         <div class="space-y-2">
           <Label for="project-summary">Summary (optional)</Label>
-          <textarea
-            id="project-summary"
-            v-model="form.summary"
-            placeholder="Short description for internal reference"
-            rows="3"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <textarea id="project-summary" v-model="form.summary" placeholder="Short description for internal reference"
+            rows="3" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
           <p v-if="form.errors.summary" class="text-sm text-destructive">{{ form.errors.summary }}</p>
         </div>
         <div class="flex items-center justify-between">
@@ -453,13 +434,9 @@ function queueGalleryRemoval(id: number) {
             <Label for="project-featured">Featured</Label>
             <p class="text-xs text-muted-foreground">Mark as featured to highlight on the public portfolio.</p>
           </div>
-          <input
-            id="project-featured"
-            type="checkbox"
-            class="h-4 w-4 rounded border-input text-primary focus-visible:ring-ring"
-            :checked="form.featured"
-            @change="form.featured = !form.featured"
-          />
+          <input id="project-featured" type="checkbox"
+            class="h-4 w-4 rounded border-input text-primary focus-visible:ring-ring" :checked="form.featured"
+            @change="form.featured = !form.featured" />
         </div>
         <div v-if="form.hasErrors" class="space-y-1 text-sm text-destructive">
           <p v-for="(error, key) in form.errors" :key="key">{{ error }}</p>

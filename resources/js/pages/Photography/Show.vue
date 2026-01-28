@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 import { Badge } from '@/components/ui/badge/index';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
 import { Button } from '@/components/ui/button/index';
-import { Input } from '@/components/ui/input/index';
-import { Textarea } from '@/components/ui/textarea/index';
-import { Heart, MessageSquare, Send, Calendar, MapPin, Camera, Play } from 'lucide-vue-next';
+import { Heart, MessageSquare, Calendar, MapPin, Camera, Play } from 'lucide-vue-next';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 
 interface Comment {
   id: number;
@@ -36,26 +35,6 @@ const props = defineProps<{
   comments: Comment[];
 }>();
 
-const commentForm = useForm({
-  author_name: '',
-  author_email: '',
-  body: '',
-});
-
-const isSubmitting = ref(false);
-
-const submitComment = () => {
-  if (isSubmitting.value) return;
-
-  isSubmitting.value = true;
-  commentForm.post(`/photography/${props.session.slug}/comments`, {
-    preserveScroll: true,
-    onFinish: () => {
-      isSubmitting.value = false;
-      commentForm.reset('author_name', 'author_email', 'body');
-    },
-  });
-};
 
 const likeSession = () => {
   router.post(`/photography/${props.session.slug}/like`, {}, {
@@ -69,10 +48,10 @@ const formattedComments = computed(() =>
     ...comment,
     displayDate: comment.created_at
       ? new Intl.DateTimeFormat('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        }).format(new Date(comment.created_at))
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }).format(new Date(comment.created_at))
       : 'Recently',
   })),
 );
@@ -115,7 +94,9 @@ const formattedComments = computed(() =>
                 </span>
               </Button>
               <Button variant="outline" class="gap-2" as-child>
-                <a href="#comments"><MessageSquare class="h-4 w-4" /> Discuss session</a>
+                <a href="#comments">
+                  <MessageSquare class="h-4 w-4" /> Discuss session
+                </a>
               </Button>
               <Button as-child>
                 <Link href="/contact">Book a similar session</Link>
@@ -131,28 +112,21 @@ const formattedComments = computed(() =>
         <div class="grid gap-10 lg:grid-cols-[2fr,1fr]">
           <div class="space-y-6">
             <div v-if="props.session.hero_image_url" class="overflow-hidden rounded-lg border bg-muted">
-              <img
-                :src="props.session.hero_image_url"
-                :alt="`Hero image for ${props.session.title}`"
-                class="h-full w-full object-cover"
-                loading="lazy"
-              />
+              <img :src="props.session.hero_image_url" :alt="`Hero image for ${props.session.title}`"
+                class="h-full w-full object-cover" loading="lazy" />
             </div>
             <article class="prose prose-neutral max-w-none text-base leading-relaxed dark:prose-invert">
               <slot name="body">
                 <p class="text-muted-foreground">
-                  Highlights from this session will be documented shortly. Check back soon for behind-the-scenes notes and
+                  Highlights from this session will be documented shortly. Check back soon for behind-the-scenes notes
+                  and
                   final deliverables.
                 </p>
               </slot>
             </article>
             <div v-if="props.session.highlight_video_url" class="space-y-3">
               <h2 class="text-sm font-medium text-muted-foreground">Highlight reel</h2>
-              <video
-                controls
-                preload="metadata"
-                class="h-64 w-full overflow-hidden rounded-lg border bg-black"
-              >
+              <video controls preload="metadata" class="h-64 w-full overflow-hidden rounded-lg border bg-black">
                 <source :src="props.session.highlight_video_url" type="video/mp4" />
                 <source :src="props.session.highlight_video_url" type="video/quicktime" />
                 Your browser does not support the video tag.
@@ -216,32 +190,7 @@ const formattedComments = computed(() =>
             </Card>
           </div>
           <aside class="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle class="text-base">Join the conversation</CardTitle>
-                <CardDescription>Leave a note—contact information remains private.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form class="space-y-4" @submit.prevent="submitComment">
-                  <div class="grid gap-2">
-                    <label class="text-sm font-medium text-foreground" for="author_name">Name</label>
-                    <Input id="author_name" v-model="commentForm.author_name" placeholder="Alex Doe" required />
-                  </div>
-                  <div class="grid gap-2">
-                    <label class="text-sm font-medium text-foreground" for="author_email">Email</label>
-                    <Input id="author_email" v-model="commentForm.author_email" placeholder="you@email.com" type="email" />
-                  </div>
-                  <div class="grid gap-2">
-                    <label class="text-sm font-medium text-foreground" for="body">Comment</label>
-                    <Textarea id="body" v-model="commentForm.body" rows="4" placeholder="Share your insights..." required />
-                  </div>
-                  <Button type="submit" class="w-full gap-2" :disabled="isSubmitting">
-                    <Send class="h-4 w-4" />
-                    {{ isSubmitting ? 'Submitting...' : 'Post comment' }}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <ContactCardWrapper type="blog" />
           </aside>
         </div>
       </div>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog/index';
+import { Input } from '@/components/ui/input/index';
+import { Label } from '@/components/ui/label/index';
 import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 type FaqStatus = 'Published' | 'Draft';
@@ -179,21 +179,13 @@ function removeFaq(id: number) {
         </div>
         <div class="space-y-2">
           <Label for="faq-answer">Answer</Label>
-          <textarea
-            id="faq-answer"
-            v-model="form.answer"
-            rows="4"
-            placeholder="Provide a concise, helpful response"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <textarea id="faq-answer" v-model="form.answer" rows="4" placeholder="Provide a concise, helpful response"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
         </div>
         <div class="space-y-2">
           <Label for="faq-status">Status</Label>
-          <select
-            id="faq-status"
-            v-model="form.status"
-            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
+          <select id="faq-status" v-model="form.status"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
             <option v-for="option in statusOptions" :key="option" :value="option">{{ option }}</option>
           </select>
         </div>

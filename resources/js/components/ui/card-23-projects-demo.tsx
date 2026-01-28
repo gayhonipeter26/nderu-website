@@ -24,6 +24,8 @@ const ArticleCardProjectsDemo = ({ projects }: { projects?: any[] }) => {
       city: project.client ? `${project.client} Client` : 'Nairobi',
       country: project.year ? `${project.year}` : 'Kenya',
     },
+    githubUrl: project.meta?.github_url || project.github_url,
+    liveUrl: project.meta?.live_url || project.live_url,
   });
 
   const projectCards = currentProjects.map(transformProjectToCard);
@@ -39,9 +41,9 @@ const ArticleCardProjectsDemo = ({ projects }: { projects?: any[] }) => {
             Explore our portfolio of innovative projects. From web applications to mobile solutions, discover how we bring ideas to life with cutting-edge technology.
           </p>
         </div>
-        
+
         {projectCards.length > 0 ? (
-          <div className="grid gap-12 md:grid-cols-4">
+          <div className="grid gap-12 md:grid-cols-5">
             {projectCards.map((project) => (
               <ArticleCard key={`project-${project.id}`} {...project} />
             ))}
