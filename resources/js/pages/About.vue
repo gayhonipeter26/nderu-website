@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
 
           <!-- Left Sidebar (Sticky) -->
           <aside
-            class="lg:w-1/3 lg:h-fit lg:sticky lg:top-24 py-16 lg:py-24 border-r border-border/40 lg:pr-12 lg:self-start z-10 bg-background">
+            class="lg:w-1/3 lg:h-fit lg:sticky lg:top-24 py-8 lg:py-24 border-b lg:border-b-0 lg:border-r border-border/40 lg:pr-12 lg:self-start z-10 bg-background">
             <div class="space-y-10">
               <div class="space-y-4">
                 <h2 class="text-sm font-bold uppercase tracking-[0.2em] text-primary flex items-center gap-2">

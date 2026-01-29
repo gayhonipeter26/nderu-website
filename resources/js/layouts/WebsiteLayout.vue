@@ -68,7 +68,7 @@ const isActive = (href: string) => {
                     'px-3 py-2 rounded-md transition-colors',
                     isActive('/projects') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
                   ]">
-                    Projects
+                    Coding
                   </Link>
                   <Link href="/photography" :class="[
                     'px-3 py-2 rounded-md transition-colors',
@@ -115,7 +115,7 @@ const isActive = (href: string) => {
             <div class="flex flex-col gap-1 text-muted-foreground">
               <Link href="/about">About</Link>
               <Link href="/services">Services</Link>
-              <Link href="/projects">Projects</Link>
+              <Link href="/projects">Coding</Link>
               <Link href="/contact">Contact</Link>
             </div>
           </div>

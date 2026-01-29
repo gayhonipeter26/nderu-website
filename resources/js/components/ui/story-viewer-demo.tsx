@@ -167,7 +167,7 @@ export function StoryViewerDemo() {
     }, []);
 
     return (
-        <div className="w-full max-w-4xl mx-auto px-4 pb-12">
+        <div className="w-full max-w-4xl mx-auto pb-12">
             <div className="flex gap-4 sm:gap-6 md:gap-10 overflow-x-auto py-4 px-1 no-scrollbar lg:justify-center">
                 <AddStoryButton onUpload={handleUpload} isUploading={isUploading} />
 

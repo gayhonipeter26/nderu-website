@@ -37,9 +37,9 @@ export const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
     const [isLiked, setIsLiked] = React.useState(false);
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto px-4 py-8 md:py-12">
             {/* Main Profile Info */}
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-20 mb-14">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-20 mb-8 md:mb-14">
                 {/* Avatar */}
                 <div className="flex-shrink-0">
                     <div className="relative p-[3px] rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]">
