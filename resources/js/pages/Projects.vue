@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import HeroAsciiOneWrapper from '@/components/HeroAsciiOneWrapper.vue';
+import ProjectTimelineWrapper from '@/components/ProjectTimelineWrapper.vue';
 import { Button } from '@/components/ui/button/index';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
 import ArticleCardProjectsDemo from '@/components/ui/card-23-projects-demo';
@@ -139,6 +140,15 @@ onBeforeUnmount(() => {
       <HeroAsciiOneWrapper />
     </section>
 
+    <section id="project-timeline" class="py-20 bg-black border-y border-neutral-900">
+      <div class="container mx-auto px-4 mb-16 text-center">
+        <h2 class="text-3xl md:text-5xl font-bold tracking-tighter text-white mb-4">Project Evolution</h2>
+        <p class="text-neutral-400 max-w-2xl mx-auto">
+          A narrative of systems built, problems solved, and technical milestones achieved.
+        </p>
+      </div>
+      <ProjectTimelineWrapper />
+    </section>
 
     <section id="featured-projects" class="border-b bg-background">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">

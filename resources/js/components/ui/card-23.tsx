@@ -61,7 +61,7 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
       <motion.div
         ref={ref}
         className={cn(
-          "w-full overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm",
+          "w-full overflow-hidden border bg-card/40 backdrop-blur-sm text-card-foreground shadow-sm group font-mono",
           className
         )}
         variants={cardVariants}
@@ -71,85 +71,68 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
         transition={{ duration: 0.3, ease: "easeInOut" }}
         {...(props as any)}
       >
-        <div className="p-6">
+        <div className="p-5 flex flex-col h-full">
           {/* Header section with tag and date */}
           <header className="mb-4 flex items-center justify-between">
-            <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-              {tag}
+            <span className="text-[9px] font-bold tracking-widest uppercase text-white/40">
+                // {tag}
             </span>
-            <div className="flex items-center text-xs font-semibold">
-              <span className="rounded-l-md bg-secondary px-2.5 py-1.5 text-secondary-foreground">
-                {date.month.toUpperCase()}
+            <div className="flex items-center text-[9px] font-bold tracking-tighter border border-white/10">
+              <span className="px-2 py-1 bg-white/5 text-white/50">
+                {date.month}
               </span>
-              <span className="rounded-r-md bg-primary px-2.5 py-1.5 text-primary-foreground">
+              <span className="px-2 py-1 bg-white text-black">
                 {date.day}
               </span>
             </div>
           </header>
 
           {/* Main content section */}
-          <main className="space-y-2">
-            <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
-            <p className="text-sm text-muted-foreground">{description}</p>
+          <main className="mb-4">
+            <h3 className="text-lg font-bold tracking-tight uppercase text-white group-hover:text-blue-400 transition-colors line-clamp-1">
+              {title}
+            </h3>
+            <p className="mt-2 text-[11px] text-gray-400 leading-relaxed line-clamp-2 italic">
+              {description}
+            </p>
           </main>
-        </div>
 
-        {/* Image section with location overlay */}
-        <div className="relative mt-2 aspect-square overflow-hidden rounded-b-2xl rounded-t-lg">
-          <motion.img
-            src={imageUrl}
-            alt={imageAlt}
-            className="h-full w-full object-cover object-cover"
-            variants={imageVariants}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            style={{ objectPosition: 'center', objectFit: 'cover' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-          <div className="absolute bottom-0 left-0 flex items-center gap-2 p-4 text-white">
-            <MapPin className="h-4 w-4" />
-            <div>
-              <p className="text-sm font-semibold">{location.city}</p>
-              <p className="text-xs">{location.country}</p>
+          {/* Image section */}
+          <div className="relative aspect-video overflow-hidden border border-white/5">
+            <motion.img
+              src={imageUrl}
+              alt={imageAlt}
+              className="h-full w-full object-cover"
+              variants={imageVariants}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-white/70">
+              <MapPin className="h-3 w-3" />
+              <span className="text-[9px] font-bold tracking-wider uppercase">{location.city}</span>
             </div>
           </div>
 
-          {/* Action Badges */}
-          <div className="absolute bottom-4 right-4 flex items-center gap-2">
-            {githubUrl && (
-              <a
-                href={githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/40 text-white"
-                title="View on GitHub"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Github className="h-4 w-4" />
-              </a>
-            )}
-            {liveUrl && (
-              <a
-                href={liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/40 text-white"
-                title="Live Preview"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Globe className="h-4 w-4" />
-              </a>
-            )}
+          {/* Actions */}
+          <footer className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {githubUrl && (
+                <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-colors">
+                  <Github size={14} />
+                </a>
+              )}
+              {liveUrl && (
+                <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-colors">
+                  <Globe size={14} />
+                </a>
+              )}
+            </div>
             {url && (
-              <a
-                href={url}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/40 text-white"
-                title="Read more"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ArrowUpRight className="h-4 w-4" />
+              <a href={url} className="text-[9px] font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors flex items-center gap-1">
+                DETAILS <ArrowUpRight size={12} />
               </a>
             )}
-          </div>
+          </footer>
         </div>
       </motion.div>
     );

@@ -43,9 +43,9 @@ const ArticleCardProjectsDemo = ({ projects }: { projects?: any[] }) => {
         </div>
 
         {projectCards.length > 0 ? (
-          <div className="grid gap-12 md:grid-cols-5">
+          <div className="grid gap-6 md:grid-cols-4">
             {projectCards.map((project) => (
-              <ArticleCard key={`project-${project.id}`} {...project} />
+              <ArticleCard key={project.id} {...project} />
             ))}
           </div>
         ) : (
