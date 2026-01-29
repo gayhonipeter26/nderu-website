@@ -20,6 +20,7 @@ const docsContainer = ref<HTMLElement | null>(null);
 const ctaContainer = ref<HTMLDivElement | null>(null);
 
 const activeTab = ref('about');
+const headerLoading = ref(true);
 
 let profileHeaderRoot: Root | null = null;
 let scrollyContentRoot: Root | null = null;
@@ -41,8 +42,13 @@ const renderProfileHeader = () => {
           avatarUrl="/images/profile.jpg"
           bio="Builder of Practical Systems. Software engineer designing HMS, POS & Workflow-driven tools."
           activeTab={activeTab.value}
+          isLoading={headerLoading.value}
           onTabChange={(tab) => {
+            headerLoading.value = true;
             activeTab.value = tab;
+            setTimeout(() => {
+              headerLoading.value = false;
+            }, 800);
           }}
         >
           <StoryViewerDemo />
@@ -54,6 +60,9 @@ const renderProfileHeader = () => {
 
 onMounted(() => {
   renderProfileHeader();
+  setTimeout(() => {
+    headerLoading.value = false;
+  }, 1200);
 
   if (scrollyContentContainer.value) {
     scrollyContentRoot = createRoot(scrollyContentContainer.value);
@@ -101,7 +110,7 @@ onMounted(() => {
   }
 });
 
-watch(activeTab, () => {
+watch([activeTab, headerLoading], () => {
   renderProfileHeader();
 });
 

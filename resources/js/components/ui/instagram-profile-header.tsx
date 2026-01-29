@@ -21,6 +21,7 @@ interface InstagramProfileHeaderProps {
     children?: React.ReactNode;
     activeTab?: string;
     onTabChange?: (tab: string) => void;
+    isLoading?: boolean;
 }
 
 export const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
@@ -32,7 +33,8 @@ export const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
     footerText = "Followed by tech_community and 500 others",
     children,
     activeTab = "about",
-    onTabChange
+    onTabChange,
+    isLoading = false
 }) => {
     const [isLiked, setIsLiked] = React.useState(false);
 
@@ -41,8 +43,36 @@ export const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
             {/* Main Profile Info */}
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-20 mb-8 md:mb-14">
                 {/* Avatar */}
-                <div className="flex-shrink-0">
-                    <div className="relative p-[3px] rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] animate-instagram-spin">
+                <div className="flex-shrink-0 relative">
+                    {/* Dotted/Dashed Rotating Ring */}
+                    {isLoading && (
+                        <svg className="absolute inset-[-4px] w-[calc(100%+8px)] h-[calc(100%+8px)] animate-instagram-spin" viewBox="0 0 100 100">
+                            <circle
+                                cx="50"
+                                cy="50"
+                                r="46"
+                                fill="none"
+                                stroke="url(#instagram-gradient)"
+                                strokeWidth="3"
+                                strokeDasharray="6 8"
+                                strokeLinecap="round"
+                            />
+                            <defs>
+                                <linearGradient id="instagram-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="#f9ce34" />
+                                    <stop offset="50%" stopColor="#ee2a7b" />
+                                    <stop offset="100%" stopColor="#6228d7" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    )}
+
+                    {!isLoading && (
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]" />
+                    )}
+
+                    {/* Fixed Photo Container */}
+                    <div className="relative p-[3px]">
                         <div className="bg-background rounded-full p-[3px]">
                             <Avatar className="h-32 w-32 md:h-40 md:w-40 border-2 border-background">
                                 <AvatarImage src={avatarUrl} alt={name} className="object-cover" />
