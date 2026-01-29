@@ -1,10 +1,10 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
-import services from './services'
-import projects from './projects'
 import blog from './blog'
-import photography from './photography'
-import faqs from './faqs'
 import contact from './contact'
+import faqs from './faqs'
+import photography from './photography'
+import projects from './projects'
+import services from './services'
 /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
  * @see app/Http/Controllers/Admin/DashboardController.php:18

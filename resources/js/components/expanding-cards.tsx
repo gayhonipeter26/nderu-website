@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface CardItem {
