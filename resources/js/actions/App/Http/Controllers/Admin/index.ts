@@ -1,10 +1,10 @@
-import ContactChannelController from './ContactChannelController'
 import DashboardController from './DashboardController'
-import FaqController from './FaqController'
-import PhotographySessionController from './PhotographySessionController'
-import PostController from './PostController'
-import ProjectController from './ProjectController'
 import ServiceController from './ServiceController'
+import ProjectController from './ProjectController'
+import PostController from './PostController'
+import PhotographySessionController from './PhotographySessionController'
+import FaqController from './FaqController'
+import ContactChannelController from './ContactChannelController'
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
 ServiceController: Object.assign(ServiceController, ServiceController),

@@ -1,7 +1,7 @@
-import Admin from './Admin'
+import ProjectShowController from './ProjectShowController'
 import PhotographyShowController from './PhotographyShowController'
 import PostShowController from './PostShowController'
-import ProjectShowController from './ProjectShowController'
+import Admin from './Admin'
 import Settings from './Settings'
 const Controllers = {
     ProjectShowController: Object.assign(ProjectShowController, ProjectShowController),
