@@ -24,10 +24,19 @@ const GithubActivity = () => {
     // Generate simulated contribution data
     const weeks = 52;
     const days = 7;
+    const months = ["Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"];
+
+    // Create random data but weighted towards weekdays to look realistic
     const contributions = React.useMemo(() => {
-        return Array.from({ length: weeks * days }).map(() => ({
-            level: Math.random() > 0.7 ? Math.floor(Math.random() * 4) + 1 : 0,
-        }));
+        return Array.from({ length: weeks * days }).map((_, i) => {
+            // More activity on weekdays (indices 1-5 in a 0-6 week)
+            const dayOfWeek = i % 7;
+            const isWeekday = dayOfWeek > 0 && dayOfWeek < 6;
+            const chance = isWeekday ? 0.6 : 0.2;
+            return {
+                level: Math.random() < chance ? Math.floor(Math.random() * 4) + 1 : 0,
+            };
+        });
     }, []);
 
     return (
@@ -35,7 +44,7 @@ const GithubActivity = () => {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-32 relative max-w-4xl mx-auto p-8 border border-white/10 bg-black/50 backdrop-blur-xl"
+            className="mt-32 relative max-w-4xl mx-auto p-4 md:p-8 border border-white/10 bg-black/50 backdrop-blur-xl"
         >
             <div className="absolute top-0 left-0 w-2 h-2 bg-blue-500/50" />
             <div className="absolute top-0 right-0 w-2 h-2 bg-blue-500/50" />
@@ -46,7 +55,7 @@ const GithubActivity = () => {
                 <div className="flex items-center gap-3">
                     <Github className="w-5 h-5 text-white/70" />
                     <h3 className="text-white text-lg font-mono tracking-widest uppercase">
-                        <CrypticText text="Contribution_Matrix" delay={0} />
+                        <CrypticText text="1,024 contributions in the last year" delay={0} />
                     </h3>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-white/40 font-mono">
@@ -55,56 +64,75 @@ const GithubActivity = () => {
                 </div>
             </div>
 
-            <div className="flex gap-1 overflow-x-auto pb-4 mask-fade-sides no-scrollbar">
-                {Array.from({ length: weeks }).map((_, weekIndex) => (
-                    <div key={weekIndex} className="flex flex-col gap-1">
-                        {Array.from({ length: days }).map((_, dayIndex) => {
-                            const index = weekIndex * days + dayIndex;
-                            const level = contributions[index]?.level || 0;
+            <div className="flex flex-col gap-2 overflow-x-auto pb-4 mask-fade-sides no-scrollbar">
+                {/* Month Labels */}
+                <div className="flex text-[10px] text-white/40 font-mono pl-8 mb-1">
+                    {months.map((month, i) => (
+                        <div key={i} className="flex-1 text-center" style={{ minWidth: '40px' }}>{month}</div>
+                    ))}
+                </div>
 
-                            return (
-                                <motion.div
-                                    key={dayIndex}
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    transition={{ delay: index * 0.001 }}
-                                    whileHover={{ scale: 1.2, zIndex: 10 }}
-                                    className={`
-                                        w-3 h-3 rounded-sm cursor-crosshair relative group
-                                        ${level === 0 ? 'bg-white/5' : ''}
-                                        ${level === 1 ? 'bg-blue-900/40 border border-blue-500/20' : ''}
-                                        ${level === 2 ? 'bg-blue-700/60 border border-blue-500/40' : ''}
-                                        ${level === 3 ? 'bg-blue-500/80 border border-white/20' : ''}
-                                        ${level === 4 ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]' : ''}
-                                    `}
-                                >
-                                    {/* Tooltip */}
-                                    {level > 0 && (
-                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
-                                            <div className="bg-black border border-white/20 px-2 py-1 text-[10px] text-white whitespace-nowrap">
-                                                COMMIT_0x{Math.floor(Math.random() * 1000).toString(16).toUpperCase()}
-                                            </div>
-                                        </div>
-                                    )}
-                                </motion.div>
-                            );
-                        })}
+                <div className="flex gap-2">
+                    {/* Day Labels */}
+                    <div className="flex flex-col justify-between text-[9px] text-white/40 font-mono py-1 h-[88px]">
+                        <span>Mon</span>
+                        <span>Wed</span>
+                        <span>Fri</span>
                     </div>
-                ))}
+
+                    {/* The Grid */}
+                    <div className="flex gap-1">
+                        {Array.from({ length: weeks }).map((_, weekIndex) => (
+                            <div key={weekIndex} className="flex flex-col gap-1">
+                                {Array.from({ length: days }).map((_, dayIndex) => {
+                                    const index = weekIndex * days + dayIndex;
+                                    const level = contributions[index]?.level || 0;
+
+                                    return (
+                                        <motion.div
+                                            key={dayIndex}
+                                            initial={{ opacity: 0 }}
+                                            whileInView={{ opacity: 1 }}
+                                            transition={{ delay: index * 0.0005 }} // Faster stagger
+                                            whileHover={{ scale: 1.2, zIndex: 10 }}
+                                            className={`
+                                                w-2.5 h-2.5 rounded-[1px] cursor-crosshair relative group
+                                                ${level === 0 ? 'bg-white/5' : ''}
+                                                ${level === 1 ? 'bg-blue-900/30' : ''}
+                                                ${level === 2 ? 'bg-blue-700/50' : ''}
+                                                ${level === 3 ? 'bg-blue-500/70 shadow-[0_0_5px_rgba(59,130,246,0.3)]' : ''}
+                                                ${level === 4 ? 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]' : ''}
+                                            `}
+                                        >
+                                            {/* Tooltip */}
+                                            {level > 0 && (
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
+                                                    <div className="bg-black border border-white/20 px-2 py-1 text-[9px] text-white whitespace-nowrap shadow-xl">
+                                                        COMMIT_0x{Math.floor(Math.random() * 1000).toString(16).toUpperCase()}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
 
-            <div className="flex items-center justify-between mt-6 text-[10px] text-white/30 uppercase tracking-widest">
-                <span>Total_Commits: <span className="text-white">1,024</span></span>
+            <div className="flex items-center justify-between mt-6 text-[10px] text-white/30 uppercase tracking-widest px-1">
+                <span className="hover:text-white/60 transition-colors cursor-pointer">Learn how we count contributions</span>
                 <div className="flex items-center gap-2">
-                    <span>Low</span>
+                    <span>Less</span>
                     <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-white/5" />
-                        <div className="w-2 h-2 bg-blue-900/40" />
-                        <div className="w-2 h-2 bg-blue-700/60" />
-                        <div className="w-2 h-2 bg-blue-500/80" />
-                        <div className="w-2 h-2 bg-white" />
+                        <div className="w-2.5 h-2.5 bg-white/5 rounded-[1px]" />
+                        <div className="w-2.5 h-2.5 bg-blue-900/30 rounded-[1px]" />
+                        <div className="w-2.5 h-2.5 bg-blue-700/50 rounded-[1px]" />
+                        <div className="w-2.5 h-2.5 bg-blue-500/70 rounded-[1px]" />
+                        <div className="w-2.5 h-2.5 bg-blue-400 rounded-[1px]" />
                     </div>
-                    <span>High</span>
+                    <span>More</span>
                 </div>
             </div>
         </motion.div>
