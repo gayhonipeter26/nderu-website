@@ -5,9 +5,6 @@ import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
 
-// Detect if we are building on Vercel
-const isVercel = process.env.VERCEL === '1';
-
 export default defineConfig({
     plugins: [
         laravel({
@@ -16,12 +13,10 @@ export default defineConfig({
             refresh: true,
         }),
         tailwindcss(),
-        // Skip Wayfinder entirely on Vercel
-        !isVercel &&
-            wayfinder({
-                formVariants: true,
-                generate: false,
-            }),
+        wayfinder({
+            formVariants: true,
+            
+        }),
         react(),
         vue({
             template: {
@@ -31,5 +26,5 @@ export default defineConfig({
                 },
             },
         }),
-    ].filter(Boolean), // remove false plugins
+    ],
 });

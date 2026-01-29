@@ -1,0 +1,1 @@
+import{r as t}from"./button-B3GKAfbB.js";import{w as a,y as u,B as r}from"./WebsiteLayout.vue_vue_type_script_setup_true_lang-BAxTIeP7.js";function i(o){const e=a(()=>u(o)),{isStatic:s}=t.useContext(r);if(s){const[,n]=t.useState(o);t.useEffect(()=>e.on("change",n),[])}return e}export{i as u};

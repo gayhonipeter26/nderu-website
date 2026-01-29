@@ -21,7 +21,6 @@ const ctaContainer = ref<HTMLDivElement | null>(null);
 
 const activeTab = ref('about');
 const headerLoading = ref(true);
-let intervalId: any = null;
 
 let profileHeaderRoot: Root | null = null;
 let scrollyContentRoot: Root | null = null;
@@ -109,14 +108,6 @@ onMounted(() => {
       </React.StrictMode>
     );
   }
-
-  // Periodic animation every 5 seconds
-  intervalId = setInterval(() => {
-    headerLoading.value = true;
-    setTimeout(() => {
-      headerLoading.value = false;
-    }, 1200);
-  }, 5000);
 });
 
 watch([activeTab, headerLoading], () => {
@@ -124,7 +115,6 @@ watch([activeTab, headerLoading], () => {
 });
 
 onBeforeUnmount(() => {
-  if (intervalId) clearInterval(intervalId);
   [profileHeaderRoot, scrollyContentRoot, logoCloudRoot, timelineRoot, docsRoot, ctaRoot].forEach(root => root?.unmount());
 });
 </script>
