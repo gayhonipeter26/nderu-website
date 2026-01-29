@@ -5,10 +5,11 @@ import { motion } from "framer-motion";
 import { Rewind, FastForward } from "lucide-react";
 
 export interface CarouselItem {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   icon: React.ComponentType<any>;
+  originalIndex?: number;
 }
 
 // Create infinite items by triplicating the array
@@ -33,16 +34,16 @@ const playTickSound = () => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
-    
+
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
-    
+
     oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
     oscillator.type = 'sine';
-    
+
     gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-    
+
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.1);
   } catch (error) {
@@ -215,11 +216,11 @@ export function RulerCarousel({
               isResetting
                 ? { duration: 0 }
                 : {
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 20,
-                    mass: 1,
-                  }
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                  mass: 1,
+                }
             }
           >
             {infiniteItems.map((item, index) => {
@@ -228,11 +229,10 @@ export function RulerCarousel({
               return (
                 <motion.div
                   key={item.id}
-                  className={`flex flex-col items-center justify-center cursor-pointer ${
-                    isActive
-                      ? "text-primary dark:text-white"
-                      : "text-muted-foreground dark:text-gray-500 hover:text-foreground dark:hover:text-gray-400"
-                  }`}
+                  className={`flex flex-col items-center justify-center cursor-pointer ${isActive
+                    ? "text-primary dark:text-white"
+                    : "text-muted-foreground dark:text-gray-500 hover:text-foreground dark:hover:text-gray-400"
+                    }`}
                   onClick={() => handleItemClick(index)}
                   animate={{
                     scale: isActive ? 1 : 0.75,
@@ -242,10 +242,10 @@ export function RulerCarousel({
                     isResetting
                       ? { duration: 0 }
                       : {
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 25,
-                        }
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 25,
+                      }
                   }
                   style={{
                     width: "400px",
@@ -270,7 +270,7 @@ export function RulerCarousel({
           <RulerLines top={false} />
         </div>
       </div>
-      
+
       <div className="flex items-center justify-center gap-4 mt-6">
         <button
           onClick={handlePrevious}

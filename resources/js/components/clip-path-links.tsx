@@ -68,24 +68,24 @@ const LinkBox = ({ Icon, href, imgSrc, className }: {
 }) => {
   const [scope, animate] = useAnimate();
 
-  const getNearestSide = (e) => {
-    const box = e.target.getBoundingClientRect();
+  const getNearestSide = (e: React.MouseEvent) => {
+    const box = (e.target as HTMLElement).getBoundingClientRect();
 
     const proximityToLeft = {
       proximity: Math.abs(box.left - e.clientX),
-      side: "left",
+      side: "left" as const,
     };
     const proximityToRight = {
       proximity: Math.abs(box.right - e.clientX),
-      side: "right",
+      side: "right" as const,
     };
     const proximityToTop = {
       proximity: Math.abs(box.top - e.clientY),
-      side: "top",
+      side: "top" as const,
     };
     const proximityToBottom = {
       proximity: Math.abs(box.bottom - e.clientY),
-      side: "bottom",
+      side: "bottom" as const,
     };
 
     const sortedProximity = [
@@ -98,14 +98,14 @@ const LinkBox = ({ Icon, href, imgSrc, className }: {
     return sortedProximity[0].side;
   };
 
-  const handleMouseEnter = (e) => {
+  const handleMouseEnter = (e: React.MouseEvent) => {
     const side = getNearestSide(e);
     animate(scope.current, {
       clipPath: ENTRANCE_KEYFRAMES[side],
     });
   };
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave = (e: React.MouseEvent) => {
     const side = getNearestSide(e);
     animate(scope.current, {
       clipPath: EXIT_KEYFRAMES[side],
