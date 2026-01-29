@@ -4,6 +4,7 @@ import React from "react"
 import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Github, ExternalLink } from "lucide-react"
+import { CrypticText } from "@/components/ui/cryptic-text"
 
 interface TimelineItem {
     title: string
@@ -52,7 +53,7 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ items }) => {
             {/* Dark Overlay for better contrast */}
             <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none"></div>
 
-            {/* The Vertical Line with Technical Gradient */}
+            {/* The Vertical Line - Centered for Alternating Layout */}
             <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/20 md:-translate-x-1/2 z-10">
                 <motion.div
                     className="absolute top-0 left-0 right-0 origin-top bg-gradient-to-b from-white via-white/40 to-transparent w-full"
@@ -76,7 +77,7 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ items }) => {
                             />
                         </div>
 
-                        {/* Content Box with Tech Framing - Wider Rectangular Layout */}
+                        {/* Content Box - Alternating Sides */}
                         <div className={`w-full md:w-[70%] ${index % 2 === 0 ? 'md:mr-auto md:pr-24' : 'md:ml-auto md:pl-24'} pl-12 md:pl-0`}>
                             <motion.div
                                 initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
@@ -89,14 +90,14 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ items }) => {
                                 <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/40 group-hover:border-white transition-colors"></div>
                                 <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/40 group-hover:border-white transition-colors"></div>
 
-                                <div className={`flex flex-col ${index % 2 === 0 ? 'md:items-end' : 'md:items-start'} gap-1 mb-4`}>
+                                <div className={`flex flex-col ${index % 2 === 0 ? 'md:items-end md:text-right' : 'md:items-start md:text-left'} gap-1 mb-4`}>
                                     <div className="flex items-center gap-2 opacity-60 text-[10px] tracking-[0.2em] uppercase">
                                         <span className="text-white">∞</span>
-                                        {item.tag && <span className="text-white">{item.tag}</span>}
-                                        {!item.tag && <span className="text-white">PROJECT.{String(items.length - index).padStart(2, '0')}</span>}
+                                        {item.tag && <span className="text-white"><CrypticText text={item.tag} delay={index * 100} /></span>}
+                                        {!item.tag && <span className="text-white"><CrypticText text={`PROJECT.${String(items.length - index).padStart(2, '0')}`} delay={index * 100} /></span>}
                                     </div>
-                                    <h3 className="text-xl md:text-2xl font-bold text-white tracking-widest uppercase group-hover:translate-x-1 transition-transform">
-                                        {item.title}
+                                    <h3 className="text-base md:text-xl font-bold text-white tracking-[0.1em] uppercase group-hover:translate-x-1 transition-transform">
+                                        <CrypticText text={item.title} delay={index * 150} />
                                     </h3>
 
                                     {/* Action Icons */}
@@ -114,7 +115,7 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ items }) => {
                                     </div>
                                 </div>
 
-                                <p className="text-gray-400 text-xs md:text-sm leading-relaxed mb-6 font-mono opacity-80">
+                                <p className="text-gray-400 text-xs md:text-base leading-relaxed mb-6 font-mono opacity-80">
                                     {item.description}
                                 </p>
 
@@ -123,7 +124,7 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ items }) => {
                                         <h4 className={`text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                                             // STATUS.SOLVED
                                         </h4>
-                                        <p className="text-gray-300 text-xs italic leading-tight">
+                                        <p className="text-gray-300 text-xs md:text-sm italic leading-tight">
                                             "{item.problemSolved}"
                                         </p>
                                     </div>

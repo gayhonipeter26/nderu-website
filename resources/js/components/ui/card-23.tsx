@@ -7,6 +7,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { MapPin, Github, Globe, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils"; // Your shadcn/ui utility for merging classes
+import { CrypticText } from "@/components/ui/cryptic-text";
 
 // Define the types for the component props for type-safety and clarity
 export interface ArticleCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -61,7 +62,7 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
       <motion.div
         ref={ref}
         className={cn(
-          "w-full overflow-hidden border bg-card/40 backdrop-blur-sm text-card-foreground shadow-sm group font-mono",
+          "w-full overflow-hidden border border-white/10 bg-white/[0.02] backdrop-blur-md text-white shadow-none group font-mono relative",
           className
         )}
         variants={cardVariants}
@@ -71,68 +72,77 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(
         transition={{ duration: 0.3, ease: "easeInOut" }}
         {...(props as any)}
       >
-        <div className="p-5 flex flex-col h-full">
-          {/* Header section with tag and date */}
-          <header className="mb-4 flex items-center justify-between">
-            <span className="text-[9px] font-bold tracking-widest uppercase text-white/40">
-                // {tag}
-            </span>
-            <div className="flex items-center text-[9px] font-bold tracking-tighter border border-white/10">
-              <span className="px-2 py-1 bg-white/5 text-white/50">
-                {date.month}
-              </span>
-              <span className="px-2 py-1 bg-white text-black">
-                {date.day}
-              </span>
-            </div>
-          </header>
+        {/* Corner Accents */}
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20 group-hover:border-white/60 transition-colors"></div>
+        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/20 group-hover:border-white/60 transition-colors"></div>
 
-          {/* Main content section */}
-          <main className="mb-4">
-            <h3 className="text-lg font-bold tracking-tight uppercase text-white group-hover:text-blue-400 transition-colors line-clamp-1">
-              {title}
-            </h3>
-            <p className="mt-2 text-[11px] text-gray-400 leading-relaxed line-clamp-2 italic">
-              {description}
-            </p>
-          </main>
-
-          {/* Image section */}
-          <div className="relative aspect-video overflow-hidden border border-white/5">
+        <div className="flex flex-col md:flex-row h-full min-h-[220px]">
+          {/* Image section with location overlay - Left side on desktop */}
+          <div className="relative w-full md:w-1/3 overflow-hidden border-b md:border-b-0 md:border-r border-white/10 aspect-video md:aspect-auto">
             <motion.img
               src={imageUrl}
               alt={imageAlt}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
               variants={imageVariants}
               transition={{ duration: 0.4, ease: "easeOut" }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-white/70">
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent md:hidden" />
+            <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white/70">
               <MapPin className="h-3 w-3" />
-              <span className="text-[9px] font-bold tracking-wider uppercase">{location.city}</span>
+              <span className="text-[9px] font-bold tracking-widest uppercase">
+                <CrypticText text={location.city} delay={600} />
+              </span>
             </div>
           </div>
 
-          {/* Actions */}
-          <footer className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {githubUrl && (
-                <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-colors">
-                  <Github size={14} />
+          <div className="flex-1 flex flex-col p-6 md:p-8">
+            {/* Header section with tag and date */}
+            <header className="mb-4 flex items-center justify-between">
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/30">
+                  // <CrypticText text={tag} delay={700} />
+              </span>
+              <div className="flex items-center text-[9px] font-bold tracking-widest border border-white/10">
+                <span className="px-2 py-1 bg-white/5 text-white/40 uppercase">
+                  {date.month}
+                </span>
+                <span className="px-2 py-1 bg-white text-black">
+                  {date.day}
+                </span>
+              </div>
+            </header>
+
+            <main className="flex-1">
+              <h3 className="text-base md:text-lg font-bold tracking-[0.05em] uppercase text-white group-hover:translate-x-1 transition-transform inline-flex items-center gap-2">
+                <span className="text-blue-500/40 group-hover:text-blue-500 transition-colors">#</span>
+                <CrypticText text={title} delay={800} />
+              </h3>
+              <p className="mt-3 text-[12px] md:text-sm text-gray-500 leading-relaxed max-w-2xl line-clamp-2">
+                {description}
+              </p>
+            </main>
+
+            {/* Actions */}
+            <footer className="mt-6 pt-6 border-t border-white/5 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {githubUrl && (
+                  <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-white transition-colors" title="View Source">
+                    <Github size={16} />
+                  </a>
+                )}
+                {liveUrl && (
+                  <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-white transition-colors" title="Launch Terminal">
+                    <Globe size={16} />
+                  </a>
+                )}
+              </div>
+              {url && (
+                <a href={url} className="text-[9px] font-bold tracking-[0.2em] uppercase text-white/30 hover:text-white transition-all flex items-center gap-2 group/link">
+                  [READ_CASE_STUDY]
+                  <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </a>
               )}
-              {liveUrl && (
-                <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-colors">
-                  <Globe size={14} />
-                </a>
-              )}
-            </div>
-            {url && (
-              <a href={url} className="text-[9px] font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors flex items-center gap-1">
-                DETAILS <ArrowUpRight size={12} />
-              </a>
-            )}
-          </footer>
+            </footer>
+          </div>
         </div>
       </motion.div>
     );

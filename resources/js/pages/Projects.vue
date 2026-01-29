@@ -7,10 +7,8 @@ import type { Root } from 'react-dom/client';
 import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import HeroAsciiOneWrapper from '@/components/HeroAsciiOneWrapper.vue';
 import ProjectTimelineWrapper from '@/components/ProjectTimelineWrapper.vue';
-import { Button } from '@/components/ui/button/index';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
 import ArticleCardProjectsDemo from '@/components/ui/card-23-projects-demo';
-import { Input } from '@/components/ui/input/index';
+import UsedTechnologiesWrapper from '@/components/UsedTechnologiesWrapper.vue';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 
@@ -141,32 +139,77 @@ onBeforeUnmount(() => {
     </section>
 
     <section id="project-timeline" class="py-20 bg-black border-y border-neutral-900">
-      <div class="container mx-auto px-4 mb-16 text-center">
-        <h2 class="text-3xl md:text-5xl font-bold tracking-tighter text-white mb-4">Project Evolution</h2>
-        <p class="text-neutral-400 max-w-2xl mx-auto">
-          A narrative of systems built, problems solved, and technical milestones achieved.
+      <div class="container mx-auto px-4 mb-24 font-mono">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-white/10 pb-12">
+          <div class="max-w-2xl">
+            <div class="flex items-center gap-2 text-white/30 text-[10px] tracking-[0.4em] uppercase mb-4">
+              <span class="w-2 h-2 bg-blue-500/50"></span>
+              DEPLOYMENT_HISTORY.V3
+            </div>
+            <h2 class="text-2xl md:text-4xl font-bold tracking-tighter text-white uppercase leading-none">Project Evolution</h2>
+          </div>
+          <div class="flex flex-col gap-2 text-right opacity-30 text-[9px] tracking-[0.2em] uppercase shrink-0">
+            <span>NODE_IDENTIFIER / 0X7F</span>
+            <span>TIMELINE_STATUS / RECONSTRUCTED</span>
+            <div class="h-px w-full bg-white/20 mt-2"></div>
+          </div>
+        </div>
+        <p class="text-gray-500 mt-8 text-sm tracking-wide max-w-xl">
+          A granular record of architectural milestones and technical deployments.
         </p>
       </div>
       <ProjectTimelineWrapper />
     </section>
 
-    <section id="featured-projects" class="border-b bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div class="flex flex-1 items-center gap-3">
-            <div class="relative w-full md:w-64">
-              <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input v-model="query" placeholder="Search projects" class="pl-9" />
+    <UsedTechnologiesWrapper />
+
+    <section id="featured-projects" class="py-24 bg-black border-y border-white/5 font-mono">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-12">
+          {/* Main Controls Header */}
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/10 pb-12">
+            <div>
+              <div class="flex items-center gap-3 text-white/40 text-[10px] tracking-[0.4em] uppercase mb-3">
+                <span class="w-1.5 h-1.5 bg-white/40"></span>
+                // PROJECT_REPOSITORY
+              </div>
+              <h2 class="text-2xl md:text-4xl font-bold tracking-tighter text-white uppercase">Archive</h2>
             </div>
-            <span class="text-sm text-muted-foreground">{{ filteredProjects.length }} results</span>
+            
+            <div class="flex flex-col gap-2 min-w-[220px]">
+              <div class="relative group">
+                <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-white opacity-20 group-focus-within:opacity-100 transition-opacity"></div>
+                <Search class="absolute left-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-white/30" />
+                <input 
+                  v-model="query" 
+                  placeholder="[SEARCH_QUERY]" 
+                  class="w-full bg-white/[0.02] border border-white/10 pl-8 pr-3 py-1.5 text-[10px] text-white focus:outline-none focus:border-white/40 transition-colors placeholder:text-white/20 uppercase tracking-[0.1em] font-bold"
+                />
+              </div>
+              <div class="flex justify-between items-center text-[8px] tracking-[0.2em] text-white/30 uppercase">
+                <span>STATUS / ACTIVE</span>
+                <span class="text-white">PTR / {{ filteredProjects.length }}_LOGS</span>
+              </div>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <Button v-for="category in projectsCategories" :key="category.value" size="sm"
-              :variant="selectedCategory === category.value ? 'default' : 'outline'" class="capitalize"
-              @click="selectedCategory = category.value">
-              <component :is="category.icon" class="mr-2 h-4 w-4" />
-              {{ category.label }}
-            </Button>
+
+          {/* Technical Category Tabs */}
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 border-l border-t border-white/10 shadow-2xl">
+            <button 
+              v-for="category in projectsCategories" 
+              :key="category.value"
+              @click="selectedCategory = category.value"
+              :class="[
+                'flex flex-col items-center justify-center gap-1.5 px-2 py-2 text-[8px] tracking-[0.1em] font-bold uppercase transition-all relative group border-r border-b border-white/10',
+                selectedCategory === category.value 
+                  ? 'bg-white text-black' 
+                  : 'bg-black text-white/30 hover:text-white hover:bg-white/[0.01]'
+              ]"
+            >
+              <component :is="category.icon" :class="['h-3.5 w-3.5', selectedCategory === category.value ? 'text-black' : 'text-white/20 group-hover:text-white transition-colors']" />
+              <span class="text-center">{{ category.label }}</span>
+              <div v-if="selectedCategory === category.value" class="absolute inset-x-0 bottom-0 h-1 bg-black/10"></div>
+            </button>
           </div>
         </div>
       </div>
@@ -178,24 +221,40 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section id="system-architecture" class="bg-background">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <Card class="max-w-3xl mx-auto">
-          <CardHeader class="space-y-2 text-center">
-            <CardTitle class="text-2xl">Plan your next engagement</CardTitle>
-            <CardDescription>
-              Share objectives and timelines to receive a structured proposal covering delivery approach and costs.
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button asChild>
-              <Link href="/contact">Start a project</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/services">Review services</Link>
-            </Button>
-          </CardContent>
-        </Card>
+    <section id="system-architecture" class="py-32 bg-black border-t border-white/5 font-mono">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative p-12 md:p-20 border border-white/10 bg-white/[0.02] overflow-hidden group">
+          {/* Background Accents */}
+          <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[120px] pointer-events-none"></div>
+          <div class="absolute -bottom-8 -left-8 w-32 h-32 border border-white/5 rotate-45 pointer-events-none"></div>
+          
+          <div class="relative z-10 max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 mb-6 text-white/30 text-[10px] tracking-[0.4em] uppercase">
+              <span class="w-1 h-1 bg-white animate-pulse"></span>
+              INIT_ENGAGEMENT_SEQUENCE
+            </div>
+            <h2 class="text-3xl md:text-5xl font-bold tracking-tighter text-white uppercase mb-6">Plan your next engagement</h2>
+            <p class="text-gray-500 text-sm md:text-base tracking-wide leading-relaxed mb-12">
+              Share objectives and timelines to receive a structured proposal covering delivery approach, resource allocation, and projected costs.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Link href="/contact" class="w-full sm:w-auto px-10 py-4 bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-white/90 transition-colors text-center">
+                [START_PROJECT]
+              </Link>
+              <Link href="/services" class="w-full sm:w-auto px-10 py-4 border border-white/20 text-white text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-white/5 transition-colors text-center">
+                // REVIEW_SERVICES
+              </Link>
+            </div>
+          </div>
+
+          {/* Technical Notations */}
+          <div class="absolute top-4 left-6 text-[8px] text-white/10 tracking-widest uppercase">
+            ESTABLISH_CONNECTION_REF_402
+          </div>
+          <div class="absolute bottom-4 right-6 text-[8px] text-white/10 tracking-widest uppercase">
+            © 2026 / SYSTEM_ARCHITECT
+          </div>
+        </div>
       </div>
     </section>
   </WebsiteLayout>
