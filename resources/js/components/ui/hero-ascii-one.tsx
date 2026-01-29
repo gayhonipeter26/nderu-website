@@ -217,8 +217,8 @@ export const HeroAsciiOne = () => {
                                 EXPLORE PROJECTS
                             </a>
 
-                            <a href="/services" className="relative px-5 lg:px-6 py-2 lg:py-2.5 bg-transparent border border-white text-white font-mono text-xs lg:text-sm hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center" style={{ borderWidth: '1px' }}>
-                                VIEW SERVICES
+                            <a href="#project-timeline" className="relative px-5 lg:px-6 py-2 lg:py-2.5 bg-transparent border border-white text-white font-mono text-xs lg:text-sm hover:bg-white hover:text-black transition-all duration-200 flex items-center justify-center" style={{ borderWidth: '1px' }}>
+                                CODING TIMELINE
                             </a>
                         </div>
 
