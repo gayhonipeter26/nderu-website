@@ -42,7 +42,7 @@ export const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-20 mb-8 md:mb-14">
                 {/* Avatar */}
                 <div className="flex-shrink-0">
-                    <div className="relative p-[3px] rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]">
+                    <div className="relative p-[3px] rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] animate-instagram-spin">
                         <div className="bg-background rounded-full p-[3px]">
                             <Avatar className="h-32 w-32 md:h-40 md:w-40 border-2 border-background">
                                 <AvatarImage src={avatarUrl} alt={name} className="object-cover" />
