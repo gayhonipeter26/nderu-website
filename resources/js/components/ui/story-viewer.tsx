@@ -97,7 +97,7 @@ function StoryThumbnail({
             )}
             aria-label={`View ${username}'s stories`}
         >
-            <div className="relative w-[72px] h-[72px]">
+            <div className="relative w-16 h-16 md:w-[72px] md:h-[72px]">
                 <svg
                     className="absolute inset-0 w-full h-full"
                     viewBox="0 0 100 100"

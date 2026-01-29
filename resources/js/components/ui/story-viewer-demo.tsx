@@ -39,7 +39,7 @@ function AddStoryButton({ onUpload, isUploading }: AddStoryButtonProps) {
                 aria-label="Add your Highlight"
             >
                 <div className="relative">
-                    <div className="w-[72px] h-[72px] rounded-full p-1">
+                    <div className="w-16 h-16 md:w-[72px] md:h-[72px] rounded-full p-1">
                         <div
                             className={cn(
                                 "w-full h-full rounded-full flex items-center justify-center",
@@ -168,7 +168,7 @@ export function StoryViewerDemo() {
 
     return (
         <div className="w-full max-w-4xl mx-auto px-4 pb-12">
-            <div className="flex gap-6 sm:gap-10 overflow-x-auto py-4 px-1 no-scrollbar lg:justify-center">
+            <div className="flex gap-4 sm:gap-6 md:gap-10 overflow-x-auto py-4 px-1 no-scrollbar lg:justify-center">
                 <AddStoryButton onUpload={handleUpload} isUploading={isUploading} />
 
                 {userStories.length > 0 && (
