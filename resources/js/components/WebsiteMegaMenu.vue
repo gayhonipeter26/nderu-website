@@ -1,11 +1,10 @@
 <script setup lang="tsx">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import MegaMenu from '@/components/ui/mega-menu';
 import { megaMenuData } from '@/components/ui/mega-menu-data';
-import { Link } from '@inertiajs/vue3';
 
 const containerRef = ref<HTMLDivElement | null>(null);
 let root: Root | null = null;

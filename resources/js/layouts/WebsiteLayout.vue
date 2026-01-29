@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { Menu } from 'lucide-vue-next';
+import { computed } from 'vue';
 import { Button } from '@/components/ui/button/index';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet/index';
-import { Menu } from 'lucide-vue-next';
 import WebsiteMegaMenu from '@/components/WebsiteMegaMenu.vue';
 
-const props = defineProps<{ loadingDescription?: string; }>();
+defineProps<{ loadingDescription?: string; }>();
 
 const page = usePage();
 const currentUrl = computed(() => (page.props as any).ziggy?.location || '');

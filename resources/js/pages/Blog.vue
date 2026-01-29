@@ -1,20 +1,16 @@
 <script setup lang="tsx">
-import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Badge } from '@/components/ui/badge/index';
-import { Button } from '@/components/ui/button/index';
-import { Input } from '@/components/ui/input/index';
-import { Calendar, Clock, Heart, Search, Play } from 'lucide-vue-next';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import MediaCarousel from '@/components/MediaCarousel.vue';
-import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
+import { Search } from 'lucide-vue-next';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import { GalleryPage } from '@/components/ui/gallery-demo';
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
+import { Button } from '@/components/ui/button/index';
 import ArticleCardBlogDemo from '@/components/ui/card-23-blog-demo';
+import { GalleryPage } from '@/components/ui/gallery-demo';
+import { Input } from '@/components/ui/input/index';
 import { VideoArticlesList } from '@/components/ui/video-article-card';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 type Post = {
   id: number;
@@ -158,46 +154,7 @@ watch(featuredVideos, (newVideos) => {
   }
 });
 
-const formatDate = (value: string | null) => {
-  if (!value) {
-    return 'Unscheduled';
-  }
 
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }).format(date);
-};
-
-const getPostMedia = (post: Post) => {
-  const slides: { id: string | number; url: string; kind: 'image' | 'video' }[] = [];
-
-  if (Array.isArray(post.gallery) && post.gallery.length) {
-    slides.push(
-      ...post.gallery.map((asset) => ({
-        id: `gallery-${asset.id}`,
-        url: asset.url,
-        kind: asset.kind,
-      })),
-    );
-  }
-
-  if (post.cover_image_url && !slides.some((asset) => asset.kind === 'image' && asset.url === post.cover_image_url)) {
-    slides.push({ id: `cover-${post.id}`, url: post.cover_image_url, kind: 'image' });
-  }
-
-  if (post.feature_video_url && !slides.some((asset) => asset.kind === 'video' && asset.url === post.feature_video_url)) {
-    slides.push({ id: `video-${post.id}`, url: post.feature_video_url, kind: 'video' });
-  }
-
-  return slides;
-};
 </script>
 
 <template>

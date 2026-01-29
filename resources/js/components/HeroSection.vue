@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
 import { Link } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   title: string;
@@ -18,7 +18,7 @@ interface Props {
   background?: 'default' | 'muted' | 'primary';
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   size: 'medium',
   background: 'default'
 });

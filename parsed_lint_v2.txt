@@ -1,0 +1,77 @@
+﻿C:\Users\wamtesh\nderu-website\resources\js\components\FeatureCard.vue
+  25:7 @typescript-eslint/no-unused-vars 'props' is assigned a value but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\components\StatsSection.vue
+  16:7 @typescript-eslint/no-unused-vars 'props' is assigned a value but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\components\WebsiteMegaMenu.vue
+  2:10 @typescript-eslint/no-unused-vars 'Link' is defined but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\components\text-block-animation.tsx
+  6:10 @typescript-eslint/no-unused-vars 'cn' is defined but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\About.vue
+  2:1 import/order `@/layouts/WebsiteLayout.vue` import should occur after import of `@/components/ui/story-viewer-demo`
+C:\Users\wamtesh\nderu-website\resources\js\pages\Blog.vue
+  2:10 @typescript-eslint/no-unused-vars 'Link' is defined but never used. Allowed unused vars must match /^_/u.
+  3:10 @typescript-eslint/no-unused-vars 'Calendar' is defined but never used. Allowed unused vars must match /^_/u.
+  3:20 @typescript-eslint/no-unused-vars 'Clock' is defined but never used. Allowed unused vars must match /^_/u.
+  3:27 @typescript-eslint/no-unused-vars 'Heart' is defined but never used. Allowed unused vars must match /^_/u.
+  3:42 @typescript-eslint/no-unused-vars 'Play' is defined but never used. Allowed unused vars must match /^_/u.
+  9:8 @typescript-eslint/no-unused-vars 'MediaCarousel' is defined but never used. Allowed unused vars must match /^_/u.
+  10:10 @typescript-eslint/no-unused-vars 'Badge' is defined but never used. Allowed unused vars must match /^_/u.
+  12:10 @typescript-eslint/no-unused-vars 'Card' is defined but never used. Allowed unused vars must match /^_/u.
+  12:16 @typescript-eslint/no-unused-vars 'CardContent' is defined but never used. Allowed unused vars must match /^_/u.
+  12:29 @typescript-eslint/no-unused-vars 'CardDescription' is defined but never used. Allowed unused vars must match /^_/u.
+  12:46 @typescript-eslint/no-unused-vars 'CardHeader' is defined but never used. Allowed unused vars must match /^_/u.
+  12:58 @typescript-eslint/no-unused-vars 'CardTitle' is defined but never used. Allowed unused vars must match /^_/u.
+  161:7 @typescript-eslint/no-unused-vars 'formatDate' is assigned a value but never used. Allowed unused vars must match /^_/u.
+  178:7 @typescript-eslint/no-unused-vars 'getPostMedia' is assigned a value but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Contact.vue
+  2:38 @typescript-eslint/no-unused-vars 'MessageCircle' is defined but never used. Allowed unused vars must match /^_/u.
+  2:53 @typescript-eslint/no-unused-vars 'Camera' is defined but never used. Allowed unused vars must match /^_/u.
+  2:61 @typescript-eslint/no-unused-vars 'Users' is defined but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Home.vue
+  3:10 @typescript-eslint/no-unused-vars 'ArrowRight' is defined but never used. Allowed unused vars must match /^_/u.
+  7:43 @typescript-eslint/no-unused-vars 'computed' is defined but never used. Allowed unused vars must match /^_/u.
+  9:8 @typescript-eslint/no-unused-vars 'SparklesHeroWrapper' is defined but never used. Allowed unused vars must match /^_/u.
+  10:10 @typescript-eslint/no-unused-vars 'Badge' is defined but never used. Allowed unused vars must match /^_/u.
+  12:10 @typescript-eslint/no-unused-vars 'Card' is defined but never used. Allowed unused vars must match /^_/u.
+  12:16 @typescript-eslint/no-unused-vars 'CardContent' is defined but never used. Allowed unused vars must match /^_/u.
+  12:29 @typescript-eslint/no-unused-vars 'CardDescription' is defined but never used. Allowed unused vars must match /^_/u.
+  12:46 @typescript-eslint/no-unused-vars 'CardHeader' is defined but never used. Allowed unused vars must match /^_/u.
+  12:58 @typescript-eslint/no-unused-vars 'CardTitle' is defined but never used. Allowed unused vars must match /^_/u.
+  19:7 @typescript-eslint/no-unused-vars 'props' is assigned a value but never used. Allowed unused vars must match /^_/u.
+  59:7 @typescript-eslint/no-unused-vars 'stats' is assigned a value but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Photography.vue
+  2:10 @typescript-eslint/no-unused-vars 'Link' is defined but never used. Allowed unused vars must match /^_/u.
+  6:10 @typescript-eslint/no-unused-vars 'computed' is defined but never used. Allowed unused vars must match /^_/u.
+  9:10 @typescript-eslint/no-unused-vars 'Button' is defined but never used. Allowed unused vars must match /^_/u.
+  10:10 @typescript-eslint/no-unused-vars 'Card' is defined but never used. Allowed unused vars must match /^_/u.
+  10:16 @typescript-eslint/no-unused-vars 'CardContent' is defined but never used. Allowed unused vars must match /^_/u.
+  10:29 @typescript-eslint/no-unused-vars 'CardDescription' is defined but never used. Allowed unused vars must match /^_/u.
+  10:46 @typescript-eslint/no-unused-vars 'CardHeader' is defined but never used. Allowed unused vars must match /^_/u.
+  10:58 @typescript-eslint/no-unused-vars 'CardTitle' is defined but never used. Allowed unused vars must match /^_/u.
+  35:7 @typescript-eslint/no-unused-vars 'props' is assigned a value but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Photography\Show.vue
+  3:58 @typescript-eslint/no-unused-vars 'Play' is defined but never used. Allowed unused vars must match /^_/u.
+  4:20 @typescript-eslint/no-unused-vars 'ref' is defined but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Projects.vue
+  3:42 @typescript-eslint/no-unused-vars 'Play' is defined but never used. Allowed unused vars must match /^_/u.
+  3:56 @typescript-eslint/no-unused-vars 'Heart' is defined but never used. Allowed unused vars must match /^_/u.
+  9:8 @typescript-eslint/no-unused-vars 'MediaCarousel' is defined but never used. Allowed unused vars must match /^_/u.
+  10:10 @typescript-eslint/no-unused-vars 'Badge' is defined but never used. Allowed unused vars must match /^_/u.
+  15:10 @typescript-eslint/no-unused-vars 'MarqueeDemo' is defined but never used. Allowed unused vars must match /^_/u.
+  105:7 @typescript-eslint/no-unused-vars 'getProjectMedia' is assigned a value but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Projects\Show.vue
+  7:3 @typescript-eslint/no-unused-vars 'Play' is defined but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Services.vue
+  3:10 @typescript-eslint/no-unused-vars 'Code' is defined but never used. Allowed unused vars must match /^_/u.
+  3:16 @typescript-eslint/no-unused-vars 'Database' is defined but never used. Allowed unused vars must match /^_/u.
+  3:26 @typescript-eslint/no-unused-vars 'Camera' is defined but never used. Allowed unused vars must match /^_/u.
+  3:34 @typescript-eslint/no-unused-vars 'Users' is defined but never used. Allowed unused vars must match /^_/u.
+  8:10 @typescript-eslint/no-unused-vars 'Badge' is defined but never used. Allowed unused vars must match /^_/u.
+  9:10 @typescript-eslint/no-unused-vars 'BGPattern' is defined but never used. Allowed unused vars must match /^_/u.
+  11:10 @typescript-eslint/no-unused-vars 'Card' is defined but never used. Allowed unused vars must match /^_/u.
+  11:16 @typescript-eslint/no-unused-vars 'CardContent' is defined but never used. Allowed unused vars must match /^_/u.
+  11:29 @typescript-eslint/no-unused-vars 'CardDescription' is defined but never used. Allowed unused vars must match /^_/u.
+  11:46 @typescript-eslint/no-unused-vars 'CardHeader' is defined but never used. Allowed unused vars must match /^_/u.
+  11:58 @typescript-eslint/no-unused-vars 'CardTitle' is defined but never used. Allowed unused vars must match /^_/u.
+C:\Users\wamtesh\nderu-website\resources\js\pages\Welcome.vue
+  7:9 @typescript-eslint/no-unused-vars 'colors' is assigned a value but never used. Allowed unused vars must match /^_/u.

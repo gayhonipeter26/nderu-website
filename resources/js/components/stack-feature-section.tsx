@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
   FaReact, FaAws, FaDocker, FaNodeJs, FaGithub,
@@ -9,6 +8,7 @@ import {
 import {
   SiNextdotjs, SiVercel, SiRedux, SiTypescript, SiFacebook
 } from "react-icons/si";
+import { Button } from "@/components/ui/button";
 
 const fallbackUrls = [
   "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg",

@@ -1,6 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import React from 'react';
 import { cn } from '@/lib/utils';
 
 // Define the props interface for type safety and reusability

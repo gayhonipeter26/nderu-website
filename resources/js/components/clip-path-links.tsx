@@ -1,10 +1,4 @@
-import React from "react";
-import {
-  SiGoogle,
-  SiTiktok,
-  SiSpotify,
-} from "react-icons/si";
-import { FaDiscord } from "react-icons/fa";
+import { useAnimate } from "framer-motion";
 import {
   Github,
   Twitter,
@@ -14,9 +8,9 @@ import {
   Mail,
   Globe,
   Camera,
-  Code,
 } from "lucide-react";
-import { useAnimate } from "framer-motion";
+import React from "react";
+import { FaDiscord } from "react-icons/fa";
 
 export const ClipPathLinks = () => {
   return (

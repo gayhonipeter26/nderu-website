@@ -1,12 +1,12 @@
 <script setup lang="tsx">
-import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import ContactCardDemo from './ui/contact-card-demo';
-import PhotographyContactCardDemo from './ui/photography-contact-card-demo';
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import BlogContactCardDemo from './ui/blog-contact-card-demo';
+import ContactCardDemo from './ui/contact-card-demo';
 import NewsletterContactCardDemo from './ui/newsletter-contact-card-demo';
+import PhotographyContactCardDemo from './ui/photography-contact-card-demo';
 import SecureMessageGateway from './ui/secure-message-gateway';
 
 const props = defineProps<{

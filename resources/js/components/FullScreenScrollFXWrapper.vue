@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
 import FullScreenScrollFXDemo from '@/components/ui/full-screen-scroll-fx-demo';
 
 const container = ref<HTMLDivElement | null>(null);

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 import ExpandingCardsWrapper from '@/components/ExpandingCardsWrapper.vue';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 </script>
 
 <template>

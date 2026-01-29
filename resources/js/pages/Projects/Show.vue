@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import { Badge } from '@/components/ui/badge/index';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Button } from '@/components/ui/button/index';
-import MediaCarousel from '@/components/MediaCarousel.vue';
-import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 import {
   Heart,
   MessageSquare,
   Layers,
-  Play,
   Calendar,
   Package,
   Users,
@@ -22,6 +14,13 @@ import {
   MessageCircle,
   Music2,
 } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
+import MediaCarousel from '@/components/MediaCarousel.vue';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 interface Comment {
   id: number;

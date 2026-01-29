@@ -1,15 +1,12 @@
 <script setup lang="tsx">
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
-import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Button } from '@/components/ui/button/index';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
-import PhotographyProfileHeaderWrapper from '@/components/PhotographyProfileHeaderWrapper.vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
+import PhotographyProfileHeaderWrapper from '@/components/PhotographyProfileHeaderWrapper.vue';
 import ReactTailwindImageGalleryDemo from '@/components/ui/react-tailwind-image-gallery-demo';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 type Session = {
   id: number;
@@ -32,7 +29,7 @@ type Session = {
   client?: string;
 };
 
-const props = defineProps<{ sessions: Session[] }>();
+defineProps<{ sessions: Session[] }>();
 
 const galleryContainer = ref<HTMLDivElement | null>(null);
 let galleryRoot: Root | null = null;

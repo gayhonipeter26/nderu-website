@@ -1,7 +1,7 @@
-import { useState, type ReactNode } from "react"
 import { motion, AnimatePresence, LayoutGroup, type PanInfo } from "framer-motion"
-import { cn } from "@/lib/utils"
 import { Grid3X3, Layers, LayoutList } from "lucide-react"
+import { useState, type ReactNode } from "react"
+import { cn } from "@/lib/utils"
 
 export type LayoutMode = "stack" | "grid" | "list"
 

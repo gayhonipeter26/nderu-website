@@ -5,7 +5,6 @@ import { SplitText } from "gsap/SplitText"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
 import { useRef } from "react"
-import { cn } from "@/lib/utils";
 
 // Ensure plugins are registered
 gsap.registerPlugin(SplitText, ScrollTrigger);

@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Badge } from '@/components/ui/badge/index';
-import { Button } from '@/components/ui/button/index';
-import { Code, Database, Camera, Users } from 'lucide-vue-next';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import { onMounted, onBeforeUnmount, ref } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { Button } from '@/components/ui/button/index';
+import { DynamicFrameLayoutPhotography } from '@/components/ui/dynamic-frame-layout-photography';
 import FullScreenScrollFXServicesDemoFixed from '@/components/ui/full-screen-scroll-fx-services-demo-fixed';
+import Hero195 from '@/components/ui/hero-195-1';
 import { Demo as RulerCarouselDemo } from '@/components/ui/ruler-carousel-demo';
 import { PricingToggle } from '@/components/ui/single-pricing-card-1-toggle';
-import { BGPattern } from '@/components/ui/bg-pattern';
 import ServicesTestimonials from '@/components/ui/testimonials-services-demo';
-import Hero195 from '@/components/ui/hero-195-1';
-import { DynamicFrameLayoutPhotography } from '@/components/ui/dynamic-frame-layout-photography';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 const heroContainer = ref<HTMLDivElement | null>(null);
 const engagementContainer = ref<HTMLElement | null>(null);

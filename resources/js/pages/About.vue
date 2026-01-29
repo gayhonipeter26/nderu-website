@@ -1,16 +1,16 @@
 <script setup lang="tsx">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import { InstagramProfileHeader } from '@/components/ui/instagram-profile-header';
-import { StoryViewerDemo } from '@/components/ui/story-viewer-demo';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { AboutMeScrollingContent } from '@/components/ui/about-me-scrolly-sections';
-import { LogoCloud } from '@/components/ui/logo-cloud-2';
-import DocumentationAndCertifications from '@/components/ui/scroll-area-demo';
 import { Demo as AgentPlanDemo } from '@/components/ui/agent-plan-demo';
 import { InstagramCtaSections } from '@/components/ui/instagram-cta-sections';
+import { InstagramProfileHeader } from '@/components/ui/instagram-profile-header';
+import { LogoCloud } from '@/components/ui/logo-cloud-2';
+import DocumentationAndCertifications from '@/components/ui/scroll-area-demo';
+import { StoryViewerDemo } from '@/components/ui/story-viewer-demo';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 const profileHeaderContainer = ref<HTMLDivElement | null>(null);
 const scrollyContentContainer = ref<HTMLDivElement | null>(null);
@@ -101,7 +101,6 @@ onMounted(() => {
   }
 });
 
-import { watch } from 'vue';
 watch(activeTab, () => {
   renderProfileHeader();
 });

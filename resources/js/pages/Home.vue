@@ -1,22 +1,19 @@
 <script setup lang="tsx">
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Button } from '@/components/ui/button/index';
-import { Badge } from '@/components/ui/badge/index';
-import { ArrowRight, Award, CheckCircle, Users, Star, User, Briefcase } from 'lucide-vue-next';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import SparklesHeroWrapper from '@/components/SparklesHeroWrapper.vue';
-import { onBeforeUnmount, onMounted, ref, computed } from 'vue';
+import { User, Briefcase } from 'lucide-vue-next';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import { DemoOne } from '@/components/ui/silk-background-animation-demo';
-import CaseStudiesDemo from '@/components/ui/case-studies-demo';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { TestimonialsSectionCustom } from '@/components/blocks/testimonials-with-marquee-custom';
-import { TypewriterEffectCustom } from '@/components/ui/typewriter-effect-custom';
+import { Button } from '@/components/ui/button/index';
+import CaseStudiesDemo from '@/components/ui/case-studies-demo';
 import ExpandingCardsRecentWorkDemo from '@/components/ui/expanding-cards-recent-work-demo';
+import { DemoOne } from '@/components/ui/silk-background-animation-demo';
+import { TypewriterEffectCustom } from '@/components/ui/typewriter-effect-custom';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
-const props = defineProps<{
+defineProps<{
   services?: Array<{
     id: number;
     title: string;
@@ -55,13 +52,6 @@ const props = defineProps<{
     type: string;
   }>;
 }>();
-
-const stats = [
-  { label: 'Projects delivered', value: '50+', icon: CheckCircle },
-  { label: 'Years experience', value: '5+', icon: Award },
-  { label: 'Clients partnered', value: '30+', icon: Users },
-  { label: 'Photos captured', value: '10K+', icon: Star },
-];
 
 const silkContainer = ref<HTMLDivElement | null>(null);
 const caseStudiesContainer = ref<HTMLDivElement | null>(null);

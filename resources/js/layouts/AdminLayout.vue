@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import AppSidebarLayout from '@/layouts/app/AppSidebarLayout.vue';
-import type { BreadcrumbItem, NavItem } from '@/types';
+import { usePage } from '@inertiajs/vue3';
 import { ClipboardList, Image, Layers, MessagesSquare, Newspaper, Phone, Settings2 } from 'lucide-vue-next';
 import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import AppSidebarLayout from '@/layouts/app/AppSidebarLayout.vue';
+import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
   breadcrumbs?: BreadcrumbItem[];

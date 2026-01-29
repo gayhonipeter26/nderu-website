@@ -1,28 +1,19 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Badge } from '@/components/ui/badge/index';
-import { Button } from '@/components/ui/button/index';
-import { Input } from '@/components/ui/input/index';
-import { Mail, Phone, MapPin, Clock, Calendar, MessageCircle, Camera, Users } from 'lucide-vue-next';
+import { Mail, Phone, MapPin, Clock } from 'lucide-vue-next';
+import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 import Accordion from '@/components/ui/accordion/Accordion.vue';
+import AccordionContent from '@/components/ui/accordion/AccordionContent.vue';
 import AccordionItem from '@/components/ui/accordion/AccordionItem.vue';
 import AccordionTrigger from '@/components/ui/accordion/AccordionTrigger.vue';
-import AccordionContent from '@/components/ui/accordion/AccordionContent.vue';
+import { Badge } from '@/components/ui/badge/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 
 const contactMethods = [
   { icon: Mail, label: 'Email', value: 'hello@nderu.com', href: 'mailto:hello@nderu.com' },
   { icon: Phone, label: 'Phone', value: '+254 700 123 456', href: 'tel:+254700123456' },
   { icon: MapPin, label: 'Location', value: 'Nairobi, Kenya', href: 'https://maps.google.com' },
   { icon: Clock, label: 'Office hours', value: 'Mon – Fri · 09:00 – 18:00 EAT', href: '#' },
-];
-
-const offerings = [
-  { icon: MessageCircle, label: 'Project discovery', description: 'Clarify scope, success measures, and constraints.' },
-  { icon: Users, label: 'Consulting retainers', description: 'Strategic guidance, code reviews, and technical leadership.' },
-  { icon: Camera, label: 'Creative commissions', description: 'Photography for brand campaigns, events, and products.' },
 ];
 
 const faqs = [

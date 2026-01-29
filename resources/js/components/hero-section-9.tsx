@@ -1,8 +1,8 @@
-import * as React from "react"
-import { cn } from '@/lib/utils'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
+import Link from 'next/link'
+import * as React from "react"
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const menuItems = [
     { name: 'Features', href: '#' },

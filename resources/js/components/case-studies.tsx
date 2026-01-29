@@ -1,9 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 import { Monitor, LayoutDashboard, Users } from "lucide-react"; // ✅ Lucide icons
+import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 // Avoid SSR hydration issues by loading react-countup on the client.
 const CountUp = dynamic(() => import("react-countup"), { ssr: false });

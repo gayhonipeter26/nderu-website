@@ -13,7 +13,7 @@ interface Props {
   background?: 'default' | 'muted';
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   columns: 4,
   background: 'default'
 });

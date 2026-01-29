@@ -3,11 +3,12 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import React, {
-  forwardRef,
+import type {
   HTMLAttributes,
   ReactNode,
-  Ref,
+  Ref} from 'react';
+import React, {
+  forwardRef,
   useEffect,
   useMemo,
   useRef,

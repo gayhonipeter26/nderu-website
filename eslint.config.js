@@ -7,6 +7,15 @@ export default defineConfigWithVueTs(
     vue.configs['flat/essential'],
     vueTsConfigs.recommended,
     {
+        languageOptions: {
+            parserOptions: {
+                ecmaFeatures: {
+                    jsx: true,
+                },
+            },
+        },
+    },
+    {
         ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js', 'vite.config.ts', 'resources/js/components/ui/*'],
     },
     {
@@ -23,7 +32,23 @@ export default defineConfigWithVueTs(
         },
         rules: {
             'vue/multi-word-component-names': 'off',
+            'vue/block-lang': [
+                'error',
+                {
+                    script: {
+                        lang: ['ts', 'tsx'],
+                    },
+                },
+            ],
             '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    argsIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                },
+            ],
+            '@typescript-eslint/no-empty-object-type': 'off',
             '@typescript-eslint/consistent-type-imports': [
                 'error',
                 {

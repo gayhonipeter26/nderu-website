@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import { Badge } from '@/components/ui/badge/index';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Button } from '@/components/ui/button/index';
-import MediaCarousel from '@/components/MediaCarousel.vue';
+import { Link } from '@inertiajs/vue3';
 import {
   Heart,
   MessageSquare,
@@ -20,8 +15,13 @@ import {
   MapPin,
   ArrowLeft,
 } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
 import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
-import { Link } from '@inertiajs/vue3';
+import MediaCarousel from '@/components/MediaCarousel.vue';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 interface Comment {
   id: number;

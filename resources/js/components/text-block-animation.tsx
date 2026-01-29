@@ -1,21 +1,29 @@
-import gsap from "gsap"
-import { SplitText } from "gsap/SplitText"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { SplitText } from "gsap/SplitText"
 import { useRef } from "react"
-import { cn } from "@/lib/utils";
 
 // Ensure plugins are registered
 gsap.registerPlugin(SplitText, ScrollTrigger);
+
+interface TextBlockAnimationProps {
+    children: React.ReactNode;
+    animateOnScroll?: boolean;
+    delay?: number;
+    blockColor?: string;
+    stagger?: number;
+    duration?: number;
+}
 
 export default function TextBlockAnimation({
     children,
     animateOnScroll = true,
     delay = 0,
     blockColor = "#000",
-    stagger = 0.1, // Reduced for smoother flow
-    duration = 0.6 // Slightly faster for snappiness
-}) {
+    stagger = 0.1,
+    duration = 0.6
+}: TextBlockAnimationProps) {
     const containerRef = useRef(null);
 
     useGSAP(() => {
@@ -38,7 +46,7 @@ export default function TextBlockAnimation({
             wrapper.style.position = "relative";
             wrapper.style.display = "block";
             wrapper.style.overflow = "hidden"; // Ensures text doesn't show outside
-            
+
             // Create the Revealer Block
             const block = document.createElement("div");
             block.style.position = "absolute";
@@ -50,15 +58,15 @@ export default function TextBlockAnimation({
             block.style.zIndex = "2";
             block.style.transform = "scaleX(0)";
             block.style.transformOrigin = "left center";
-            
+
             // Insert wrapper and move line inside
             line.parentNode.insertBefore(wrapper, line);
             wrapper.appendChild(line);
             wrapper.appendChild(block);
-            
+
             // Set initial state of line to invisible
             gsap.set(line, { opacity: 0 });
-            
+
             blocks.push(block);
         });
 
@@ -81,24 +89,24 @@ export default function TextBlockAnimation({
             stagger: stagger,
             transformOrigin: "left center",
         })
-        // Step B: Reveal Text (Instant)
-        .set(lines, {
-            opacity: 1,
-            stagger: stagger
-        }, `<${duration / 2}`) // Start revealing halfway through the block expansion
-        // Step C: Scale Block 1 -> 0 (Left to Right)
-        .to(blocks, {
-            scaleX: 0,
-            duration: duration,
-            stagger: stagger,
-            transformOrigin: "right center"
-        }, `<${duration * 0.4}`); // Overlap significantly with the entry
+            // Step B: Reveal Text (Instant)
+            .set(lines, {
+                opacity: 1,
+                stagger: stagger
+            }, `<${duration / 2}`) // Start revealing halfway through the block expansion
+            // Step C: Scale Block 1 -> 0 (Left to Right)
+            .to(blocks, {
+                scaleX: 0,
+                duration: duration,
+                stagger: stagger,
+                transformOrigin: "right center"
+            }, `<${duration * 0.4}`); // Overlap significantly with the entry
 
-    }, { 
-        scope: containerRef, 
-        dependencies: [animateOnScroll, delay, blockColor, stagger, duration] 
+    }, {
+        scope: containerRef,
+        dependencies: [animateOnScroll, delay, blockColor, stagger, duration]
     });
-    
+
     return (
         <div ref={containerRef} style={{ position: "relative" }}>
             {children}

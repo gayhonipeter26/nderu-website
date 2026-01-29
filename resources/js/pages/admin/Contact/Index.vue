@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { computed, reactive, ref, watch } from 'vue';
-import AdminLayout from '@/layouts/AdminLayout.vue';
 import { Badge } from '@/components/ui/badge/index';
 import { Button } from '@/components/ui/button/index';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Input } from '@/components/ui/input/index';
 import { Label } from '@/components/ui/label/index';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 
 type ChannelStatus = 'Published' | 'Draft';
 

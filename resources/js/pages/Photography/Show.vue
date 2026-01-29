@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import { Badge } from '@/components/ui/badge/index';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Button } from '@/components/ui/button/index';
-import { Heart, MessageSquare, Calendar, MapPin, Camera, Play } from 'lucide-vue-next';
+import { Heart, MessageSquare, Calendar, MapPin, Camera } from 'lucide-vue-next';
+import { computed } from 'vue';
 import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
+import { Badge } from '@/components/ui/badge/index';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 interface Comment {
   id: number;

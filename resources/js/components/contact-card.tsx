@@ -1,9 +1,10 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
+import type {
+	LucideIcon} from 'lucide-react';
 import {
-	LucideIcon,
 	PlusIcon,
 } from 'lucide-react';
+import React from 'react';
+import { cn } from '@/lib/utils';
 
 type ContactInfoProps = React.ComponentProps<'div'> & {
 	icon: LucideIcon;

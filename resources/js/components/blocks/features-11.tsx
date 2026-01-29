@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Globe } from 'lucide-react'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 export function Features() {
     return (

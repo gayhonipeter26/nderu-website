@@ -1,8 +1,8 @@
 <script setup lang="tsx">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
 import { HeroDemo1 } from './blocks/hero-gallery-scroll-animation-demo';
 
 const container = ref<HTMLDivElement | null>(null);

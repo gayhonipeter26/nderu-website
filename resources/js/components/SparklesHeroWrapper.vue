@@ -1,8 +1,8 @@
 <script setup lang="tsx">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { SparklesPreview } from '@/components/ui/sparkles-demo';
 
 const containerRef = ref<HTMLDivElement | null>(null);

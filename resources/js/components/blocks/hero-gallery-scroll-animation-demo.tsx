@@ -1,5 +1,5 @@
-import { BentoCell, BentoGrid, ContainerScale, ContainerScroll } from "@/components/ui/hero-gallery-scroll-animation"
 import { Button } from "@/components/ui/button"
+import { BentoCell, BentoGrid, ContainerScale, ContainerScroll } from "@/components/ui/hero-gallery-scroll-animation"
 
 const IMAGES = [
     "/assets/photos/your-photo-1.jpg",

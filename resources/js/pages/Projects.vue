@@ -1,19 +1,16 @@
 <script setup lang="tsx">
-import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
-import { Badge } from '@/components/ui/badge/index';
-import { Button } from '@/components/ui/button/index';
-import { Input } from '@/components/ui/input/index';
-import { Layers, Package, Camera, Users, Play, Search, Heart } from 'lucide-vue-next';
-import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
-import MediaCarousel from '@/components/MediaCarousel.vue';
+import { Layers, Package, Camera, Users, Search } from 'lucide-vue-next';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import { MarqueeDemo } from '@/components/ui/marquee-demo';
-import ArticleCardProjectsDemo from '@/components/ui/card-23-projects-demo';
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import HeroAsciiOneWrapper from '@/components/HeroAsciiOneWrapper.vue';
+import { Button } from '@/components/ui/button/index';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import ArticleCardProjectsDemo from '@/components/ui/card-23-projects-demo';
+import { Input } from '@/components/ui/input/index';
+import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 
 type Project = {
@@ -102,29 +99,6 @@ const filteredProjects = computed(() => {
   });
 });
 
-const getProjectMedia = (project: Project) => {
-  const slides: { id: string | number; url: string; kind: 'image' | 'video' }[] = [];
-
-  if (Array.isArray(project.gallery) && project.gallery.length) {
-    slides.push(
-      ...project.gallery.map((asset) => ({
-        id: `gallery-${asset.id}`,
-        url: asset.url,
-        kind: asset.kind,
-      })),
-    );
-  }
-
-  if (project.hero_image_url && !slides.some((asset) => asset.kind === 'image' && asset.url === project.hero_image_url)) {
-    slides.push({ id: `hero-${project.id}`, url: project.hero_image_url, kind: 'image' });
-  }
-
-  if (project.case_study_video_url && !slides.some((asset) => asset.kind === 'video' && asset.url === project.case_study_video_url)) {
-    slides.push({ id: `case-video-${project.id}`, url: project.case_study_video_url, kind: 'video' });
-  }
-
-  return slides;
-};
 
 const articleCardContainer = ref<HTMLDivElement | null>(null);
 let articleCardRoot: Root | null = null;

@@ -1,15 +1,8 @@
 "use client";
 
+import { } from "lucide-react";
 import * as React from "react";
-import {
-  Pyramid,
-  Castle,
-  Mountain,
-  TowerControl,
-  Building,
-  Landmark,
-} from "lucide-react";
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
 
 export interface CardItem {
   id: string | number;
@@ -32,7 +25,7 @@ export const ExpandingCards = React.forwardRef<
   const [activeIndex, setActiveIndex] = React.useState<number | null>(
     defaultActiveIndex,
   );
-  
+
   const [isDesktop, setIsDesktop] = React.useState(false);
 
   React.useEffect(() => {
@@ -46,7 +39,7 @@ export const ExpandingCards = React.forwardRef<
 
   const gridStyle = React.useMemo(() => {
     if (activeIndex === null) return {};
-    
+
     if (isDesktop) {
       const columns = items
         .map((_, index) => (index === activeIndex ? "5fr" : "1fr"))
@@ -75,7 +68,7 @@ export const ExpandingCards = React.forwardRef<
       )}
       style={{
         ...gridStyle,
-        ...(isDesktop 
+        ...(isDesktop
           ? { gridTemplateRows: '1fr' }
           : { gridTemplateColumns: '1fr' }
         )

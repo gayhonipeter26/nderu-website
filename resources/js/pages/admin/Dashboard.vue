@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import AdminLayout from '@/layouts/AdminLayout.vue';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/index';
+import { ArrowUpRight } from 'lucide-vue-next';
+import { computed } from 'vue';
 import { Badge } from '@/components/ui/badge/index';
 import { Button } from '@/components/ui/button/index';
-import { ArrowUpRight } from 'lucide-vue-next';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/index';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 
 type Stat = {
   label: string;

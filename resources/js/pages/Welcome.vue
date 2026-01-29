@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { dashboard, login, register } from '@/routes';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useTheme } from '@/composables/useTheme';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { dashboard, login, register } from '@/routes';
 
-const { colors, gradients, shadows } = useTheme();
+// Theme removed as colors are unused
 
 const scrollY = ref(0);
 const parallaxElements = ref<Array<{ element: HTMLElement; speed: number }>>([]);
@@ -18,64 +17,39 @@ withDefaults(
     },
 );
 
+// Handle scroll events
+const handleScroll = () => {
+    scrollY.value = window.scrollY;
+
+    parallaxElements.value.forEach(({ element, speed }) => {
+        const rect = element.getBoundingClientRect();
+        const scrolled = window.scrollY;
+        const rate = scrolled * -speed;
+
+        if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
+            element.style.transform = `translateY(${rate}px)`;
+        }
+    });
+};
+
+const initParallax = () => {
+    const elements = document.querySelectorAll('[data-parallax]');
+    parallaxElements.value = Array.from(elements).map(element => ({
+        element: element as HTMLElement,
+        speed: parseFloat((element as HTMLElement).dataset.parallax || '0.5')
+    }));
+};
+
 onMounted(() => {
-    // Initialize parallax elements
-    const initParallax = () => {
-        const elements = document.querySelectorAll('[data-parallax]');
-        parallaxElements.value = Array.from(elements).map(element => ({
-            element: element as HTMLElement,
-            speed: parseFloat((element as HTMLElement).dataset.parallax || '0.5')
-        }));
-    };
-
     initParallax();
-
-    // Handle scroll events
-    const handleScroll = () => {
-        scrollY.value = window.scrollY;
-
-        parallaxElements.value.forEach(({ element, speed }) => {
-            const rect = element.getBoundingClientRect();
-            const scrolled = window.scrollY;
-            const rate = scrolled * -speed;
-
-            if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
-                element.style.transform = `translateY(${rate}px)`;
-            }
-        });
-    };
-
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', initParallax);
-
-    // Initial call
     handleScroll();
 });
 
 onUnmounted(() => {
-    window.removeEventListener('scroll', () => { });
-    window.removeEventListener('resize', () => { });
-});
-
-// Parallax background style
-const parallaxBackgroundStyle = computed(() => ({
-    background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.primary[100]} 25%, ${colors.secondary[50]} 50%, ${colors.accent[50]} 75%, ${colors.primary[900]} 100%)`,
-    backgroundAttachment: 'fixed',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    position: 'relative',
-    overflow: 'hidden'
-}));
-
-// Floating elements style
-const floatingElementStyle = (index: number) => ({
-    position: 'absolute' as const,
-    background: `radial-gradient(circle, ${colors.primary[200]} 0%, transparent 70%)`,
-    borderRadius: '50%',
-    filter: 'blur(40px)',
-    opacity: 0.3,
-    animation: `float ${10 + index * 2}s ease-in-out infinite`,
-    animationDelay: `${index * 0.5}s`
+    window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener('resize', initParallax);
 });
 </script>
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from '@inertiajs/vue3';
+import type { Component } from 'vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link } from '@inertiajs/vue3';
-import { Component } from 'vue';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Props {
   icon: Component;
@@ -22,7 +22,7 @@ interface Props {
   horizontal?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   featured: false,
   tags: () => [],
   actions: () => [],
