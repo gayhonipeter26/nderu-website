@@ -20,6 +20,97 @@ interface ProjectTimelineProps {
     items: TimelineItem[]
 }
 
+const GithubActivity = () => {
+    // Generate simulated contribution data
+    const weeks = 52;
+    const days = 7;
+    const contributions = React.useMemo(() => {
+        return Array.from({ length: weeks * days }).map(() => ({
+            level: Math.random() > 0.7 ? Math.floor(Math.random() * 4) + 1 : 0,
+        }));
+    }, []);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-32 relative max-w-4xl mx-auto p-8 border border-white/10 bg-black/50 backdrop-blur-xl"
+        >
+            <div className="absolute top-0 left-0 w-2 h-2 bg-blue-500/50" />
+            <div className="absolute top-0 right-0 w-2 h-2 bg-blue-500/50" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 bg-blue-500/50" />
+            <div className="absolute bottom-0 right-0 w-2 h-2 bg-blue-500/50" />
+
+            <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
+                <div className="flex items-center gap-3">
+                    <Github className="w-5 h-5 text-white/70" />
+                    <h3 className="text-white text-lg font-mono tracking-widest uppercase">
+                        <CrypticText text="Contribution_Matrix" delay={0} />
+                    </h3>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-white/40 font-mono">
+                    <span>2026_LOGS</span>
+                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                </div>
+            </div>
+
+            <div className="flex gap-1 overflow-x-auto pb-4 mask-fade-sides no-scrollbar">
+                {Array.from({ length: weeks }).map((_, weekIndex) => (
+                    <div key={weekIndex} className="flex flex-col gap-1">
+                        {Array.from({ length: days }).map((_, dayIndex) => {
+                            const index = weekIndex * days + dayIndex;
+                            const level = contributions[index]?.level || 0;
+
+                            return (
+                                <motion.div
+                                    key={dayIndex}
+                                    initial={{ opacity: 0 }}
+                                    whileInView={{ opacity: 1 }}
+                                    transition={{ delay: index * 0.001 }}
+                                    whileHover={{ scale: 1.2, zIndex: 10 }}
+                                    className={`
+                                        w-3 h-3 rounded-sm cursor-crosshair relative group
+                                        ${level === 0 ? 'bg-white/5' : ''}
+                                        ${level === 1 ? 'bg-blue-900/40 border border-blue-500/20' : ''}
+                                        ${level === 2 ? 'bg-blue-700/60 border border-blue-500/40' : ''}
+                                        ${level === 3 ? 'bg-blue-500/80 border border-white/20' : ''}
+                                        ${level === 4 ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]' : ''}
+                                    `}
+                                >
+                                    {/* Tooltip */}
+                                    {level > 0 && (
+                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
+                                            <div className="bg-black border border-white/20 px-2 py-1 text-[10px] text-white whitespace-nowrap">
+                                                COMMIT_0x{Math.floor(Math.random() * 1000).toString(16).toUpperCase()}
+                                            </div>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                ))}
+            </div>
+
+            <div className="flex items-center justify-between mt-6 text-[10px] text-white/30 uppercase tracking-widest">
+                <span>Total_Commits: <span className="text-white">1,024</span></span>
+                <div className="flex items-center gap-2">
+                    <span>Low</span>
+                    <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-white/5" />
+                        <div className="w-2 h-2 bg-blue-900/40" />
+                        <div className="w-2 h-2 bg-blue-700/60" />
+                        <div className="w-2 h-2 bg-blue-500/80" />
+                        <div className="w-2 h-2 bg-white" />
+                    </div>
+                    <span>High</span>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
 export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ items }) => {
     const containerRef = React.useRef<HTMLDivElement>(null)
     React.useEffect(() => {
@@ -142,6 +233,9 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ items }) => {
                     </div>
                 ))}
             </div>
+
+            {/* GitHub Activity Section */}
+            <GithubActivity />
 
             {/* Bottom Tech notation */}
             <div className="mt-20 flex items-center justify-center gap-4 opacity-20 text-[10px]">
