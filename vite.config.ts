@@ -15,6 +15,7 @@ export default defineConfig({
         tailwindcss(),
         wayfinder({
             formVariants: true,
+            generate: false, // ❌ Disable PHP generation on Vercel
         }),
         react(),
         vue({
