@@ -99,10 +99,7 @@ function StoryThumbnail({
         >
             <div className="relative w-16 h-16 md:w-[72px] md:h-[72px]">
                 <svg
-                    className={cn(
-                        "absolute inset-0 w-full h-full",
-                        !allViewed && "animate-instagram-spin"
-                    )}
+                    className="absolute inset-0 w-full h-full"
                     viewBox="0 0 100 100"
                 >
                     {stories.map((_, index) => {
