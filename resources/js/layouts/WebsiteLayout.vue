@@ -58,90 +58,24 @@ const isActive = (href: string) => {
                     About
                   </Link>
 
-                  <!-- Services Section -->
-                  <!-- Services Section -->
-                  <div class="py-2">
-                    <h4 class="px-3 mb-2 font-semibold text-foreground">Services</h4>
-                    <div class="space-y-1 pl-2">
-                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Development
-                      </p>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Web Development
-                      </Link>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Mobile Apps
-                      </Link>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Database Design
-                      </Link>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Cloud Solutions
-                      </Link>
-
-                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-3">
-                        Photography</p>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Commercial Photography
-                      </Link>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Event Coverage
-                      </Link>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Portrait Sessions
-                      </Link>
-                      <Link href="/services"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Photo Editing
-                      </Link>
-                    </div>
-                  </div>
-
-                  <!-- Portfolio Section -->
-                  <div class="py-2">
-                    <h4 class="px-3 mb-2 font-semibold text-foreground">Portfolio</h4>
-                    <div class="space-y-1 pl-2">
-                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Featured
-                        Projects</p>
-                      <Link href="/projects"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Web Applications
-                      </Link>
-                      <Link href="/projects"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Mobile Solutions
-                      </Link>
-                      <Link href="/projects"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        System Architecture
-                      </Link>
-                      <Link href="/projects"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        API Development
-                      </Link>
-
-                      <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-3">
-                        Photography Work</p>
-                      <Link href="/photography"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Corporate Events
-                      </Link>
-                      <Link href="/photography"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Product Photography
-                      </Link>
-                      <Link href="/photography"
-                        class="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground ml-2 border-l border-zinc-800">
-                        Portrait Gallery
-                      </Link>
-                    </div>
-                  </div>
+                  <Link href="/services" :class="[
+                    'px-3 py-2 rounded-md transition-colors',
+                    isActive('/services') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  ]">
+                    Services
+                  </Link>
+                  <Link href="/projects" :class="[
+                    'px-3 py-2 rounded-md transition-colors',
+                    isActive('/projects') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  ]">
+                    Projects
+                  </Link>
+                  <Link href="/photography" :class="[
+                    'px-3 py-2 rounded-md transition-colors',
+                    isActive('/photography') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  ]">
+                    Photography
+                  </Link>
 
                   <Link href="/blog" :class="[
                     'px-3 py-2 rounded-md transition-colors',

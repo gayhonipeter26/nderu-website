@@ -157,8 +157,8 @@ export const useTheme = () => {
       primary: colors.primary,
       secondary: colors.secondary,
       accent: colors.accent,
-      background: colors.white,
-      foreground: colors.primary[900],
+      background: colors.black,
+      foreground: colors.white,
       muted: colors.secondary[500],
     }
   };
