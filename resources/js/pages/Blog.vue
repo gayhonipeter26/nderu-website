@@ -4,10 +4,10 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import BlogHeroYoutubeWrapper from '@/components/BlogHeroYoutubeWrapper.vue';
 import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 import { Button } from '@/components/ui/button/index';
 import ArticleCardBlogDemo from '@/components/ui/card-23-blog-demo';
-import { GalleryPage } from '@/components/ui/gallery-demo';
 import { Input } from '@/components/ui/input/index';
 import { VideoArticlesList } from '@/components/ui/video-article-card';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
@@ -35,11 +35,9 @@ type Post = {
 
 const props = defineProps<{ posts: Post[] }>();
 
-const galleryContainer = ref<HTMLDivElement | null>(null);
 const videoListContainer = ref<HTMLDivElement | null>(null);
 const articleCardContainer = ref<HTMLDivElement | null>(null);
 
-let galleryRoot: Root | null = null;
 let videoListRoot: Root | null = null;
 let articleCardRoot: Root | null = null;
 
@@ -48,15 +46,6 @@ const featuredVideos = computed(() =>
 );
 
 onMounted(() => {
-  if (galleryContainer.value) {
-    galleryRoot = createRoot(galleryContainer.value);
-    galleryRoot.render(
-      <React.StrictMode>
-        <GalleryPage />
-      </React.StrictMode>,
-    );
-  }
-
   if (videoListContainer.value) {
     videoListRoot = createRoot(videoListContainer.value);
     videoListRoot.render(
@@ -77,10 +66,6 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  if (galleryRoot) {
-    galleryRoot.unmount();
-    galleryRoot = null;
-  }
   if (videoListRoot) {
     videoListRoot.unmount();
     videoListRoot = null;
@@ -159,8 +144,8 @@ watch(featuredVideos, (newVideos) => {
 
 <template>
   <WebsiteLayout>
-    <section id="blog" class="border-b bg-background">
-      <div ref="galleryContainer" class="w-full"></div>
+    <section id="blog-hero" class="border-b bg-background">
+      <BlogHeroYoutubeWrapper />
     </section>
 
     <section class="border-b bg-background">
