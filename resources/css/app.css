@@ -922,3 +922,13 @@
         offset-distance: 100%;
     }
 }
+
+/* Hide scrollbar for horizontal scrolling sections */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
