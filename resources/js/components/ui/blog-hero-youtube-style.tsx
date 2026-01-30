@@ -36,7 +36,7 @@ export function BlogHeroYoutubeStyle({
                     <div className="flex items-center justify-between h-14 md:h-16 gap-4">
                         {/* Left: Logo/Brand */}
                         <div className="flex items-center gap-4 shrink-0">
-                            <h2 className="text-lg md:text-xl font-bold tracking-tight">NDERU.KE</h2>
+                            <h2 className="text-lg md:text-xl font-bold tracking-tight">Nderu News</h2>
                         </div>
 
                         {/* Center: Search Bar */}
