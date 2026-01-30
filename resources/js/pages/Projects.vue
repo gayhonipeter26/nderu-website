@@ -166,7 +166,7 @@ onBeforeUnmount(() => {
     <section id="featured-projects" class="py-24 bg-black border-y border-white/5 font-mono">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col gap-12">
-          {/* Main Controls Header */}
+          <!-- Main Controls Header -->
           <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/10 pb-12">
             <div>
               <div class="flex items-center gap-3 text-white/40 text-[10px] tracking-[0.4em] uppercase mb-3">
@@ -224,7 +224,7 @@ onBeforeUnmount(() => {
     <section id="system-architecture" class="py-32 bg-black border-t border-white/5 font-mono">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="relative p-12 md:p-20 border border-white/10 bg-white/[0.02] overflow-hidden group">
-          {/* Background Accents */}
+          <!-- Background Accents -->
           <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[120px] pointer-events-none"></div>
           <div class="absolute -bottom-8 -left-8 w-32 h-32 border border-white/5 rotate-45 pointer-events-none"></div>
           

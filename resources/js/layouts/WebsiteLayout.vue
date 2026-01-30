@@ -5,11 +5,18 @@ import { computed } from 'vue';
 import { Button } from '@/components/ui/button/index';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet/index';
 import WebsiteMegaMenu from '@/components/WebsiteMegaMenu.vue';
+import { ref } from 'vue';
+import { ChevronUp, ChevronDown } from 'lucide-vue-next';
 
 defineProps<{ loadingDescription?: string; }>();
 
 const page = usePage();
 const currentUrl = computed(() => (page.props as any).ziggy?.location || '');
+const isMenuVisible = ref(true);
+
+const toggleMenu = () => {
+  isMenuVisible.value = !isMenuVisible.value;
+};
 
 
 
@@ -22,8 +29,25 @@ const isActive = (href: string) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-foreground flex flex-col">
-    <header class="border-b bg-black">
+  <div class="min-h-screen bg-background text-foreground flex flex-col relative">
+    <!-- Persistent Toggle Button (Top Right) -->
+    <div class="fixed top-2 right-4 z-[100] hidden md:block">
+      <Button 
+        variant="secondary" 
+        size="icon" 
+        class="h-8 w-8 rounded-full shadow-lg bg-black/50 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 transition-all hover:scale-105"
+        @click="toggleMenu"
+        :title="isMenuVisible ? 'Hide Menu' : 'Show Menu'"
+      >
+        <ChevronUp v-if="isMenuVisible" class="h-4 w-4" />
+        <ChevronDown v-else class="h-4 w-4" />
+      </Button>
+    </div>
+
+    <header 
+      class="border-b bg-black transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden z-[90] sticky top-0"
+      :class="isMenuVisible ? 'h-16 opacity-100' : 'h-0 opacity-0 border-none pointer-events-none'"
+    >
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-4">
           <Link href="/" class="text-lg font-semibold tracking-tight text-white">
@@ -34,6 +58,9 @@ const isActive = (href: string) => {
           <div class="hidden md:flex flex-1 items-center justify-center">
             <WebsiteMegaMenu />
           </div>
+
+          <!-- Spacer for the floating toggle on the right -->
+          <div class="hidden md:block w-10"></div>
 
           <!-- Mobile Menu -->
           <div class="md:hidden">

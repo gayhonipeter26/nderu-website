@@ -35,7 +35,7 @@ class PostResource extends JsonResource
             'updated_at' => optional($this->updated_at)->toDateTimeString(),
             'category' => $this->meta['category'] ?? 'Technology',
             'tags' => $this->meta['tags'] ?? [],
-            'author' => $this->meta['author'] ?? 'Peter Nderu',
+            'author' => $this->meta['author'] ?? 'Nderu Gathoni',
             'featured' => (bool) ($this->meta['featured'] ?? false),
         ];
     }
