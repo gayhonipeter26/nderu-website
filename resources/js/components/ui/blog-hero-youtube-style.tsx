@@ -1,7 +1,8 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, Search } from "lucide-react";
+import { BadgeCheck, Search, Mic, Bell, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface BlogHeroYoutubeStyleProps {
     title?: string;
@@ -25,9 +26,63 @@ export function BlogHeroYoutubeStyle({
     className
 }: BlogHeroYoutubeStyleProps) {
     const [activeTab, setActiveTab] = React.useState("home");
+    const [searchQuery, setSearchQuery] = React.useState("");
 
     return (
         <div className={cn("relative w-full bg-background", className)}>
+            {/* YouTube-Style Top Navigation Bar */}
+            <div className="sticky top-0 z-50 bg-background border-b border-border">
+                <div className="container mx-auto px-4 md:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-14 md:h-16 gap-4">
+                        {/* Left: Logo/Brand */}
+                        <div className="flex items-center gap-4 shrink-0">
+                            <h2 className="text-lg md:text-xl font-bold tracking-tight">NDERU.KE</h2>
+                        </div>
+
+                        {/* Center: Search Bar */}
+                        <div className="hidden md:flex flex-1 max-w-2xl items-center gap-2">
+                            <div className="relative flex-1">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search"
+                                    className="w-full h-10 px-4 pr-12 bg-muted/50 border border-border rounded-full text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                                />
+                                <button className="absolute right-0 top-0 h-10 px-4 border-l border-border rounded-r-full hover:bg-muted transition-colors">
+                                    <Search className="h-4 w-4 text-muted-foreground" />
+                                </button>
+                            </div>
+                            <button className="p-2 rounded-full hover:bg-muted transition-colors">
+                                <Mic className="h-5 w-5 text-muted-foreground" />
+                            </button>
+                        </div>
+
+                        {/* Right: Icons */}
+                        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                            {/* Mobile Search */}
+                            <button className="md:hidden p-2 rounded-full hover:bg-muted transition-colors">
+                                <Search className="h-5 w-5 text-muted-foreground" />
+                            </button>
+
+                            {/* Notifications */}
+                            <button className="relative p-2 rounded-full hover:bg-muted transition-colors">
+                                <Bell className="h-5 w-5 text-muted-foreground" />
+                                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full"></span>
+                            </button>
+
+                            {/* Profile */}
+                            <Avatar className="h-8 w-8 cursor-pointer">
+                                <AvatarImage src={avatarImage} alt="Profile" />
+                                <AvatarFallback>
+                                    <User className="h-4 w-4" />
+                                </AvatarFallback>
+                            </Avatar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Banner */}
             <div className="relative h-[120px] md:h-[200px] w-full overflow-hidden bg-gradient-to-br from-purple-900/20 via-background to-blue-900/20">
                 <img
@@ -81,16 +136,6 @@ export function BlogHeroYoutubeStyle({
                                     </Button>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Search Icon - Top Right */}
-                        <div className="hidden md:flex pb-6 shrink-0">
-                            <button
-                                className="p-2 rounded-full hover:bg-muted transition-colors"
-                                aria-label="Search"
-                            >
-                                <Search className="h-5 w-5 text-muted-foreground" />
-                            </button>
                         </div>
                     </div>
 
