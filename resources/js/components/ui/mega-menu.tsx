@@ -16,6 +16,7 @@ export type MegaMenuItem = {
     }[];
   }[];
   link?: string;
+  component?: React.ReactNode;
 };
 
 export interface MegaMenuProps extends React.HTMLAttributes<HTMLUListElement> {
@@ -72,7 +73,7 @@ const MegaMenu = React.forwardRef<HTMLUListElement, MegaMenuProps>(
                   }
                 }}
               >
-                <span>{navItem.label}</span>
+                {navItem.component ? navItem.component : <span className={navItem.label.includes('🇰🇪') ? 'text-xl' : ''}>{navItem.label}</span>}
                 {navItem.subMenus && (
                   <ChevronDown
                     className={`h-4 w-4 transition-transform duration-300 group-hover:rotate-180 ${openMenu === navItem.label ? "rotate-180" : ""

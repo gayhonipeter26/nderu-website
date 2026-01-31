@@ -237,6 +237,15 @@ const commentsContainer = ref<HTMLDivElement | null>(null);
 const suggestedContainer = ref<HTMLDivElement | null>(null);
 let commentsRoot: Root | null = null;
 let suggestedRoot: Root | null = null;
+const commentsLoaded = ref(false);
+const suggestedLoaded = ref(false);
+let renderTimeout: number | null = null;
+
+// Debounced render function to prevent multiple rapid renders
+const debouncedRender = (renderFn: () => void, delay = 100) => {
+    if (renderTimeout) clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(renderFn, delay);
+};
 
 const renderComments = () => {
     if (commentsContainer.value && !commentsRoot) {
@@ -292,22 +301,70 @@ const renderComments = () => {
 };
 
 const renderSuggestedContent = () => {
+    if (!suggestedLoaded.value) return;
+    
     if (suggestedContainer.value && !suggestedRoot) {
         suggestedRoot = createRoot(suggestedContainer.value);
     }
     
     if (suggestedRoot) {
-        suggestedRoot.render(
-            <React.StrictMode>
-                <SectionRow 
-                    title="Watch Next"
-                    items={suggestedPosts.value}
-                    renderItem={(post, index) => (
-                        <VideoCard key={post.id} post={post} index={index} />
-                    )}
-                />
-            </React.StrictMode>
-        );
+        debouncedRender(() => {
+            suggestedRoot!.render(
+                <React.StrictMode>
+                    <SectionRow 
+                        title="Watch Next"
+                        items={suggestedPosts.value}
+                        renderItem={(post, index) => (
+                            <VideoCard key={post.id} post={post} index={index} />
+                        )}
+                    />
+                </React.StrictMode>
+            );
+        });
+    }
+};
+
+// Intersection Observer for lazy loading
+const setupLazyLoading = () => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+        // Fallback for browsers without IntersectionObserver
+        commentsLoaded.value = true;
+        suggestedLoaded.value = true;
+        return;
+    }
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '200px', // Load 200px before element comes into view
+        threshold: 0
+    };
+
+    const commentsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !commentsLoaded.value) {
+                commentsLoaded.value = true;
+                renderComments();
+                commentsObserver.disconnect();
+            }
+        });
+    }, observerOptions);
+
+    const suggestedObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !suggestedLoaded.value) {
+                suggestedLoaded.value = true;
+                renderSuggestedContent();
+                suggestedObserver.disconnect();
+            }
+        });
+    }, observerOptions);
+
+    if (commentsContainer.value) {
+        commentsObserver.observe(commentsContainer.value);
+    }
+
+    if (suggestedContainer.value) {
+        suggestedObserver.observe(suggestedContainer.value);
     }
 };
 
@@ -315,15 +372,20 @@ onMounted(() => {
   if (typeof window !== 'undefined') {
     shareUrl.value = window.location.href;
   }
-  renderComments();
-  renderSuggestedContent();
+  
+  // Setup lazy loading with IntersectionObserver
+  setupLazyLoading();
 });
 
 watch([() => props.comments, showCommentForm], () => {
-  renderComments();
+  if (commentsLoaded.value) {
+    debouncedRender(renderComments);
+  }
 }, { deep: true });
 
 onBeforeUnmount(() => {
+  if (renderTimeout) clearTimeout(renderTimeout);
+  
   if (commentsRoot) {
     commentsRoot.unmount();
     commentsRoot = null;
@@ -342,13 +404,13 @@ const toggleCommentForm = () => {
 <template>
   <WebsiteLayout>
     <!-- Split Screen Layout -->
-    <section class="min-h-screen py-6">
+    <section class="min-h-screen py-3 md:py-6">
       <div class="grid lg:grid-cols-2 min-h-[calc(100vh-3rem)]">
         <!-- Left Column: Fixed Image with Overlays -->
         <div class="relative hidden lg:block h-[calc(100vh-3rem)]">
           <!-- Image Container with Padding -->
-          <div class="h-full w-full p-6">
-            <div class="relative h-full w-full rounded-2xl overflow-hidden bg-black">
+          <div class="h-full w-full p-3 md:p-6">
+            <div class="relative h-full w-full rounded-xl md:rounded-2xl overflow-hidden bg-black">
               <!-- Background Image -->
               <MediaCarousel v-if="mediaSlides.length" :media="mediaSlides" class="h-full w-full"
                 height-class="h-full" />
@@ -531,7 +593,19 @@ const toggleCommentForm = () => {
             <!-- Comments Section -->
             <div class="space-y-8" id="comments">
                <!-- React Comments Mount Point -->
-               <div ref="commentsContainer"></div>
+               <div ref="commentsContainer">
+                 <!-- Loading Skeleton -->
+                 <div v-if="!commentsLoaded" class="space-y-6 animate-pulse">
+                   <div class="h-8 bg-white/5 rounded w-48"></div>
+                   <div v-for="i in 3" :key="i" class="flex gap-4">
+                     <div class="h-10 w-10 rounded-full bg-white/5"></div>
+                     <div class="flex-1 space-y-2">
+                       <div class="h-4 bg-white/5 rounded w-32"></div>
+                       <div class="h-16 bg-white/5 rounded"></div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
             </div>
 
 
@@ -540,40 +614,67 @@ const toggleCommentForm = () => {
       </div>
 
       <!-- Full Width Suggested Content -->
-      <div class="max-w-[1440px] mx-auto px-6 py-6 border-t border-white/10 mt-12">
-        <div class="suggested-content-wrapper min-h-[400px]">
-            <div ref="suggestedContainer" class="w-full"></div>
+      <div class="max-w-[1440px] mx-auto px-4 md:px-6 py-4 md:py-6 border-t border-white/10 mt-8 md:mt-12">
+        <div class="suggested-content-wrapper min-h-[300px] md:min-h-[400px]">
+            <div ref="suggestedContainer">
+              <!-- Loading Skeleton -->
+              <div v-if="!suggestedLoaded" class="space-y-4 animate-pulse">
+                <div class="h-6 bg-white/5 rounded w-40"></div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <div v-for="i in 4" :key="i" class="space-y-2">
+                    <div class="aspect-video bg-white/5 rounded-xl"></div>
+                    <div class="h-4 bg-white/5 rounded w-3/4"></div>
+                    <div class="h-3 bg-white/5 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
         </div>
       </div>
 
       <!-- Advertisement Banner -->
       <div class="max-w-[1440px] mx-auto px-6 pb-20 mt-8">
-        <div class="w-full h-[250px] md:h-[300px] rounded-2xl overflow-hidden relative group cursor-pointer border border-white/10">
-            <!-- Background Image -->
-            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000" 
-                alt="Advertisement" 
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <div class="w-full h-[180px] md:h-[200px] rounded-2xl overflow-hidden relative group cursor-pointer border border-white/10">
+            <!-- Background Video -->
+            <video 
+                autoplay 
+                loop 
+                muted 
+                playsinline
+                loading="lazy"
+                preload="metadata"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            >
+                <source src="https://cdn.coverr.co/videos/coverr-cinematic-video-production-8273/720p.mp4" type="video/mp4" />
+                <!-- Fallback image if video doesn't load -->
+                <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2000" alt="Creative Services" class="w-full h-full object-cover" loading="lazy" />
+            </video>
             
             <!-- Dark Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent flex flex-col justify-center px-8 md:px-16">
-                <span class="text-xs font-bold text-yellow-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <span class="w-8 h-[1px] bg-yellow-500"></span>
-                    Sponsored
+            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent flex flex-col justify-center px-6 md:px-12">
+                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <span class="w-6 h-[1px] bg-blue-400"></span>
+                    Featured Services
                 </span>
-                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4 max-w-xl leading-tight">
-                    Upgrade Your <br/>Cinematic Setup
+                <h3 class="text-2xl md:text-4xl font-bold text-white mb-3 max-w-xl leading-tight">
+                    Bring Your Vision <br/>to Life
                 </h3>
-                <p class="text-gray-300 mb-8 max-w-lg text-sm md:text-base leading-relaxed">
-                    Get exclusive deals on cameras, lenses, and lighting equipment. Join the creator economy with the best tools in the industry.
+                <p class="text-gray-300 mb-4 max-w-lg text-xs md:text-sm leading-relaxed">
+                    Professional photography, videography, and creative direction. Let's create stunning visual stories together.
                 </p>
-                <button class="bg-white text-black px-8 py-3 rounded-full font-bold text-sm hover:bg-gray-200 transition-all transform hover:translate-x-1 w-fit">
-                    Shop Gear Collection
+                <button class="bg-white text-black px-6 py-2 rounded-full font-bold text-xs hover:bg-gray-200 transition-all transform hover:translate-x-1 w-fit">
+                    Book a Session
                 </button>
             </div>
             
-            <!-- Ad Label -->
+            <!-- Service Label -->
             <div class="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] uppercase font-bold text-white/50 border border-white/5">
-                Advertisement
+                Featured
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="absolute bottom-3 right-4 text-[9px] text-white/40 hover:text-white/70 transition-colors">
+                Interested in my services? Contact: <a href="mailto:hello@nderugathoni.com" class="underline">hello@nderugathoni.com</a>
             </div>
         </div>
       </div>

@@ -5,6 +5,8 @@ import { computed } from 'vue';
 import { Button } from '@/components/ui/button/index';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet/index';
 import WebsiteMegaMenu from '@/components/WebsiteMegaMenu.vue';
+import ScrollToTop from '@/components/ScrollToTop.vue';
+import MobileSocialBar from '@/components/MobileSocialBar.vue';
 import { ref } from 'vue';
 import { ChevronUp, ChevronDown } from 'lucide-vue-next';
 
@@ -116,6 +118,15 @@ const isActive = (href: string) => {
                   ]">
                     Contact
                   </Link>
+                  <div class="px-3 py-4 flex items-center gap-2 mt-4 border-t border-muted/50">
+                    <img 
+                      src="https://flagcdn.com/w40/ke.png"
+                      srcset="https://flagcdn.com/w80/ke.png 2x"
+                      width="40"
+                      alt="Kenya"
+                      class="inline-block rounded shadow-md animate-flag-wave"
+                    />
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -166,5 +177,9 @@ const isActive = (href: string) => {
         <p class="mt-8 text-center text-xs text-muted-foreground">&copy; 2024 NDERU.KE. All rights reserved.</p>
       </div>
     </footer>
+    
+    <!-- Global Components -->
+    <ScrollToTop />
+    <MobileSocialBar />
   </div>
 </template>

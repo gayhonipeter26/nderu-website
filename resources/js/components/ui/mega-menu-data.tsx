@@ -36,4 +36,21 @@ export const megaMenuData: MegaMenuItem[] = [
     label: 'Contact',
     link: '/contact',
   },
+  {
+    id: 7,
+    label: 'Kenya',
+    link: '#',
+    component: (
+      <img
+        src="https://flagcdn.com/w40/ke.png"
+        srcSet="https://flagcdn.com/w80/ke.png 2x"
+        width="32"
+        alt="Kenya"
+        className="inline-block rounded shadow-sm animate-flag-wave"
+        style={{
+          marginLeft: '48px',
+        }}
+      />
+    ),
+  },
 ];

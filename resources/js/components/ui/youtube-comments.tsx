@@ -38,6 +38,10 @@ export function YoutubeComments({ comments: initialComments, className, onCommen
     const [userName, setUserName] = React.useState("");
     const [isCommenting, setIsCommenting] = React.useState(false);
     const [activeMenuCommentId, setActiveMenuCommentId] = React.useState<number | string | null>(null);
+    const [likedComments, setLikedComments] = React.useState<Set<number | string>>(new Set());
+    const [dislikedComments, setDislikedComments] = React.useState<Set<number | string>>(new Set());
+    const [activeReplyId, setActiveReplyId] = React.useState<number | string | null>(null);
+    const [replyText, setReplyText] = React.useState("");
     const menuRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
@@ -102,6 +106,94 @@ export function YoutubeComments({ comments: initialComments, className, onCommen
         } catch (e) {
             return "Recently";
         }
+    };
+
+    const handleLike = (commentId: number | string) => {
+        setComments(prevComments => prevComments.map(comment => {
+            if (comment.id === commentId) {
+                const wasLiked = likedComments.has(commentId);
+                const wasDisliked = dislikedComments.has(commentId);
+
+                const newLikes = wasLiked
+                    ? (comment.likes || 0) - 1
+                    : wasDisliked
+                        ? (comment.likes || 0) + 2
+                        : (comment.likes || 0) + 1;
+
+                return { ...comment, likes: Math.max(0, newLikes) };
+            }
+            return comment;
+        }));
+
+        setLikedComments(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(commentId)) {
+                newSet.delete(commentId);
+            } else {
+                newSet.add(commentId);
+            }
+            return newSet;
+        });
+
+        if (dislikedComments.has(commentId)) {
+            setDislikedComments(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(commentId);
+                return newSet;
+            });
+        }
+    };
+
+    const handleDislike = (commentId: number | string) => {
+        setComments(prevComments => prevComments.map(comment => {
+            if (comment.id === commentId) {
+                const wasLiked = likedComments.has(commentId);
+                const wasDisliked = dislikedComments.has(commentId);
+
+                const newLikes = wasDisliked
+                    ? (comment.likes || 0) + 1
+                    : wasLiked
+                        ? (comment.likes || 0) - 2
+                        : (comment.likes || 0) - 1;
+
+                return { ...comment, likes: Math.max(0, newLikes) };
+            }
+            return comment;
+        }));
+
+        setDislikedComments(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(commentId)) {
+                newSet.delete(commentId);
+            } else {
+                newSet.add(commentId);
+            }
+            return newSet;
+        });
+
+        if (likedComments.has(commentId)) {
+            setLikedComments(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(commentId);
+                return newSet;
+            });
+        }
+    };
+
+    const handleReply = (commentId: number | string) => {
+        setActiveReplyId(activeReplyId === commentId ? null : commentId);
+        setReplyText("");
+    };
+
+    const handlePostReply = (e: React.FormEvent, commentId: number | string) => {
+        e.preventDefault();
+        if (!replyText.trim()) return;
+
+        // Here you would typically submit the reply to your backend
+        console.log('Reply to comment', commentId, ':', replyText);
+
+        setReplyText("");
+        setActiveReplyId(null);
     };
 
     return (
@@ -206,17 +298,84 @@ export function YoutubeComments({ comments: initialComments, className, onCommen
 
                             {/* Action Buttons */}
                             <div className="flex items-center gap-2 mt-2">
-                                <button className="flex items-center gap-1.5 p-1.5 -ml-1.5 hover:bg-white/10 rounded-full transition-colors group/like">
-                                    <ThumbsUp className="h-3.5 w-3.5 text-white/70 group-hover/like:text-white" />
-                                    <span className="text-xs text-[#aaaaaa]">{comment.likes || 0}</span>
+                                <button
+                                    onClick={() => handleLike(comment.id)}
+                                    className={cn(
+                                        "flex items-center gap-1.5 p-1.5 -ml-1.5 hover:bg-white/10 rounded-full transition-colors group/like",
+                                        likedComments.has(comment.id) && "bg-blue-500/20"
+                                    )}
+                                >
+                                    <ThumbsUp className={cn(
+                                        "h-3.5 w-3.5 transition-colors",
+                                        likedComments.has(comment.id) ? "text-blue-500 fill-blue-500" : "text-white/70 group-hover/like:text-white"
+                                    )} />
+                                    <span className={cn(
+                                        "text-xs",
+                                        likedComments.has(comment.id) ? "text-blue-500" : "text-[#aaaaaa]"
+                                    )}>{comment.likes || 0}</span>
                                 </button>
-                                <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors group/dislike">
-                                    <ThumbsDown className="h-3.5 w-3.5 text-white/70 group-hover/dislike:text-white" />
+                                <button
+                                    onClick={() => handleDislike(comment.id)}
+                                    className={cn(
+                                        "p-1.5 hover:bg-white/10 rounded-full transition-colors group/dislike",
+                                        dislikedComments.has(comment.id) && "bg-blue-500/20"
+                                    )}
+                                >
+                                    <ThumbsDown className={cn(
+                                        "h-3.5 w-3.5 transition-colors",
+                                        dislikedComments.has(comment.id) ? "text-blue-500 fill-blue-500" : "text-white/70 group-hover/dislike:text-white"
+                                    )} />
                                 </button>
-                                <button className="ml-2 text-xs font-bold text-[#aaaaaa] hover:text-white px-3 py-1.5 hover:bg-white/10 rounded-full transition-colors">
+                                <button
+                                    onClick={() => handleReply(comment.id)}
+                                    className="ml-2 text-xs font-bold text-[#aaaaaa] hover:text-white px-3 py-1.5 hover:bg-white/10 rounded-full transition-colors"
+                                >
                                     Reply
                                 </button>
                             </div>
+
+                            {/* Reply Input */}
+                            <AnimatePresence>
+                                {activeReplyId === comment.id && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="mt-4 ml-0"
+                                    >
+                                        <form onSubmit={(e) => handlePostReply(e, comment.id)} className="flex gap-3">
+                                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center shrink-0">
+                                                <span className="text-xs font-bold text-white uppercase">{userEmail ? userEmail[0] : '?'}</span>
+                                            </div>
+                                            <div className="flex-1 space-y-3">
+                                                <textarea
+                                                    placeholder="Add a reply..."
+                                                    value={replyText}
+                                                    onChange={(e) => setReplyText(e.target.value)}
+                                                    className="w-full bg-transparent border-b border-white/20 focus:border-white focus:outline-none transition-all py-1 resize-none text-sm placeholder-white/40 min-h-[32px]"
+                                                    rows={1}
+                                                />
+                                                <div className="flex justify-end gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveReplyId(null)}
+                                                        className="px-3 py-1.5 hover:bg-white/10 rounded-full text-xs font-bold transition-colors"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        type="submit"
+                                                        disabled={!replyText.trim()}
+                                                        className="px-3 py-1.5 bg-red-600 hover:bg-red-700 disabled:bg-white/10 disabled:text-white/40 rounded-full text-xs font-bold transition-all"
+                                                    >
+                                                        Reply
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                         <div className="relative">
                             <button

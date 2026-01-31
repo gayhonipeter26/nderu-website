@@ -661,7 +661,35 @@
                 0% 0%;
         }
     }
+
+
 }
+
+@keyframes flag-wave {
+
+    0%,
+    100% {
+        transform: perspective(400px) rotateY(0deg) scale(1) rotateZ(0deg);
+    }
+
+    25% {
+        transform: perspective(400px) rotateY(-20deg) scale(1.1) rotateZ(3deg);
+    }
+
+    50% {
+        transform: perspective(400px) rotateY(0deg) scale(1) rotateZ(0deg);
+    }
+
+    75% {
+        transform: perspective(400px) rotateY(20deg) scale(1.1) rotateZ(-3deg);
+    }
+}
+
+.animate-flag-wave {
+    animation: flag-wave 4s ease-in-out infinite;
+    transform-origin: left center;
+}
+
 
 @keyframes marquee {
     to {
