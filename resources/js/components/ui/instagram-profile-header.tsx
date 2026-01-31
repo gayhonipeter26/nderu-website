@@ -37,15 +37,26 @@ export const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
     isLoading = false
 }) => {
     const [isLiked, setIsLiked] = React.useState(false);
+    const [isSpinning, setIsSpinning] = React.useState(false);
+
+    const handleAvatarClick = () => {
+        if (!isSpinning && !isLoading) {
+            setIsSpinning(true);
+            setTimeout(() => setIsSpinning(false), 2000);
+        }
+    };
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 md:py-12">
             {/* Main Profile Info */}
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-20 mb-8 md:mb-14">
                 {/* Avatar */}
-                <div className="flex-shrink-0 relative">
+                <div
+                    className="flex-shrink-0 relative cursor-pointer"
+                    onClick={handleAvatarClick}
+                >
                     {/* Dotted/Dashed Rotating Ring */}
-                    {isLoading && (
+                    {(isLoading || isSpinning) && (
                         <svg className="absolute inset-[-4px] w-[calc(100%+8px)] h-[calc(100%+8px)] animate-instagram-spin" viewBox="0 0 100 100">
                             <circle
                                 cx="50"
@@ -67,7 +78,7 @@ export const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
                         </svg>
                     )}
 
-                    {!isLoading && (
+                    {(!isLoading && !isSpinning) && (
                         <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]" />
                     )}
 

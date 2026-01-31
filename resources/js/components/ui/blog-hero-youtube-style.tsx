@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, Search, Mic, Bell, User, X, ChevronLeft, Video } from "lucide-react";
+import { BadgeCheck, Search, Mic, Bell, User, X, ChevronLeft, Video, Home, Menu, Info } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 import { VideoUploadDialog } from "@/components/ui/video-upload-dialog";
@@ -21,6 +21,8 @@ interface BlogHeroYoutubeStyleProps {
     showPlayerExternally?: boolean;
     onPlayerClose?: () => void;
     video?: { title: string; url: string; duration: string; coverImage: string; description: string; links: string[] } | null;
+    recommendations?: any[];
+    uploadedVideos?: any[];
     className?: string;
 }
 
@@ -38,6 +40,8 @@ export function BlogHeroYoutubeStyle({
     showPlayerExternally = false,
     onPlayerClose,
     video,
+    recommendations = [],
+    uploadedVideos = [],
     className
 }: BlogHeroYoutubeStyleProps) {
     const [activeTab, setActiveTab] = React.useState("home");
@@ -47,6 +51,7 @@ export function BlogHeroYoutubeStyle({
     const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = React.useState(false);
     const [showPlayer, setShowPlayer] = React.useState(false);
+    const [showDisclaimer, setShowDisclaimer] = React.useState(false);
 
     React.useEffect(() => {
         if (showPlayerExternally) {
@@ -86,7 +91,7 @@ export function BlogHeroYoutubeStyle({
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="sticky top-0 md:top-[64px] z-50 bg-background border-b border-border shadow-sm"
+                className="sticky top-[64px] z-50 bg-background border-b border-border shadow-sm"
             >
                 <div className="container mx-auto px-4 md:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-14 md:h-16 gap-4">
@@ -118,12 +123,32 @@ export function BlogHeroYoutubeStyle({
                                     <button className="p-2 hover:bg-muted rounded-full">
                                         <Mic className="h-5 w-5" />
                                     </button>
+                                    <div
+                                        className="relative group cursor-help flex items-center justify-center shrink-0"
+                                        onClick={() => setShowDisclaimer(!showDisclaimer)}
+                                    >
+                                        <button className="p-2 hover:bg-muted rounded-full">
+                                            <Info className="h-5 w-5" />
+                                        </button>
+                                        <AnimatePresence>
+                                            {showDisclaimer && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 5 }}
+                                                    className="absolute top-full mt-2 right-0 w-48 bg-[#1f1f1f] border border-white/10 text-white p-2 rounded z-[70] text-center text-xs"
+                                                >
+                                                    The page is fully inspired by youtube website
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
                         {/* Left: Logo/Brand */}
-                        <div className="flex items-center gap-4 shrink-0">
+                        <div className="flex items-center gap-2 md:gap-4 shrink-0">
                             <h2 className="text-lg font-bold tracking-tight">Blogs</h2>
                         </div>
 
@@ -144,6 +169,29 @@ export function BlogHeroYoutubeStyle({
                             <button className="p-2 rounded-full hover:bg-muted transition-colors bg-muted/30">
                                 <Mic className="h-5 w-5 text-muted-foreground" />
                             </button>
+                            <div
+                                className="relative group cursor-help flex items-center justify-center shrink-0 ml-1"
+                                onMouseEnter={() => setShowDisclaimer(true)}
+                                onMouseLeave={() => setShowDisclaimer(false)}
+                                onClick={() => setShowDisclaimer(!showDisclaimer)}
+                            >
+                                <button className="p-2 rounded-full hover:bg-muted transition-colors">
+                                    <Info className="h-5 w-5 text-muted-foreground" />
+                                </button>
+                                <AnimatePresence>
+                                    {showDisclaimer && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                                            className="absolute top-full mt-2 right-0 w-max max-w-[200px] bg-[#1f1f1f] border border-white/10 text-white/90 text-[11px] font-medium p-2.5 rounded-lg shadow-xl z-[60] text-center"
+                                        >
+                                            The page is fully inspired by youtube website
+                                            <div className="absolute bottom-full right-3 border-4 border-transparent border-b-[#1f1f1f]" />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
                         </div>
 
                         {/* Right: Icons */}
@@ -240,6 +288,7 @@ export function BlogHeroYoutubeStyle({
                                         {title}
                                     </h1>
                                     <BadgeCheck className="h-4 w-4 md:h-6 md:w-6 text-blue-500 fill-blue-500/10" />
+
                                 </div>
                                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-2 gap-y-1 text-xs md:text-sm text-muted-foreground font-medium">
                                     <span className="font-bold text-foreground/80">{username}</span>
@@ -410,6 +459,8 @@ export function BlogHeroYoutubeStyle({
                         <YoutubeVideoPlayer
                             key={video.url}
                             video={video}
+                            recommendations={recommendations}
+                            uploadedVideos={uploadedVideos}
                             onClose={() => {
                                 setShowPlayer(false);
                                 onPlayerClose?.();

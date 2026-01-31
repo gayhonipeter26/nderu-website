@@ -8,6 +8,8 @@ import { BlogHeroYoutubeStyle } from './ui/blog-hero-youtube-style';
 const props = defineProps<{
     showPlayerExternally?: boolean;
     video?: any;
+    recommendations?: any[];
+    uploadedVideos?: any[];
 }>();
 
 const emit = defineEmits(['search', 'tabChange', 'videoUploaded', 'playerClose']);
@@ -39,6 +41,8 @@ const render = () => {
         onTabChange={handleTabChange} 
         onVideoUploaded={handleVideoUploaded}
         video={props.video}
+        recommendations={props.recommendations}
+        uploadedVideos={props.uploadedVideos}
         showPlayerExternally={props.showPlayerExternally}
         onPlayerClose={handlePlayerClose}
       />
@@ -47,7 +51,7 @@ const render = () => {
   }
 };
 
-watch(() => [props.showPlayerExternally, props.video], render);
+watch(() => [props.showPlayerExternally, props.video, props.recommendations, props.uploadedVideos], render);
 
 onMounted(() => {
   console.log('BlogHeroYoutubeWrapper mounted', container.value);

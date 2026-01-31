@@ -172,6 +172,10 @@ watch(() => props.posts, () => {
   renderContent();
 }, { deep: true });
 
+const videoRecommendations = computed(() => {
+  return props.posts.filter(post => !!post.feature_video_url);
+});
+
 watch(currentlyPlayingVideo, (newVideo) => {
   saveActiveVideo(newVideo);
 }, { deep: true });
@@ -189,6 +193,8 @@ watch(currentlyPlayingVideo, (newVideo) => {
           @video-uploaded="handleVideoUploaded"
           :show-player-externally="shouldShowHeroPlayer"
           :video="currentlyPlayingVideo"
+          :recommendations="videoRecommendations"
+          :uploaded-videos="uploadedVideos"
           @player-close="handlePlayerClose"
         />
       </section>

@@ -34,22 +34,17 @@ const isActive = (href: string) => {
   <div class="min-h-screen bg-background text-foreground flex flex-col relative">
     <!-- Persistent Toggle Button (Top Right) -->
     <div class="fixed top-2 right-4 z-[100] hidden md:block">
-      <Button 
-        variant="secondary" 
-        size="icon" 
+      <Button variant="secondary" size="icon"
         class="h-8 w-8 rounded-full shadow-lg bg-black/50 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 transition-all hover:scale-105"
-        @click="toggleMenu"
-        :title="isMenuVisible ? 'Hide Menu' : 'Show Menu'"
-      >
+        @click="toggleMenu" :title="isMenuVisible ? 'Hide Menu' : 'Show Menu'">
         <ChevronUp v-if="isMenuVisible" class="h-4 w-4" />
         <ChevronDown v-else class="h-4 w-4" />
       </Button>
     </div>
 
-    <header 
-      class="border-b bg-black transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden z-[90] sticky top-0"
-      :class="isMenuVisible ? 'h-16 opacity-100' : 'h-0 opacity-0 border-none pointer-events-none'"
-    >
+    <header
+      class="border-b bg-black transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden z-[90] fixed top-0 w-full left-0"
+      :class="isMenuVisible ? 'h-16 opacity-100' : 'h-0 opacity-0 border-none pointer-events-none'">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-4">
           <Link href="/" class="text-lg font-semibold tracking-tight text-white">
@@ -119,13 +114,8 @@ const isActive = (href: string) => {
                     Contact
                   </Link>
                   <div class="px-3 py-4 flex items-center gap-2 mt-4 border-t border-muted/50">
-                    <img 
-                      src="https://flagcdn.com/w40/ke.png"
-                      srcset="https://flagcdn.com/w80/ke.png 2x"
-                      width="40"
-                      alt="Kenya"
-                      class="inline-block rounded shadow-md animate-flag-wave"
-                    />
+                    <img src="https://flagcdn.com/w40/ke.png" srcset="https://flagcdn.com/w80/ke.png 2x" width="40"
+                      alt="Kenya" class="inline-block rounded shadow-md animate-flag-wave" />
                   </div>
                 </div>
               </SheetContent>
@@ -134,6 +124,8 @@ const isActive = (href: string) => {
         </div>
       </div>
     </header>
+
+    <div class="h-16 w-full shrink-0"></div>
 
     <main class="flex-1">
       <slot />
@@ -177,7 +169,7 @@ const isActive = (href: string) => {
         <p class="mt-8 text-center text-xs text-muted-foreground">&copy; 2024 NDERU.KE. All rights reserved.</p>
       </div>
     </footer>
-    
+
     <!-- Global Components -->
     <ScrollToTop />
     <MobileSocialBar />
