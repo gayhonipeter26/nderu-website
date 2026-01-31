@@ -40,7 +40,8 @@ import {
     Video,
     Bell,
     User,
-    Menu
+    Menu,
+    RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -328,6 +329,16 @@ export function YoutubeVideoPlayer({ video, onClose, onCreateClick }: YoutubeVid
         }
     };
 
+    const handleReload = () => {
+        if (videoRef.current) {
+            videoRef.current.load();
+            videoRef.current.currentTime = 0;
+            videoRef.current.play();
+            setIsPlaying(true);
+        }
+        setShowSettings(false);
+    };
+
     const handlePostComment = (e: React.FormEvent) => {
         e.preventDefault();
         if (!newComment.trim() || !userEmail.trim()) return;
@@ -546,6 +557,7 @@ export function YoutubeVideoPlayer({ video, onClose, onCreateClick }: YoutubeVid
                                                         <div className="py-2">
                                                             <button onClick={() => setMenuView("speed")} className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/10 transition-colors"><div className="flex items-center gap-3"><Gauge className="h-4 w-4" /><span className="text-sm">Playback speed</span></div><div className="flex items-center gap-1 text-xs text-[#aaaaaa]"><span>{playbackSpeed === 1 ? "Normal" : `${playbackSpeed}x`}</span><ChevronRight className="h-4 w-4" /></div></button>
                                                             <button onClick={() => setIsLooping(!isLooping)} className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/10 transition-colors"><div className="flex items-center gap-3"><RotateCcw className="h-4 w-4" /><span className="text-sm">Loop video</span></div><div className={cn("text-xs font-bold", isLooping ? "text-red-600" : "text-[#aaaaaa]")}>{isLooping ? "On" : "Off"}</div></button>
+                                                            <button onClick={handleReload} className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/10 transition-colors"><div className="flex items-center gap-3"><RefreshCw className="h-4 w-4" /><span className="text-sm">Reload video</span></div></button>
                                                             <button onClick={() => setMenuView("quality")} className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/10 transition-colors"><div className="flex items-center gap-3"><Monitor className="h-4 w-4" /><span className="text-sm">Quality</span></div><div className="flex items-center gap-1 text-xs text-[#aaaaaa]"><span>{quality}</span><ChevronRight className="h-4 w-4" /></div></button>
                                                         </div>
                                                     )}

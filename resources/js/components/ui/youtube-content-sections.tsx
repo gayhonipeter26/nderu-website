@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { router } from "@inertiajs/vue3";
 
-interface Post {
+export interface Post {
     id: number;
     slug: string;
     title: string;
@@ -19,7 +19,7 @@ interface Post {
     reading_time?: string | null;
 }
 
-interface YoutubeContentSectionsProps {
+export interface YoutubeContentSectionsProps {
     posts: Post[];
     className?: string;
     searchQuery?: string;
@@ -42,7 +42,7 @@ const formatTimeAgo = (date: string | null) => {
     return `${Math.floor(diffInDays / 365)} year${Math.floor(diffInDays / 365) > 1 ? 's' : ''} ago`;
 };
 
-const VideoCard = ({ post, isCompact = false, index = 0, onVideoClick }: { post: Post; isCompact?: boolean; index?: number; onVideoClick?: (video: any) => void }) => {
+export const VideoCard = ({ post, isCompact = false, isGrid = false, index = 0, onVideoClick, className }: { post: Post; isCompact?: boolean; isGrid?: boolean; index?: number; onVideoClick?: (video: any) => void; className?: string }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const isVideo = !!post.feature_video_url;
 
@@ -78,10 +78,12 @@ const VideoCard = ({ post, isCompact = false, index = 0, onVideoClick }: { post:
             transition={{ duration: 0.5, delay: (index % 4) * 0.1, ease: "easeOut" }}
             onClick={handleCardClick}
             className={cn(
-                "group cursor-pointer flex-none",
-                isCompact
+                "group cursor-pointer",
+                !isGrid && "flex-none",
+                isGrid ? "w-full" : (isCompact
                     ? "w-48 md:w-56"
-                    : "w-[85vw] sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)]"
+                    : "w-[85vw] sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)]"),
+                className
             )}
         >
             <div className="relative aspect-video rounded-xl overflow-hidden bg-[#272727] mb-3">
@@ -156,7 +158,7 @@ const VideoCard = ({ post, isCompact = false, index = 0, onVideoClick }: { post:
     );
 };
 
-const SectionRow = ({
+export const SectionRow = ({
     title,
     items,
     renderItem,

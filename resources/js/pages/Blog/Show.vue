@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { router } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import {
@@ -14,13 +14,35 @@ import {
   Music2,
   MapPin,
   ArrowLeft,
+  MoreVertical,
+  X,
+  Share2,
+  Copy,
+  Check,
+  Link as LinkIcon
 } from 'lucide-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import type { Root } from 'react-dom/client';
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { YoutubeComments } from '@/components/ui/youtube-comments';
 import ContactCardWrapper from '@/components/ContactCardWrapper.vue';
 import MediaCarousel from '@/components/MediaCarousel.vue';
 import { Badge } from '@/components/ui/badge/index';
 import { Button } from '@/components/ui/button/index';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card/index';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog/index';
+import { VideoCard, SectionRow } from '@/components/ui/youtube-content-sections';
+import { Input } from '@/components/ui/input/index';
+import { Label } from '@/components/ui/label/index';
 import WebsiteLayout from '@/layouts/WebsiteLayout.vue';
 
 interface Comment {
@@ -145,6 +167,172 @@ const shareButtons = computed(() => {
 });
 
 const showCommentForm = ref(false);
+const showShareDialog = ref(false);
+const isCopied = ref(false);
+
+const suggestedPosts = computed(() => [
+    {
+        id: 201,
+        slug: 'cinematic-editing-breakdown',
+        title: 'Cinematic Editing Breakdown: The Art of Cuts',
+        summary: 'Learn how to pace your edits for maximum emotional impact.',
+        cover_image_url: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44c?q=80&w=600',
+        feature_video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        published_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+        likes_count: 1240,
+        reading_time: '12:04',
+        author: 'Nderu Gathoni',
+        category: 'Tutorial'
+    },
+    {
+        id: 202,
+        slug: 'color-grading-masterclass',
+        title: 'Color Grading Masterclass',
+        summary: 'From log to cinematic look in 5 easy steps.',
+        cover_image_url: 'https://images.unsplash.com/photo-1535016120720-40c6874c3b1c?q=80&w=600',
+        feature_video_url: null,
+        published_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+        likes_count: 890,
+        reading_time: '8 min read',
+        author: 'Nderu Gathoni',
+        category: 'Article'
+    },
+    {
+        id: 203,
+        slug: 'camera-gear-2026',
+        title: 'My 2026 Camera Gear Setup',
+        summary: 'A detailed look at the equipment I use for every shoot.',
+        cover_image_url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600',
+        feature_video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        published_at: new Date(Date.now() - 86400000 * 10).toISOString(),
+        likes_count: 3400,
+        reading_time: '15:20',
+        author: 'Nderu Gathoni',
+        category: 'Gear'
+    },
+    {
+        id: 204,
+        slug: 'lighting-techniques',
+        title: '3 Lighting Techniques You Need to Know',
+        summary: 'Mastering natural and artificial light.',
+        cover_image_url: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=600',
+        feature_video_url: null,
+        published_at: new Date(Date.now() - 86400000 * 15).toISOString(),
+        likes_count: 560,
+        reading_time: '5 min read',
+        author: 'Nderu Gathoni',
+        category: 'Tutorial'
+    }
+]);
+
+const handleCopyLink = () => {
+    if (typeof window !== 'undefined') {
+        navigator.clipboard.writeText(window.location.href);
+        isCopied.value = true;
+        setTimeout(() => isCopied.value = false, 2000);
+    }
+};
+
+const commentsContainer = ref<HTMLDivElement | null>(null);
+const suggestedContainer = ref<HTMLDivElement | null>(null);
+let commentsRoot: Root | null = null;
+let suggestedRoot: Root | null = null;
+
+const renderComments = () => {
+    if (commentsContainer.value && !commentsRoot) {
+        commentsRoot = createRoot(commentsContainer.value);
+    }
+    
+    if (commentsRoot) {
+        // Use fake comments if no real comments exist
+        let commentsToRender = props.comments;
+        
+        if (commentsToRender.length === 0) {
+            commentsToRender = [
+                {
+                    id: 101,
+                    author_name: "Alex Rivera",
+                    author_email: "alex@example.com",
+                    body: "This article is exactly what I needed! The breakdown of the concepts is incredible. Great work, Nderu! 🔥",
+                    created_at: new Date(Date.now() - 7200000).toISOString() // 2 hours ago
+                },
+                {
+                    id: 102,
+                    author_name: "Sarah Chen",
+                    author_email: "sarah.c@tech.io",
+                    body: "Love the attention to detail here. Can you share more about the tech stack used for the demo?",
+                    created_at: new Date(Date.now() - 18000000).toISOString() // 5 hours ago
+                },
+                {
+                    id: 103,
+                    author_name: "Marcus Wright",
+                    author_email: "marcus@lens.com",
+                    body: "Stunning visuals and clear explanation. The lighting in that opening sequence is just perfect.",
+                    created_at: new Date(Date.now() - 86400000).toISOString() // 1 day ago
+                }
+            ];
+        }
+
+        // Add simulated engagement data to comments
+        const commentsWithEngagement = commentsToRender.map(comment => ({
+            ...comment,
+            // Generate deterministic random likes based on string entries or ID
+            likes: typeof comment.id === 'number' 
+                ? (comment.id * 17) % 150 + 3 // Deterministic pseudo-random
+                : Math.floor(Math.random() * 50) + 2,
+            timestamp: comment.created_at ?? undefined
+        }));
+
+        commentsRoot.render(
+            <React.StrictMode>
+                <YoutubeComments comments={commentsWithEngagement} showInput={showCommentForm.value} />
+            </React.StrictMode>
+        );
+    }
+};
+
+const renderSuggestedContent = () => {
+    if (suggestedContainer.value && !suggestedRoot) {
+        suggestedRoot = createRoot(suggestedContainer.value);
+    }
+    
+    if (suggestedRoot) {
+        suggestedRoot.render(
+            <React.StrictMode>
+                <SectionRow 
+                    title="Watch Next"
+                    items={suggestedPosts.value}
+                    renderItem={(post, index) => (
+                        <VideoCard key={post.id} post={post} index={index} />
+                    )}
+                />
+            </React.StrictMode>
+        );
+    }
+};
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    shareUrl.value = window.location.href;
+  }
+  renderComments();
+  renderSuggestedContent();
+});
+
+watch([() => props.comments, showCommentForm], () => {
+  renderComments();
+}, { deep: true });
+
+onBeforeUnmount(() => {
+  if (commentsRoot) {
+    commentsRoot.unmount();
+    commentsRoot = null;
+  }
+  if (suggestedRoot) {
+    suggestedRoot.unmount();
+    suggestedRoot = null;
+  }
+});
 
 const toggleCommentForm = () => {
   showCommentForm.value = !showCommentForm.value;
@@ -157,7 +345,7 @@ const toggleCommentForm = () => {
     <section class="min-h-screen py-6">
       <div class="grid lg:grid-cols-2 min-h-[calc(100vh-3rem)]">
         <!-- Left Column: Fixed Image with Overlays -->
-        <div class="relative hidden lg:block sticky top-6 h-[calc(100vh-3rem)]">
+        <div class="relative hidden lg:block h-[calc(100vh-3rem)]">
           <!-- Image Container with Padding -->
           <div class="h-full w-full p-6">
             <div class="relative h-full w-full rounded-2xl overflow-hidden bg-black">
@@ -179,35 +367,87 @@ const toggleCommentForm = () => {
               <!-- Dark Overlay -->
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
 
-              <!-- Bottom Left: Location Badge -->
-              <div class="absolute bottom-6 left-6 flex items-center gap-3 text-white">
-                <div class="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <MapPin class="h-5 w-5" />
-                </div>
-                <div>
-                  <p class="text-sm font-semibold">Nairobi</p>
-                  <p class="text-xs opacity-90">Kenya</p>
-                </div>
+              <!-- Top Left: Back Button -->
+              <div class="absolute top-6 left-6 z-10">
+                <Link href="/blog" class="flex items-center justify-center h-10 w-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all text-white border border-white/20">
+                  <ArrowLeft class="h-5 w-5" />
+                </Link>
               </div>
 
-              <!-- Bottom Right: Share Icons & Like Button -->
-              <div class="absolute bottom-6 right-6 flex flex-col gap-3">
-                <!-- Like Button -->
+              <!-- Bottom Left: Like & Location -->
+              <div class="absolute bottom-6 left-6 flex items-center gap-4 text-white">
+                <!-- Like Button (Moved) -->
                 <button @click="likeArticle"
                   class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all text-white border border-white/20">
                   <Heart class="h-4 w-4" />
                   <span class="text-sm font-medium">{{ props.post.likes_count }}</span>
                 </button>
 
-                <!-- Share Icons -->
-                <div class="flex flex-col gap-2">
-                  <a v-for="button in shareButtons" :key="button.name" :href="button.href" target="_blank"
-                    rel="noreferrer" :title="button.name"
-                    class="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center text-white border border-white/20">
-                    <component :is="button.icon" class="h-4 w-4" />
-                  </a>
+                <!-- Location Badge -->
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <MapPin class="h-5 w-5" />
+                    </div>
+                    <div>
+                    <p class="text-sm font-semibold">Nairobi</p>
+                    <p class="text-xs opacity-90">Kenya</p>
+                    </div>
+                </div>
+              </div>
 
-                  <!-- Comment Toggle Button -->
+              <!-- Bottom Right: Share Icons & Like Button -->
+              <div class="absolute bottom-6 right-6 flex flex-col gap-3">
+
+
+                <!-- Share Dialog -->
+                <div class="flex flex-col gap-2 items-end relative">
+                  <Dialog v-model:open="showShareDialog">
+                    <DialogTrigger as-child>
+                        <button title="Share"
+                            class="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center text-white border border-white/20">
+                            <MoreVertical class="h-4 w-4" />
+                        </button>
+                    </DialogTrigger>
+                    <DialogContent class="sm:max-w-md bg-[#1f1f1f] border-white/10 text-white p-0 overflow-hidden gap-0">
+                        <DialogHeader class="px-6 py-4 border-b border-white/10">
+                            <DialogTitle class="text-lg font-bold flex items-center gap-2">
+                                <Share2 class="h-5 w-5" /> Share this article
+                            </DialogTitle>
+                        </DialogHeader>
+                        
+                        <div class="p-6 space-y-6">
+                            <!-- Social Grid -->
+                            <div class="grid grid-cols-4 gap-4">
+                                <a v-for="button in shareButtons" :key="button.name" :href="button.href" target="_blank"
+                                    rel="noreferrer" 
+                                    class="flex flex-col items-center gap-2 group">
+                                    <div class="h-14 w-14 rounded-full bg-white/5 group-hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all group-hover:scale-110">
+                                        <component :is="button.icon" class="h-6 w-6" />
+                                    </div>
+                                    <span class="text-xs text-white/60 group-hover:text-white transition-colors">{{ button.name }}</span>
+                                </a>
+                            </div>
+
+                            <!-- Copy Link Section -->
+                            <div class="bg-[#0f0f0f] rounded-xl p-3 flex items-center gap-3 border border-white/10">
+                                <div class="bg-white/5 h-10 w-10 rounded-lg flex items-center justify-center shrink-0">
+                                    <LinkIcon class="h-5 w-5 text-white/60" />
+                                </div>
+                                <div class="flex-1 min-w-0 pr-2">
+                                    <p class="text-xs text-white/40 mb-0.5">Page Link</p>
+                                    <p class="text-sm font-medium text-white/90 truncate font-mono">{{ shareUrl }}</p>
+                                </div>
+                                <button @click="handleCopyLink" 
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-full transition-colors flex items-center gap-2">
+                                    <component :is="isCopied ? Check : Copy" class="h-4 w-4" />
+                                    {{ isCopied ? 'Copied' : 'Copy' }}
+                                </button>
+                            </div>
+                        </div>
+                    </DialogContent>
+                  </Dialog>
+
+                  <!-- Comment Toggle Button (Always visible below) -->
                   <button @click="toggleCommentForm" :title="showCommentForm ? 'Hide comments' : 'Show comments'"
                     :class="[
                       'h-10 w-10 rounded-full backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center text-white border border-white/20',
@@ -290,36 +530,54 @@ const toggleCommentForm = () => {
 
             <!-- Comments Section -->
             <div class="space-y-8" id="comments">
-              <div class="space-y-2">
-                <h2 class="text-3xl font-bold tracking-tight">Join the discussion</h2>
-                <p class="text-muted-foreground">Share your thoughts and engage with the community</p>
-              </div>
-
-              <!-- Existing Comments (hidden when comment form is shown) -->
-              <Card v-if="formattedComments.length && !showCommentForm">
-                <CardHeader>
-                  <CardTitle class="text-base">Community discussion</CardTitle>
-                  <CardDescription>Continue the conversation with respectful, actionable feedback.</CardDescription>
-                </CardHeader>
-                <CardContent class="space-y-4">
-                  <div class="space-y-4">
-                    <div v-for="comment in formattedComments" :key="comment.id" class="rounded-md border p-4">
-                      <div class="flex items-center justify-between text-xs text-muted-foreground">
-                        <span class="font-medium text-foreground">{{ comment.author_name }}</span>
-                        <span>{{ comment.displayDate }}</span>
-                      </div>
-                      <p class="mt-3 text-sm leading-relaxed text-foreground">{{ comment.body }}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <!-- Comment Form (shown when toggle is clicked) -->
-              <ContactCardWrapper v-if="showCommentForm" type="blog" />
+               <!-- React Comments Mount Point -->
+               <div ref="commentsContainer"></div>
             </div>
+
+
           </div>
+        </div>
+      </div>
+
+      <!-- Full Width Suggested Content -->
+      <div class="max-w-[1440px] mx-auto px-6 py-6 border-t border-white/10 mt-12">
+        <div class="suggested-content-wrapper min-h-[400px]">
+            <div ref="suggestedContainer" class="w-full"></div>
+        </div>
+      </div>
+
+      <!-- Advertisement Banner -->
+      <div class="max-w-[1440px] mx-auto px-6 pb-20 mt-8">
+        <div class="w-full h-[250px] md:h-[300px] rounded-2xl overflow-hidden relative group cursor-pointer border border-white/10">
+            <!-- Background Image -->
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000" 
+                alt="Advertisement" 
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            
+            <!-- Dark Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent flex flex-col justify-center px-8 md:px-16">
+                <span class="text-xs font-bold text-yellow-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <span class="w-8 h-[1px] bg-yellow-500"></span>
+                    Sponsored
+                </span>
+                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4 max-w-xl leading-tight">
+                    Upgrade Your <br/>Cinematic Setup
+                </h3>
+                <p class="text-gray-300 mb-8 max-w-lg text-sm md:text-base leading-relaxed">
+                    Get exclusive deals on cameras, lenses, and lighting equipment. Join the creator economy with the best tools in the industry.
+                </p>
+                <button class="bg-white text-black px-8 py-3 rounded-full font-bold text-sm hover:bg-gray-200 transition-all transform hover:translate-x-1 w-fit">
+                    Shop Gear Collection
+                </button>
+            </div>
+            
+            <!-- Ad Label -->
+            <div class="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] uppercase font-bold text-white/50 border border-white/5">
+                Advertisement
+            </div>
         </div>
       </div>
     </section>
   </WebsiteLayout>
 </template>
+```
